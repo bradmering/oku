@@ -1,0 +1,19 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "oku",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-08-08",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": { "enabled": true }
+
+  // Media lives in R2 (decided: egress is the only structural cost). Enable R2
+  // in the dashboard, then uncomment — the bucket is created but unbound until
+  // there is code that reads it.
+  // "r2_buckets": [
+  //   { "binding": "MEDIA", "bucket_name": "oku-media" }
+  // ]
+}
