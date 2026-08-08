@@ -182,3 +182,38 @@ together.
 **Behavioural change, flagged loudly:** the stories now render move-then-read with interpolation
 between keyframes, rather than move-while-reading with a jump. That's the intended fix, but it isn't
 neutral — the three stories should be looked at in a preview before this is trusted.
+
+---
+
+## 2026-08-08 — Renderer ported; interpolation implemented and tested
+
+`npm run dev` → `/` lists every valid fixture, `/stories/<slug>` renders it. Next 16 + React 19 +
+MapLibre. All four documents build as static pages.
+
+**The core is `lib/interpolate.ts`.** A `move` is a keyframe; `pickCamera` decides which pair of
+keyframes the reader is between and how far, and the stage applies the blended camera with
+`jumpTo` — never `flyTo`, because scroll position *is* the animation parameter and an easing
+animation would fight it. That's the whole difference from the old renderer, which called
+`map.flyTo` when a chapter entered the viewport.
+
+**Two things went wrong and both were worth the time.**
+
+*First*, I wrote the scroll binding as a free-running `requestAnimationFrame` loop. That re-renders
+at 60fps whether or not anything moved, and — the real problem — rAF doesn't fire in a hidden tab,
+so the camera silently stops updating. Rewrote it as a passive `scroll`/`resize`/`ResizeObserver`
+listener with rAF coalescing: no work when idle, and it recovers as soon as anything moves.
+
+*Second*, **I couldn't see it.** The preview pane reports `visibilityState: "hidden"` with a 0×0
+viewport, so there are no pixels to inspect and no layout to measure. Rather than keep poking at it,
+I pulled the scroll→camera decision out of the component into a pure function taking geometry
+(anchor offsets, viewport height) and wrote 14 tests. The maths and the binding are now verified
+headlessly; **only the pixels are unverified, and those need a human at a real browser.**
+
+The tests earned their keep immediately: `blend(a, b, 1)` returned bearing `-180` instead of `180`.
+Visually identical, but landing on a keyframe should reproduce it *exactly*, so `blend` now
+short-circuits its endpoints.
+
+**Known rough edges** — move anchors are a flat `78vh`, so pacing is uniform rather than tuned;
+there's no Mapbox token so the fallback is a route line on flat ground (enough to judge the
+motion, not the map); legacy media paths 404 locally since the images still live in the blog repo;
+`?debug` shows a live camera readout.
