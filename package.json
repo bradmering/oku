@@ -15,7 +15,8 @@
     "migrate": "node --experimental-strip-types scripts/migrate-legacy.ts",
     "bake": "node --experimental-strip-types scripts/build-trips.ts",
     "prebuild": "npm run bake",
-    "predev": "npm run bake"
+    "predev": "npm run bake",
+    "upload-media": "node --experimental-strip-types scripts/upload-media.ts"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.20.2",
@@ -27,6 +28,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260808.1",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^26.2.0",
     "@types/react": "^19.2.18",

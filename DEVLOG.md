@@ -273,3 +273,30 @@ visually.** Somebody should look at the middle and lower thirds on a real browse
 
 Also bound the R2 bucket (`oku-media`, created via MCP once R2 was enabled). Nothing reads it yet —
 the binding is in place so media work doesn't need a config change to start.
+
+---
+
+## 2026-08-08 — Password gate; media routed through R2
+
+**Gate.** Everything except the landing page is behind a single shared password. The cookie holds
+an HMAC of a fixed string keyed by the password, so it can't be forged and the password is never
+stored client-side. Verified all four paths: landing stays public, protected routes redirect, a
+wrong password is rejected, and a forged cookie is rejected.
+
+It **fails open when `SITE_PASSWORD` is unset** — deliberate. This is a curtain, not a lock, and
+failing closed on a missing env var would break local dev for no security benefit. Worth being
+explicit that it is one password with no accounts and no rate limiting; real auth stays deferred.
+
+**Media.** All 104 referenced files located in the blog repo — 65.7 MB, nothing missing. Upload
+script written and dry-run clean, but **not run**: wrangler isn't authenticated here, so that's
+Brad's to run after `wrangler login`.
+
+The design decision worth recording: **the documents keep their existing `/images/...` paths.**
+A route resolves them out of R2 rather than rewriting every story to point at a bucket. So the
+documents never learn where the bytes live, moving storage is a config change, and — usefully —
+this defers the `src` vs `mediaId` question rather than forcing it. That question is about linking
+chapters to `sources.media[]` metadata, which is a different concern from where files are stored,
+and conflating them would have been a mistake.
+
+Also needed `@cloudflare/workers-types` for `R2Bucket` in the route — the Workers runtime types
+aren't ambient in a Next project.

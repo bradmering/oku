@@ -66,6 +66,42 @@ Trips are now baked into the bundle by `scripts/build-trips.ts` (wired to `prebu
 R2/KV/D1.** `npm run preview` (or `wrangler dev`) runs the real `workerd` runtime and catches
 this class of bug; `npm run dev` does not.
 
+## The password gate
+
+Everything except the landing page sits behind a shared password. **It limits visibility; it is
+not security** — one password, no accounts, no rate limiting. Real auth is deferred
+(`decisions/0008`); do not grow this into it.
+
+Set the secret on the Worker:
+
+```bash
+npx wrangler secret put SITE_PASSWORD
+```
+
+**Until that secret exists the middleware fails open** and the whole site is public. That's
+deliberate — this gate exists to avoid embarrassment, not to protect anything, and failing closed
+on a missing env var would just break local development.
+
+Locally, put `SITE_PASSWORD=...` in `.env.local`.
+
+Public paths: `/`, `/unlock`, `/api/unlock`, `/images/*`, and static files. Media stays open
+because it is already public on the blog, and gating asset requests buys nothing.
+
+## Media
+
+Story media lives in R2 (`oku-media`) and is served by `app/images/[...path]/route.ts`. The trip
+documents keep their original `/images/...` paths, so **the documents never learned where the
+bytes live** — moving buckets is a config change, not a rewrite of every story.
+
+To upload (one time, needs `npx wrangler login` first):
+
+```bash
+npm run upload-media -- --dry-run   # see the plan
+npm run upload-media                # 104 files, ~66 MB
+```
+
+Idempotent — objects already present are skipped, so a failed run can be re-run.
+
 ## Notes
 
 - Build output: `.open-next/worker.js` + `.open-next/assets` (~4.8 MB of assets today).
