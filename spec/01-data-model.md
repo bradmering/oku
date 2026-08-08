@@ -212,7 +212,53 @@ Two constraints that shape the implementation, both from the hosting work:
 
 ---
 
-## Open questions
+## ⏸ UNDER REVIEW — `segment` and `posture` (paused 2026-08-07, resume here)
+
+Both are **invented, not derived** — no legacy document contains either — and both look confused on
+inspection. **Do not build on them until this is settled.**
+
+### `segment` conflates two things
+
+**(A) a chunk of the journey** — a fact about the trip: time window, track slice, activity mode,
+stats. Exists whether or not anyone writes about it; derivable by ingest.
+**(B) a chunk of the narrative** — an authored section of the document.
+
+They usually align, which is why it wasn't obvious. They come apart when: the rest day is a journey
+chunk with no narrative; "the middle days blurred together" is one narrative section over three
+journey chunks; Abegg's "Time Stats" is a narrative section that is not a journey chunk.
+
+**The product lives in that gap** — derived journey chunks *propose* authored sections. That is the
+"story arrives half-built" claim stated precisely, and the current single object cannot express it.
+
+**Proposal (undecided):** split into **Leg** (a fact, under `sources`, from ingest) and **Segment**
+(an authored narrative section that references zero or more legs). And make segments **contiguous
+ranges over the flat thread** rather than containers — like a book's parts over its pages — so
+`chapters[]` stays the single ordering authority, un-sectioned chapters (title, overview,
+logistics) remain legal, and a dispatch entry is simply "publish this range."
+
+**Open for Brad:** does the leg/section split match how he thinks about it, or is it one concept
+too many?
+
+### `posture` may not be a field at all
+
+`posture: 'dispatch' | 'report'` conflates **publication history** (a fact), **mutability policy**
+(a rule), and **render mode** (a choice).
+
+**The redundancy:** if per-segment `publishedAt` exists, posture is *derivable* — distinct
+`publishedAt` values across segments **mean** it shipped forward. So the field is either redundant
+with the data or able to contradict it.
+
+**Three more problems:** a dispatch legitimately becomes a report after editing at home; posture may
+be **per-segment** (1–5 shipped live, 6 written after falling behind — the normal case); and the
+binary already leaks, because a **Guide** is evergreen and revised, neither forward nor backward.
+
+**Proposal (undecided):** drop the stored field. Derive publication history from `publishedAt`, and
+keep a separate **authoring `mode`** for declared intent before anything ships. Report is not a
+posture — it is the *absence* of one.
+
+**Open for Brad:** is declared intent needed at all, or is derived-from-`publishedAt` enough?
+
+## Other open questions
 
 - **Do `planned` and `actual` belong on the segment, or is a plan a separate Trip?** Currently
   modelled as fields on Segment. The itinerary at `hulahula-plan.md` is a fourth schema in its own

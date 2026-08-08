@@ -88,3 +88,35 @@ ignored.** Worth deciding whether to make `Trip` strict too.
 
 **Priority inverted:** forward fixtures before the codemod. The codemod proves the schema handles
 old blog posts; forward fixtures prove it handles the product, and that's where it will break.
+
+---
+
+## 2026-08-07 — Spec review started; `segment` and `posture` under review, build paused
+
+Brad pulled the brakes on implementation — *"you are rushing towards code and I still want to make
+sure we have the right angle on our general schema."* Correct. Stopped, and put the spec up for
+review instead.
+
+**Useful framing that came out of it:** about half the model is *derived* from working code (the 11
+chapter types, cue fields, the stage concept) and about half is *invented* in conversation
+(`Segment`, `posture`, `planned`, `TimeCue`, `Sources`, `authors[]`, `persist`). **The invented half
+is also the half with no fixtures** — that's where review should concentrate, and it's exactly where
+the first two problems turned up.
+
+**`segment` conflates a journey fact with a narrative section.** They usually align, which hid it.
+They come apart on a rest day (journey chunk, no narrative), on "the middle days blurred together"
+(one section, three chunks), and on Abegg's "Time Stats" (section, not a chunk). The product
+actually lives in that gap — derived chunks *propose* authored sections, which is the
+half-built-story claim stated precisely. Proposal: split into **Leg** (fact, from ingest) and
+**Segment** (authored section), and make segments **contiguous ranges over the flat thread** rather
+than containers, so `chapters[]` stays the single ordering authority.
+
+**`posture` may not be a field.** It conflates publication history, mutability policy, and render
+mode — and if per-segment `publishedAt` exists, the history is *derivable*, making the field
+redundant or capable of contradicting the data. It also breaks on a dispatch edited into a report,
+on per-segment posture (falling behind on the trail is the normal case), and on Guides, which are
+neither.
+
+**Both paused for Brad overnight.** Recorded in `spec/01-data-model.md` under "UNDER REVIEW" with the
+open question for each. **Do not build on either until settled** — that includes the forward
+fixtures, since three of the five planned ones exercise exactly these two concepts.
