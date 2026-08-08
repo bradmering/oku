@@ -102,15 +102,6 @@ a { color: inherit; }
   color: var(--muted); font-size: .85rem; margin-top: .5rem;
 }
 
-.ch--gallery { max-width: 62rem; display: grid; gap: .75rem; }
-.layout--single { grid-template-columns: 1fr; }
-.layout--duo { grid-template-columns: repeat(2, 1fr); }
-.layout--trio { grid-template-columns: repeat(3, 1fr); }
-.layout--quad { grid-template-columns: repeat(2, 1fr); }
-.layout--grid { grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
-.ch--gallery figure { margin: 0; }
-.ch--gallery figcaption { color: var(--muted); font-size: .8rem; margin-top: .4rem; }
-
 .ch--overview { background: rgba(20,24,26,.72); border-radius: .5rem; }
 
 .ch--todo {
@@ -259,4 +250,91 @@ a { color: inherit; }
 .gate .bad {
   margin: .9rem 0 0; color: var(--muted);
   font-family: ui-monospace, SFMono-Regular, monospace; font-size: .76rem;
+}
+
+/* ── gallery ─────────────────────────────────────────────────────────────── */
+/* Galleries break out of the reading column — they are the visual beats. */
+.ch--gallery { max-width: none; padding: 0; margin: 3rem 0; }
+
+.g-img, .g-cell {
+  position: relative; display: block; padding: 0; border: 0;
+  background: none; overflow: hidden; cursor: zoom-in;
+}
+.g-img img, .g-cell img { width: 100%; height: 100%; object-fit: cover; }
+
+.g-scrim {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to bottom, transparent 55%, rgba(0,0,0,.45));
+}
+.g-cap {
+  position: absolute; bottom: 1rem; left: 1.5rem; right: 1.5rem;
+  color: rgba(255,255,255,.85); font-size: .8rem; font-style: italic;
+  text-align: center; pointer-events: none; text-shadow: 0 1px 6px rgba(0,0,0,.6);
+}
+
+.gallery--single { height: 100vh; }
+.gallery--single .g-img { height: 100%; width: 100%; }
+
+.gallery--duo { height: 100vh; display: flex; gap: 2px; }
+.gallery--duo .g-img { flex: 1; height: 100%; }
+
+/* Staggered columns — left / centre / right, then alternating. The offset is
+   what keeps a run of galleries from reading as a slideshow. */
+.gallery--trio, .gallery--quad {
+  display: flex; flex-direction: column; gap: .75rem; padding: 3rem 0;
+}
+.gallery--trio .g-img { height: 65vh; width: 60%; }
+.gallery--trio .g-img:nth-child(1) { align-self: flex-start; }
+.gallery--trio .g-img:nth-child(2) { align-self: center; }
+.gallery--trio .g-img:nth-child(3) { align-self: flex-end; }
+
+.gallery--quad .g-img { height: 80vh; width: 70%; }
+.gallery--quad .g-img:nth-child(odd) { align-self: flex-start; }
+.gallery--quad .g-img:nth-child(even) { align-self: flex-end; }
+
+/* Contact sheet, on light ground so it reads as a different register. */
+.gallery--grid {
+  display: grid; gap: 6px;
+  grid-template-columns: repeat(2, 1fr);
+  background: #e8e4dc; padding: 2.5rem 1.5rem;
+}
+.gallery--grid .g-cell { aspect-ratio: 1; }
+.gallery--grid .g-cell img { transition: transform .5s ease; }
+.gallery--grid .g-cell:hover img { transform: scale(1.05); }
+
+@media (min-width: 640px) {
+  .gallery--grid { grid-template-columns: repeat(3, 1fr); padding: 2.5rem 3rem; }
+}
+@media (max-width: 640px) {
+  .gallery--trio .g-img, .gallery--quad .g-img { width: 88%; height: 55vh; }
+  .gallery--duo { height: auto; flex-direction: column; }
+  .gallery--duo .g-img { height: 60vh; }
+}
+
+/* ── lightbox ────────────────────────────────────────────────────────────── */
+.lb {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.93);
+  display: flex; align-items: center; justify-content: center;
+  padding: 3rem 1.5rem;
+}
+.lb-figure { margin: 0; max-width: 100%; max-height: 100%; display: flex;
+  flex-direction: column; align-items: center; gap: .9rem; }
+.lb-figure img { max-width: 100%; max-height: 82vh; object-fit: contain; }
+.lb-figure figcaption {
+  color: rgba(255,255,255,.7); font-size: .85rem; font-style: italic;
+  text-align: center; max-width: 46rem;
+}
+.lb button { background: none; border: 0; cursor: pointer; color: rgba(255,255,255,.55); padding: 0; }
+.lb button:hover { color: #fff; }
+.lb-close { position: absolute; top: 1.25rem; right: 1.25rem; }
+.lb-close svg { width: 1.7rem; height: 1.7rem; }
+.lb-nav { position: absolute; top: 50%; transform: translateY(-50%); padding: .75rem; }
+.lb-nav svg { width: 2rem; height: 2rem; }
+.lb-prev { left: .5rem; }
+.lb-next { right: .5rem; }
+.lb-count {
+  position: absolute; bottom: 1.25rem; left: 0; right: 0; text-align: center;
+  margin: 0; color: rgba(255,255,255,.45);
+  font-family: ui-monospace, SFMono-Regular, monospace; font-size: .74rem;
 }

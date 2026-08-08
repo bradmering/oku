@@ -16,7 +16,8 @@
     "bake": "node --experimental-strip-types scripts/build-trips.ts",
     "prebuild": "npm run bake",
     "predev": "npm run bake",
-    "upload-media": "node --experimental-strip-types scripts/upload-media.ts"
+    "upload-media": "node --experimental-strip-types scripts/upload-media.ts",
+    "preview:remote": "opennextjs-cloudflare build && wrangler dev --remote"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.20.2",

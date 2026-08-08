@@ -36,9 +36,12 @@ visual should say in its description which story to open and what to look at.
 ## Local
 
 ```bash
-npm run dev        # Next dev server — fastest feedback
-npm run preview    # build + run in the workerd runtime (what production actually is)
-npm run deploy     # build + deploy from your machine (needs wrangler auth)
+npm run dev             # Next dev server — fastest feedback. NO bindings: story
+                        # media 404s, because R2 only exists in the Workers runtime
+npm run preview         # build + run in workerd, with LOCAL bindings
+npm run preview:remote  # build + run in workerd against the REAL R2 bucket —
+                        # the only way to see story media without deploying
+npm run deploy          # build + deploy from your machine
 ```
 
 `dev` runs in Node; `preview` runs in `workerd`. **Verify anything runtime-sensitive with

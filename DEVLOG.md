@@ -300,3 +300,26 @@ and conflating them would have been a mistake.
 
 Also needed `@cloudflare/workers-types` for `R2Bucket` in the route — the Workers runtime types
 aren't ambient in a Next project.
+
+---
+
+## 2026-08-08 — Gallery + lightbox ported
+
+First real parity work. Five gallery layouts from the blog renderer, ported from Tailwind to plain
+CSS, plus the lightbox (keyboard nav, scroll lock, counter).
+
+The layouts are deliberately five different *shapes* rather than one grid with a column count:
+`single` and `duo` are full-bleed and full-height, `trio` and `quad` stagger down the page at
+reading width with alternating alignment, and `grid` is a contact sheet on light ground. That
+variety is most of what gives these stories their pacing — a run of galleries at one width reads
+as a slideshow.
+
+Two things added beyond a straight port: `loading="lazy"` and `decoding="async"` (these stories run
+to 30+ images), and a scroll lock while the lightbox is open — without it the scroll-driven camera
+keeps running behind the overlay and closing it drops you somewhere else in the story.
+
+Verified all five layouts render in `great-wheel` with correct `/images/...` paths.
+
+**Not verified: the images themselves.** `next dev` has no R2 binding, so media 404s locally —
+added `npm run preview:remote` (`wrangler dev --remote`) as the way to see real media without
+deploying, but that needs auth I don't have here. Brad's upload was still in flight.
