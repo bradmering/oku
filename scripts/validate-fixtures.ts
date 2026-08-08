@@ -1,10 +1,12 @@
 /**
  * Validate every fixture against the schema.
  *
- * `fixtures/legacy/` is expected to FAIL. Those four documents predate the spec
- * and are the drift record — each failure is either a schema gap or a migration
- * we owe. The script reports them as drift, not as errors, and exits non-zero
- * only if a NON-legacy fixture fails.
+ * `fixtures/forward/` IS the specification — those must pass.
+ *
+ * `fixtures/legacy/` is EVIDENCE, not authority (see decisions/0011). Those four
+ * documents predate the spec; failures are reported as drift, never as errors,
+ * and the script exits non-zero only if a NON-legacy fixture fails. Do not design
+ * the schema backwards from them.
  */
 
 import { readdirSync, readFileSync, existsSync } from 'node:fs'
@@ -111,8 +113,9 @@ if (currentFiles.length) {
 
 if (legacyFiles.length) {
   console.log('\n── Legacy drift report ─────────────────────────────────────')
-  console.log('   These predate the spec. Failures are expected and are the')
-  console.log('   migration list, not test failures.\n')
+  console.log('   Evidence, not authority (decisions/0011). These predate the')
+  console.log('   spec and never fail the build. Do not design backwards from')
+  console.log('   them — the format must be more robust than they are.\n')
   for (const f of legacyFiles) {
     const r = check(f)
     const name = path.basename(f)

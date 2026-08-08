@@ -34,9 +34,12 @@ feature can be copied; assume the *quality of the reading experience* cannot.
 
 - **The schema is the source of truth.** `schema/` defines the format; `spec/*.md` explains it. If
   they disagree, the schema wins and the prose is a bug.
-- **Every format change lands a fixture** in `fixtures/`. No fixture, no merge.
-- **Never break an existing fixture.** The four documents in `fixtures/legacy/` predate the spec and
-  are the drift record — they must keep parsing.
+- **Every format change lands a fixture** in `fixtures/forward/`. No fixture, no merge.
+- **`fixtures/forward/` is the specification. `fixtures/legacy/` is evidence, not authority.** The
+  four legacy documents are three hand-written blog stories and an itinerary; they point the way but
+  **the format must be far more robust than anything they contain.** Breaking one is a legitimate
+  outcome of a deliberate design decision — document the call in `spec/06-migration.md`, don't
+  automatically revert. **Do not design backwards from them.**
 - Match the surrounding code's style. Don't reformat unrelated lines.
 - Don't add dependencies without saying so in the PR description.
 

@@ -60,3 +60,31 @@ would prejudge the open question of whether a plan is a Segment field or its own
 **CI runs the validator on every PR.** Visual preview is *not* stood up, because there's no app
 yet — the renderer still lives in the blog repo. That's the right order: migrate the documents,
 then port the renderer, then connect Vercel.
+
+---
+
+## 2026-08-07 — Corrected: legacy fixtures are evidence, not authority
+
+Brad flagged that the repo was over-indexing on the legacy documents: *"these yaml docs are only
+valuable because they point the way — they shouldn't be authorities on the eventual schema because
+the schema needs to be so much more robust."*
+
+He's right, and the initial framing did real damage: `fixtures/README.md` had "never break legacy"
+as a rule, `CLAUDE.md` carried it as an invariant, and the migration codemod was called the obvious
+next task. **That sets a ceiling, not a floor** — the schema could only ever be as good as three
+hand-written blog stories from 2019–2026.
+
+**The concrete evidence for how wrong that is:** most of the model is unexercised by the legacy
+corpus and always will be. No legacy document contains a segment, a dispatch posture, a second
+author, a plan, a time cue, ingest sources, or a story without a map. Those aren't edge cases —
+`Segment` is a core concept and *nothing* validates it.
+
+Split `fixtures/` into `forward/` (the specification) and `legacy/` (evidence + regression check).
+Added ADR 0011. Corrected `CLAUDE.md`, the validator's framing, and `06-migration.md` — which also
+owed a correction of its own: it claimed "only two distinct problems" but missed the stage fields
+(`mapStyle`/`initialView`/`route` at top level), because `Trip` isn't `.strict()`. Same false-green
+that hid the chapter drift. **The envelope is still permissive; unknown top-level keys are silently
+ignored.** Worth deciding whether to make `Trip` strict too.
+
+**Priority inverted:** forward fixtures before the codemod. The codemod proves the schema handles
+old blog posts; forward fixtures prove it handles the product, and that's where it will break.
