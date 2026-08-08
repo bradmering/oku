@@ -1,0 +1,427 @@
+title: "Packrafting around the Arrigatch"
+subtitle: "A partial wheel, connecting the Noatak and Atlana rivers, with a trip up and down Arrigetch Creek"
+mapStyle: "mapbox://styles/mapbox/satellite-streets-v12"
+date: "2019-07-01"
+tags:
+  - adventures
+  - alaska
+  - packrafting
+
+initialView:
+  coordinates: [-147.852, 64.809]
+  zoom: 9
+  pitch: 0
+  bearing: 0
+
+# Route traces the wilderness leg only — Fairbanks is prologue
+route:
+  - [-155.416244, 67.662681]
+  - [-155.403186, 67.662592]
+  - [-155.384617, 67.662514]
+  - [-155.363142, 67.662354]
+  - [-155.341368, 67.662019]
+  - [-155.3219, 67.661414]
+  - [-155.305297, 67.660142]
+  - [-155.289823, 67.658266]
+  - [-155.274638, 67.656382]
+  - [-155.258902, 67.655084]
+  - [-155.241775, 67.654969]
+  - [-155.2226, 67.655912]
+  - [-155.201936, 67.657516]
+  - [-155.180771, 67.659968]
+  - [-155.160091, 67.663453]
+  - [-155.140883, 67.668158]
+  - [-155.123615, 67.674938]
+  - [-155.107628, 67.68367]
+  - [-155.092221, 67.693069]
+  - [-155.076695, 67.701851]
+  - [-155.060347, 67.708733]
+  - [-155.050487, 67.71505]
+  - [-155.047582, 67.721658]
+  - [-155.040668, 67.726553]
+  - [-155.028294, 67.738397]
+  - [-155.020226, 67.743503]
+  - [-155.006253, 67.741659]
+  - [-154.986181, 67.73669]
+  - [-154.969292, 67.725241]
+  - [-154.958221, 67.716799]
+  - [-154.923896, 67.716579]
+  - [-154.894382, 67.712038]
+  - [-154.856236, 67.712879]
+  - [-154.825048, 67.706694]
+  - [-154.782825, 67.700869]
+  - [-154.740602, 67.699779]
+  - [-154.69166, 67.692677]
+  - [-154.651473, 67.684343]
+  - [-154.600814, 67.683484]
+  - [-154.560743, 67.684635]
+  - [-154.520671, 67.685499]
+  - [-154.479675, 67.675796]
+  - [-154.445652, 67.65683]
+  - [-154.431335, 67.642719]
+  - [-154.424537, 67.632649]
+  - [-154.415939, 67.628053]
+  - [-154.408676, 67.614802]
+  - [-154.397958, 67.611052]
+  - [-154.376778, 67.617677]
+  - [-154.380713, 67.610111]
+  - [-154.367919, 67.604889]
+  - [-154.343102, 67.598704]
+  - [-154.309958, 67.591089]
+  - [-154.27203, 67.582701]
+  - [-154.23286, 67.574194]
+  - [-154.195989, 67.566225]
+  - [-154.164958, 67.559448]
+  - [-154.143311, 67.554519]
+  - [-154.132642, 67.551621]
+  - [-154.137957, 67.552082]
+  - [-154.136299, 67.547205]
+  - [-154.130537, 67.545188]
+  - [-154.119501, 67.542439]
+  - [-154.103671, 67.543175]
+  - [-154.085925, 67.543361]
+  - [-154.037369, 67.53769]
+  - [-153.999017, 67.529824]
+  - [-153.97157, 67.515266]
+  - [-153.948814, 67.508419]
+  - [-153.955907, 67.50468]
+  - [-153.957129, 67.504024]
+  - [-153.954195, 67.503929]
+  - [-153.956881, 67.502996]
+  - [-153.957125, 67.500657]
+  - [-153.966785, 67.498303]
+  - [-153.971429, 67.494188]
+  - [-153.979984, 67.490541]
+  - [-153.98804, 67.486051]
+  - [-153.993906, 67.480904]
+  - [-153.990232, 67.479688]
+  - [-153.981677, 67.480438]
+  - [-153.971901, 67.481374]
+  - [-153.968479, 67.478191]
+  - [-153.964813, 67.476787]
+  - [-153.959925, 67.474541]
+  - [-153.95577, 67.472294]
+  - [-153.950881, 67.469298]
+  - [-153.946057, 67.468513]
+  - [-153.942815, 67.473325]
+  - [-153.946236, 67.479783]
+  - [-153.952102, 67.484648]
+  - [-153.95699, 67.491569]
+  - [-153.946786, 67.500859]
+  - [-153.934887, 67.501947]
+  - [-153.918182, 67.501851]
+  - [-153.891953, 67.496273]
+  - [-153.862067, 67.488358]
+  - [-153.832225, 67.479244]
+  - [-153.806122, 67.470069]
+  - [-153.783247, 67.460201]
+  - [-153.761133, 67.44888]
+  - [-153.740551, 67.437056]
+  - [-153.72227, 67.425676]
+  - [-153.728884, 67.421683]
+  - [-153.73332, 67.41729]
+  - [-153.746245, 67.410254]
+  - [-153.746244, 67.404539]
+  - [-153.725124, 67.413943]
+  - [-153.718409, 67.417259]
+  - [-153.707061, 67.415689]
+  - [-153.680021, 67.405699]
+  - [-153.668505, 67.394082]
+  - [-153.675227, 67.382274]
+  - [-153.65939, 67.373784]
+  - [-153.652194, 67.361785]
+  - [-153.659756, 67.357699]
+
+
+chapters:
+  - id: title
+    type: title
+    heading: "Packrafting around the Arrigatch"
+    subheading: "Eight days in Gates of the Arctic National Park"
+    image: "/images/great-wheel/IMG_8396.webp"
+    text: |
+      Eight days in a wilderness that doesn't have names for most of it. We flew into Gates of the Arctic from Fairbanks — a Twin Otter. Landing on a oxbow lake, the river having abandoned its channel, we unloaded and set off up and over the ridge.
+
+      What followed was a counter-clockwise arc through the central Brooks Range: northeast up a nameless drainage, over a the divide, and then inflating the rafts, paddling down the Alatna river.  
+
+      We paused at the confluence of the Alatna and Arrigetch creek, and hiked up the drainage towards the towering peaks. We camped for a night high in the valley, and then creeked back down to the now large river.  
+
+  - id: fairbanks
+    type: map
+    heading: "Fairbanks"
+    subheading: "July 19 — Staging"
+    text: |
+      I like Fairbanks. Perched on the edge of a lot of wilderness, lots of interesting people. We spent the day organizing gear, and shopping for food.
+    coordinates: [-147.852, 64.809]
+    zoom: 11
+    pitch: 0
+    bearing: 0
+    align: left
+
+  - id: fairbanks-gallery
+    type: gallery
+    layout: duo
+    images:
+      - src: "/images/great-wheel/IMG_8164.webp"
+        caption: "Pictures of the map"
+      - src: "/images/great-wheel/IMG_8177.webp"
+        caption: "Me with a bear sticker"
+
+  - id: drop-in
+    type: map
+    heading: "The Drop-In"
+    subheading: "July 19 — 67.7°N, 545m"
+    text: |
+      The Cessna banked hard left and the valley opened below us. The pilot set us down on the water, and we unloaded the gear. We watched the plane until we couldn't hear it anymore. The silence that follows, in the vast, trackless wilderness is wonderful.
+    coordinates: [-155.416, 67.663]
+    zoom: 10
+    pitch: 45
+    bearing: -10
+    routeProgress: 0.02
+    marker: true
+    align: right
+
+  - id: drop-in-gallery
+    type: gallery
+    layout: duo
+    images:
+      - src: "/images/great-wheel/IMG_8234.webp"
+        caption: "A twin otter parked in the water"
+      - src: "/images/great-wheel/IMG_8256.webp"
+        caption: "Starting up the towards the divide"
+
+  - id: day2
+    type: map
+    heading: "Moving East"
+    subheading: "July 20 — Day 2"
+    text: |
+      The first full day was compass and tussock. Overland travel is much harder than the miles or elevation would suggest. The permafrost melts on the top, and creates tussocks a foot or two high, often with mud and water underneath. Carrying 60lbs of gear, foot, rafts and drysuits makes for a slow day.
+
+      By afternoon the drainage narrowed and the walking improved. We forded several streams, and made camp on a gravel bar beside a creek cold enough to numb your hands in thirty seconds.
+    coordinates: [-155.141, 67.668]
+    zoom: 11
+    pitch: 40
+    bearing: 20
+    routeProgress: 0.22
+    marker: true
+    align: left
+
+  - id: day2-gallery
+    type: gallery
+    layout: trio
+    images:
+      - src: "/images/great-wheel/IMG_8273.webp"
+        caption: "Sagar and Sarah crossing a river"
+      - src: "/images/great-wheel/IMG_8319.webp"
+        caption: "Mark exploring a rad slot canyon"
+      - src: "/images/great-wheel/IMG_8277.webp"
+        caption: "Wolf tracks in th emud"
+
+  - id: day3-climb
+    type: map
+    heading: "Climbing"
+    subheading: "July 21 — 905m"
+    text: |
+      We climbed up the ridge above camp to the divide. Beautiful mountain lakes beaconed, so Mark, Liz and I jumped in.  Then we started a long descent down the divide to the Alatna River.
+    coordinates: [-155.060, 67.709]
+    zoom: 11
+    pitch: 50
+    bearing: -30
+    routeProgress: 0.32
+    marker: true
+    align: right
+
+  - id: day3-gallery
+    type: gallery
+    layout: duo
+    images:
+      - src: "/images/great-wheel/IMG_8330.webp"
+        caption: "At 905m — the first significant climb of the route"
+      - src: "/images/great-wheel/IMG_8336.webp"
+        caption: "First View of the Atlana River"
+
+  - id: camp
+    type: map
+    heading: "River Camp"
+    subheading: "July 23 — Day 5"
+    text: |
+      We camped on a plateau above the river, watching a solitary black wolf race up the river below us. The river was narrow, fast and tree lined. The river was riskier than the class II grade would suggest with significant entrapment risk, and low sweepers.
+
+      It was exciting to be on the river, but the first day on the river was stressful and dangerous.
+    coordinates: [-154.416, 67.628]
+    zoom: 12
+    pitch: 35
+    bearing: 15
+    routeProgress: 0.46
+    marker: true
+    align: left
+
+  - id: camp-article
+    type: gallery
+    layout: duo
+    images: 
+      - src: "/images/great-wheel/IMG_8345.webp"
+        caption: "Camping on the gravel bar"
+      - src: "/images/great-wheel/IMG_8362.webp"
+        caption: "Breaking camp"
+
+  - id: day6
+    type: map
+    heading: "Long Miles"
+    subheading: "July 24 — Day 6"
+    text: |
+      The valley widened and the route became easier. The wider river reduced the entrapment risk, and the sweepers were easier to avoid.
+
+      The map showed a significant ridge ahead. We made camp early to get a full night before the push.
+    coordinates: [-154.143, 67.555]
+    zoom: 10
+    pitch: 35
+    bearing: 35
+    routeProgress: 0.60
+    align: right
+
+  - id: day6-gallery
+    type: gallery
+    layout: quad
+    images:
+      - src: "/images/great-wheel/IMG_8367.webp"
+        caption: "Liz in her raft"
+      - src: "/images/great-wheel/IMG_8389.webp"
+        caption: "Paddling downstreem"
+      - src: "/images/great-wheel/IMG_8396.webp"
+        caption: "Mark drifting with the current"
+      - src: "/images/great-wheel/IMG_8413.webp"
+        caption: "Hard to motivate to paddle."
+
+  - id: high-ridge
+    type: map
+    heading: "The High Ridge"
+    subheading: "July 25 — 1,157m"
+    text: |
+      We hiked up to a high ridge below the Arrigetch Creek. 
+
+      We sat there for an hour. Nobody had any desire to go back down.
+    coordinates: [-153.946, 67.470]
+    zoom: 12
+    pitch: 58
+    bearing: -20
+    routeProgress: 0.72
+    marker: true
+    align: left
+
+  - id: approach-gallery
+    type: gallery
+    layout: duo
+    images:
+      - src: "/images/great-wheel/IMG_8416.webp"
+        caption: "More paddling"
+      - src: "/images/great-wheel/IMG_8429.webp"
+        caption: "Cutting off a big oxbow into the creek"
+
+  - id: ridge-pano-1
+    type: image
+    image: "/images/great-wheel/IMG_8457.webp"
+    caption: "The Gates of the Arctic from 1,157m — looking west"
+
+  - id: ridge-pano-2
+    type: image
+    image: "/images/great-wheel/IMG_8469.webp"
+    caption: "Looking east toward the descent route"
+
+  - id: ridge-gallery
+    type: gallery
+    layout: duo
+    images:
+      - src: "/images/great-wheel/IMG_8434.webp"
+        caption: "On the ridge"
+      - src: "/images/great-wheel/IMG_8449.webp"
+        caption: "The Arrigetch Mountains"
+
+  - id: descent
+    type: map
+    heading: "The Descent"
+    subheading: "July 25–26 — Back to the valley"
+    text: |
+      The descent took most of the afternoon — loose scree, then gravel fans, then tundra.
+    coordinates: [-153.937, 67.504]
+    zoom: 11
+    pitch: 45
+    bearing: 10
+    routeProgress: 0.82
+    align: right
+
+  - id: descent-gallery
+    type: gallery
+    layout: trio
+    images:
+      - src: "/images/great-wheel/IMG_8472.webp"
+        caption: "Last look from the ridge"
+      - src: "/images/great-wheel/IMG_8510.webp"
+        caption: "Camping at the confluence"
+      - src: "/images/great-wheel/IMG_8529.webp"
+        caption: "Packing up for tomorrow"
+
+  - id: journey-end
+    type: map
+    heading: "Journey's End"
+    subheading: "July 26 — 67.4°N, 220m"
+    text: |
+
+    coordinates: [-153.672, 67.380]
+    zoom: 11
+    pitch: 40
+    bearing: 25
+    routeProgress: 1.0
+    marker: true
+    align: left
+
+  - id: final-gallery
+    type: gallery
+    layout: duo
+    images:
+      - src: "/images/great-wheel/IMG_8553.webp"
+        caption: "A backpack"
+      - src: "/images/great-wheel/IMG_8582.webp"
+        caption: "The lake at the end."
+
+  - id: exit-pano
+    type: image
+    image: "/images/great-wheel/IMG_8600.webp"
+    caption: "Gates of the Arctic — the route from the air, looking northeast"
+
+  - id: all-photos
+    type: gallery
+    layout: grid
+    images:
+      - src: "/images/great-wheel/IMG_8164.webp"
+      - src: "/images/great-wheel/IMG_8177.webp"
+      - src: "/images/great-wheel/IMG_8195.webp"
+      - src: "/images/great-wheel/IMG_8234.webp"
+      - src: "/images/great-wheel/IMG_8256.webp"
+      - src: "/images/great-wheel/IMG_8273.webp"
+      - src: "/images/great-wheel/IMG_8277.webp"
+      - src: "/images/great-wheel/IMG_8319.webp"
+      - src: "/images/great-wheel/IMG_8330.webp"
+      - src: "/images/great-wheel/IMG_8336.webp"
+      - src: "/images/great-wheel/IMG_8342.webp"
+      - src: "/images/great-wheel/IMG_8345.webp"
+      - src: "/images/great-wheel/IMG_8362.webp"
+      - src: "/images/great-wheel/IMG_8367.webp"
+      - src: "/images/great-wheel/IMG_8389.webp"
+      - src: "/images/great-wheel/IMG_8396.webp"
+      - src: "/images/great-wheel/IMG_8413.webp"
+      - src: "/images/great-wheel/IMG_8416.webp"
+      - src: "/images/great-wheel/IMG_8429.webp"
+      - src: "/images/great-wheel/IMG_8434.webp"
+      - src: "/images/great-wheel/IMG_8438.webp"
+      - src: "/images/great-wheel/IMG_8449.webp"
+      - src: "/images/great-wheel/IMG_8457.webp"
+      - src: "/images/great-wheel/IMG_8469.webp"
+      - src: "/images/great-wheel/IMG_8472.webp"
+      - src: "/images/great-wheel/IMG_8510.webp"
+      - src: "/images/great-wheel/IMG_8529.webp"
+      - src: "/images/great-wheel/IMG_8553.webp"
+      - src: "/images/great-wheel/IMG_8582.webp"
+      - src: "/images/great-wheel/IMG_8589.webp"
+      - src: "/images/great-wheel/IMG_8600.webp"
+      - src: "/images/great-wheel/IMG_8603.webp"

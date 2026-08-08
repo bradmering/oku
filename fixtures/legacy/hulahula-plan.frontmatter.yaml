@@ -1,0 +1,187 @@
+title: Brooks Range to Kaktovik
+date: '2026-06-27'
+excerpt: |
+  The plan is straightforward on paper.
+
+  Fly from Fairbanks into Grasser's Strip (69.1° N,-144.61° W) at the headwaters of the Hulahula River, travel up onto the Okpilak glacier, then inflate the packrafts and ride the Hulahula north through its canyon, across the coastal plain, and out to the Beaufort Sea. From there, we'll cross the sea ice across the Arey Lagoon, down the coast west to Kaktovik (70.1° N,-143.6° W) on Barter Island, and catch the seat flight home.
+
+  With the solstice just passed, we'll be traveling under 24 hours of daylight - the sun barely touching the mountains in the night, before rising again above us. I plan to navigate with map and compass, using dead reckoning unless things become unsafe.
+
+  Here's our rough plan, with 10m sat images from monday. 
+image: /images/canning-river/IMG_0641.webp
+imageAlt: The foothills of the Arrigetch Range in the Gates of the Arctic — similar terrain to the planned route through the eastern Brooks Range
+tags:
+  - plans
+  - adventures
+  - alaska
+  - packrafting
+coordinates:
+  - start: -144.61,69.1
+  - end: -143.6,70.1
+trackingUrl: 'https://share.garmin.com/KXR2Y'
+itinerary:
+  - id: grassers-strip
+    name: Grasser's Strip
+    dates: July 2nd
+    coordinates:
+      - -144.608
+      - 69.105
+    zoom: 11
+    pitch: 50
+    image: /images/brooks-range-hulahula/1.grassers.webp
+    description: The strip sits at the head of the Hulahula drainage in the Philip Smith Mountains. We don't have a strong immediate plan. We hope to explore the Okpilak Glacier and headwaters of the Okpilak river, winding our way up and over the divide, and then back down again to the headwaters of the Hulahula.
+    routePoints:
+      - - -144.618
+        - 69.053
+      - - -144.52
+        - 69.058
+      - - -144.445
+        - 69.069
+      - - -144.341
+        - 69.065
+      - - -144.239
+        - 69.076
+      - - -144.155
+        - 69.09
+      - - -144.114
+        - 69.098
+  - id: okpiliak
+    name: Exploring the Okpilak glacier
+    dates: July 3rd
+    coordinates:
+      - -144.136465
+      - 69.141243
+    zoom: 12
+    pitch: 40
+    image: /images/brooks-range-hulahula/2.okpilak.webp
+    description: Moving up hill, we'll wander up and over the glacier, towards the divide, and then back down to the headwaters.
+    routePoints:
+      - - -144.232692
+        - 69.130321
+      - - -144.357361
+        - 69.130317
+      - - -144.486119
+        - 69.135416
+  - id: upper-hulahula
+    name: Creeking the upper river
+    dates: July 4th
+    coordinates:
+      - -144.594418
+      - 69.156524
+    zoom: 12
+    pitch: 40
+    image: /images/brooks-range-hulahula/2.okpilak.webp
+    description: The headwaters of these rivers tend to be narrow, braided, and shallow. Our rafts sit high in the water, but we still expect several small portages these days. Our primary work will be choosing the right channel to keep us in the boats, and remembering to paddle when we get caught up looking around.
+    routePoints:
+      - - -144.575378
+        - 69.195117
+      - - -144.558921
+        - 69.218462
+      - - -144.553191
+        - 69.23776
+      - - -144.565533
+        - 69.255243
+  - id: hulahula-canyon
+    name: Hulahula Canyon
+    dates: July 5th
+    coordinates:
+      - -144.58201
+      - 69.305338
+    zoom: 11
+    pitch: 55
+    image: /images/brooks-range-hulahula/3.canyon.webp
+    description: The Hulahula cuts through the range in a long, spectacular canyon with sections of Class III water that we'll need to scout. Above the canyon the river is shallow, but fast, dropping out of the high mountains. Below, it opens into braided channels across the foothills and eventually the coastal plain — fast water and good floating.
+    routePoints:
+      - - -144.544956
+        - 69.356149
+      - - -144.434815
+        - 69.375805
+      - - -144.357101
+        - 69.337637
+      - - -144.250998
+        - 69.34423
+      - - -144.132179
+        - 69.347978
+      - - -144.060486
+        - 69.344228
+  - id: old-man
+    name: Old Man Creek to Okpilak Hotsprings
+    dates: July 6th & 7th
+    coordinates:
+      - -144.015726
+      - 69.303545
+    zoom: 11
+    pitch: 35
+    image: /images/brooks-range-hulahula/4.hotsprings.webp
+    description: As we approach the coastal plain, we have a chance to climb up and over the range and descend back to the Okpilak river. Here there is robust geothermic activity, and hotsprings mix with the snowmelt flowing down from the Okpilak river. If our timing works, we'll stop and camp a night at these hotsprings.
+    routePoints:
+      - - -144.035678
+        - 69.330376
+      - - -144.035717
+        - 69.336239
+      - - -144.035047
+        - 69.339518
+      - - -144.037002
+        - 69.339977
+      - - -144.039026
+        - 69.342288
+      - - -144.076819
+        - 69.399251
+      - - -144.008266
+        - 69.446081
+      - - -143.990999
+        - 69.483161
+      - - -143.961296
+        - 69.510593
+      - - -143.985722
+        - 69.562288
+      - - -143.951315
+        - 69.598829
+      - - -143.843793
+        - 69.662133
+      - - -143.827456
+        - 69.727952
+  - id: coastal-plain
+    name: Coastal Plain to the Sea
+    dates: July 8th
+    coordinates:
+      - -143.79351
+      - 69.769423
+    zoom: 10
+    pitch: 20
+    image: /images/brooks-range-hulahula/5.coastal.webp
+    description: The last section flattens out onto the long coastal plain. Hard paddling might be required, as the headwinds come off the sea, and the water slows. We'll navigate the mudflats, and camp upriver away from the sea one last night.
+    routePoints:
+      - - -143.745706
+        - 69.853731
+      - - -143.825399
+        - 69.924947
+      - - -143.921025
+        - 69.986839
+  - id: arey-lagoon
+    name: Arey Lagoon
+    dates: July 9th
+    coordinates:
+      - -143.931653
+      - 70.026788
+    zoom: 11
+    pitch: 10
+    image: /images/brooks-range-hulahula/6.lagoon.webp
+    description: In the morning, we'll catch a channel into the Arey Lagoon, and hug the coast, carefully navigating the sea ice still visible on the 10m sat images. We'll camp somewhere near the final crossing to Barter Island and Kaktovik.
+    routePoints:
+      - - -143.830742
+        - 70.086575
+      - - -143.729833
+        - 70.086576
+      - - -143.676729
+        - 70.097433
+  - id: kaktovik
+    name: Kaktovik
+    dates: July 10th
+    coordinates:
+      - -143.623
+      - 70.134
+    zoom: 13
+    pitch: 0
+    image: /images/brooks-range-hulahula/7.barter.webp
+    description: The seat flight leaves at 1pm, and the next one leaves the next week. Missing this flight is not optional!

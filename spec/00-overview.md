@@ -39,3 +39,16 @@ accretion. Naming thread + stage is what stops a fourth drift.
 
 Monetization, print, follower graphs, discovery, moderation, billing, SEO, and device OAuth. All
 parked; see `decisions/0008`.
+
+## Preview-per-PR — status
+
+**CI enforces the fixture contract today** (`.github/workflows/ci.yml` runs the validator on every
+PR). **Visual preview does not exist yet, because there is no app to preview.**
+
+That's the right order, not an oversight: the renderer lives in the blog repo and the legacy
+documents need migrating (`06-migration.md`) before porting it is worth doing. Once `app/` renders
+a fixture, connecting the repo to Vercel is a dashboard action — one click on the GitHub
+integration — and every PR gets a URL automatically.
+
+**When it exists, the review rule is:** open the preview and look. Craft cannot be reviewed from a
+diff (`decisions/0009`).
