@@ -245,3 +245,31 @@ audience on it.
 
 Also worth recording: I reported the bundle as "2KB" earlier from measuring `worker.js`, which is
 just an entry stub. The real figure needs `wrangler deploy --dry-run --outdir`.
+
+---
+
+## 2026-08-08 — Landing page; R2 bucket bound
+
+Public placeholder at `/`; the fixture index moved to `/stories`. Built around the opening of
+Bashō's *Oku no Hosomichi* — the passages Brad picked, which are also where the code name came
+from. Attributed to Bashō **and to Donald Keene**, whose 1996 translation these are; verified
+rather than assumed, because it's going on a public page and the translation carries its own
+authorship.
+
+**The page does what the product does.** A single line draws as you scroll — same idea as the
+route interpolation in the story renderer, minus the map. Scroll position drives the drawing
+continuously rather than triggering it, and the scroll binding uses the same
+passive-listener-plus-rAF-coalescing pattern, not a free-running loop.
+
+Got that wrong once first: the SVG was `position: fixed` with a tall viewBox, so as you scrolled
+the drawn portion ran off below the viewport and the line vanished. Absolute and full-page-height
+is right — the line should travel *with* the reader, the way a route does.
+
+**Verification was partial and worth being honest about.** The hero renders and looks right. Past
+that the preview pane reports `visibilityState: "hidden"` and screenshots come back blank, so I
+checked the DOM instead: at 53% scroll three sections are correctly in view and the path is 77%
+drawn, which matches the scroll position exactly. **The layout is verified structurally, not
+visually.** Somebody should look at the middle and lower thirds on a real browser.
+
+Also bound the R2 bucket (`oku-media`, created via MCP once R2 was enabled). Nothing reads it yet —
+the binding is in place so media work doesn't need a config change to start.

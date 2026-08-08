@@ -132,3 +132,100 @@ a { color: inherit; }
   line-height: 1.7; color: var(--muted);
 }
 .hud b { color: var(--paper); font-weight: 500; }
+
+/* ── landing ─────────────────────────────────────────────────────────────── */
+.landing {
+  position: relative;
+  max-width: 54rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* The line runs the full height of the page, behind the content, and draws with
+   scroll. Absolute rather than fixed: it should travel WITH the reader, the way
+   a route does, not sit in place while the drawing runs off-screen. */
+.drawn {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: .45;
+  pointer-events: none;
+}
+
+.lp { position: relative; z-index: 1; }
+
+.lp--open {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+}
+
+.mark {
+  font-size: 3rem; margin: 0 0 2.5rem; line-height: 1;
+  color: var(--accent); font-weight: 400;
+}
+
+.passage {
+  margin: 0;
+  font-size: clamp(1.6rem, 4.2vw, 2.9rem);
+  line-height: 1.32;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  max-width: 24ch;
+}
+.passage--lead { max-width: 20ch; }
+
+.lp--mid {
+  min-height: 90vh;
+  display: flex; flex-direction: column; justify-content: center;
+  align-items: flex-end; text-align: right;
+}
+.lp--mid .passage { max-width: 26ch; }
+
+.cite {
+  margin: 1.75rem 0 0; color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: .74rem; letter-spacing: .05em; line-height: 1.8;
+}
+.cite cite { font-style: italic; }
+.cite .trans { display: block; opacity: .72; }
+
+.lp--what {
+  min-height: 85vh;
+  display: flex; flex-direction: column; justify-content: center;
+  max-width: 34rem;
+}
+.lp--what h1 {
+  font-size: 1.15rem; margin: 0 0 1.5rem; font-weight: 400;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  text-transform: uppercase; letter-spacing: .34em; color: var(--accent);
+}
+.lp--what .lede {
+  margin: 0 0 1.25rem; font-size: 1.3rem; line-height: 1.55; text-wrap: pretty;
+}
+.lp--what .note { margin: 0; color: var(--muted); font-size: 1.05rem; }
+
+.lp--foot {
+  min-height: 60vh;
+  display: flex; flex-direction: column; justify-content: center;
+  border-top: 1px solid rgba(246, 244, 239, .1);
+}
+.building { margin: 0 0 2.5rem; font-size: 1.05rem; line-height: 1.9; }
+.building a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; }
+.building a:hover { border-bottom-color: var(--accent); }
+.colophon {
+  margin: 0; color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: .74rem; line-height: 1.8; max-width: 36ch;
+}
+.colophon span { color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .drawn path { stroke-dashoffset: 0 !important; }
+}
+
+@media (max-width: 640px) {
+  .drawn { opacity: .3; }
+  .lp--mid { align-items: flex-start; text-align: left; }
+}
