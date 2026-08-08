@@ -9,17 +9,18 @@ Carried over from `components/GeoStory/` plus TopoStory's one addition.
 
 | Type | Kind | Notes |
 |---|---|---|
+| `move` | **stage** | **NEW (0012).** Renders nothing; carries a `Keyframe`. The stage interpolates between consecutive moves |
 | `title` | flow | heading, subheading, image, text |
 | `splash` | flow | full-bleed image + heading |
-| `map` | **stage-driving** | the workhorse of the two older stories |
-| `article` | **stage-driving** | prose with a cue; the block that made Report a distinct format |
+| `map` | flow | now an **inline** map block. Legacy `map` chapters (text + flat cue) migrate to `move` + `article` |
+| `article` | flow | **heading + `stats` are the base condition; prose is optional.** A "Day 4" marker is this with nothing written |
 | `image` | flow | |
 | `gallery` | flow | `layout`: single \| duo \| trio \| quad \| grid |
 | `video` | flow | |
 | `parallax-video` | flow | `layout`: full \| split (split = portrait/phone video) |
 | `overview` | flow | |
 | `logistics` | flow | links, topo quads, packing groups |
-| `topo` | **stage-driving** | TopoStory; cued by image-space `bounds` |
+| `topo` | flow | TopoStory; a `move` carries the image-space `bounds` |
 
 ## Proposed
 
@@ -52,7 +53,7 @@ the schema inflating:
   caption) → a property on `image`/`gallery`, for photos *interspersed with prose* rather than
   batched
 - **elevation-coloured track** → a styling mode on a map/track
-- **standalone full map** → a `map` chapter with `persist: false` (see `decisions/0004`)
+- **standalone full map** → just the `map` chapter. `persist` was deleted in `decisions/0012`
 - **3D terrain** → a mode on the map stage, not a stage
 
 ## Open

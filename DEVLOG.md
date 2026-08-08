@@ -120,3 +120,40 @@ neither.
 **Both paused for Brad overnight.** Recorded in `spec/01-data-model.md` under "UNDER REVIEW" with the
 open question for each. **Do not build on either until settled** — that includes the forward
 fixtures, since three of the five planned ones exercise exactly these two concepts.
+
+---
+
+## 2026-08-08 — Review resolved: flat thread, moves are keyframes, posture is derived
+
+Brad answered both open questions, and the answers **deleted four invented concepts.**
+
+**No grouping object.** `Segment` is gone from the document. Journey facts live in `sources.legs` as
+ingest output; the document has no mirror of them. A "Day 4" heading is just a chapter. The earlier
+proposal to split into `Leg` *and* `Segment` was rejected as one concept too many — and "leg" carries
+time-and-journey connotations that don't belong on the narrative side anyway.
+
+**`move` is a chapter.** Advancing the stage is a block you drop in, not a property on every chapter.
+That removed `cue` from `chapterBase` and deleted `persist` outright — with discrete moves, the stage
+just holds the last one.
+
+**The substantive part is interpolation.** A move is a *keyframe*, not a trigger. Brad: *"I want the
+line to draw between the points cleanly and smoothly as you scroll, right now its abrupt and
+sometimes gets lost because the cue is down low."* Attaching a cue to a content chapter fires when
+that chapter enters the viewport, which is why it snaps. Interpolating between consecutive keyframes
+fixes it by construction, and `routeProgress` becomes a value to interpolate *toward*.
+
+**That unified the clocks**, which I didn't expect. Progress between keyframes comes from scroll
+position or playback time — same machinery. `Stage.clock` picks. The audio-spine format stops being
+a special case, which retroactively justifies designing the temporal variant early.
+
+**Posture is derived.** Per-chapter `publishedAt` already carries the history, so a stored field
+would be redundant or able to contradict it. Chapters sharing a `publishedAt` are one dispatch
+entry — no grouping object needed. The principle underneath: *never ask the author to name the
+format.*
+
+**Stats:** heading + `stats: { legId }` are the base condition on a text chapter, prose optional, so
+a day marker needs no separate type. Bound explicitly rather than inferred from position.
+
+Wrote the first forward fixture (`formats/dispatch-with-moves.yaml`) and it validates — flat thread,
+moves, a rest-day leg with no chapter, two authors, derived dispatch posture. ADR 0012 records all
+of it; `02` and `04` updated to match.

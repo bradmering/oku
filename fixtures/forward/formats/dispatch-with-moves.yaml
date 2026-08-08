@@ -1,0 +1,136 @@
+# Exercises the post-review model (decisions/0012):
+#   · flat thread, no grouping object
+#   · `move` chapters as keyframes — the stage interpolates BETWEEN them
+#   · a "Day N" marker as a text chapter with heading + stats and no prose
+#   · stats bound explicitly to a leg
+#   · posture DERIVED: distinct publishedAt values ⇒ this is a dispatch
+#   · a leg with no track (rest day) that gets no chapter at all
+#   · two authors
+
+specVersion: 1
+id: 01J8ZQ4X0000000000000000
+slug: divide-toodle
+title: "The Great Divide Toodle"
+subtitle: "Slowly, southbound"
+dates:
+  start: "2026-06-14"          # no `end` — still underway
+tags: [bikepacking, great-divide]
+visibility: unlisted
+
+authors:
+  - id: auth_mark
+    name: Mark
+  - id: auth_brad
+    name: Brad
+
+sources:
+  tracks:
+    - id: trk_d1
+      name: "Day 1 — Banff to Boundary Ranch"
+      startedAt: "2026-06-14T13:02:00Z"
+      endedAt: "2026-06-14T23:41:00Z"
+    - id: trk_d3
+      name: "Day 3 — Elk Pass"
+      startedAt: "2026-06-16T12:40:00Z"
+      endedAt: "2026-06-17T01:12:00Z"
+  media:
+    - id: med_0001
+      src: /media/divide/0001.webp
+      kind: image
+      capturedAt: "2026-06-14T16:20:00Z"
+      coordinates: [-115.57, 51.18]
+      legId: leg_d1
+  legs:
+    - id: leg_d1
+      label: "Day 1"
+      startedAt: "2026-06-14T13:02:00Z"
+      endedAt: "2026-06-14T23:41:00Z"
+      mode: ride
+      trackId: trk_d1
+      stats: { distanceM: 84200, ascentM: 1180, movingTimeS: 21600 }
+    # A rest day: a real leg, no track, and deliberately NO chapter below.
+    # The data proposes; the author disposed of this one.
+    - id: leg_d2
+      label: "Day 2"
+      startedAt: "2026-06-15T14:00:00Z"
+      endedAt: "2026-06-15T22:00:00Z"
+      mode: rest
+    - id: leg_d3
+      label: "Day 3"
+      startedAt: "2026-06-16T12:40:00Z"
+      endedAt: "2026-06-17T01:12:00Z"
+      mode: ride
+      trackId: trk_d3
+      stats: { distanceM: 61500, ascentM: 1640, highPointM: 1950 }
+
+stage:
+  type: map
+  style: "mapbox://styles/mapbox/outdoors-v12"
+  clock: scroll
+  initialView:
+    coordinates: [-115.57, 51.18]
+    zoom: 8
+    tilt: 40
+  route:
+    - [-115.570, 51.180]
+    - [-115.120, 50.740]
+    - [-114.980, 50.310]
+
+chapters:
+  - id: ch_title
+    type: title
+    heading: "The Great Divide Toodle"
+    subheading: "Banff to the border, eventually"
+    publishedAt: "2026-06-14T02:00:00Z"
+
+  # ── Dispatch entry 1 — three chapters sharing one publishedAt ──────────────
+  # A "Day 1" marker: heading + stats, no prose. Not a separate chapter type.
+  - id: ch_d1_head
+    type: article
+    heading: "Day 1"
+    subheading: "Banff to Boundary Ranch"
+    stats: { legId: leg_d1 }
+    publishedAt: "2026-06-15T03:12:00Z"
+
+  # The stage advances here. Renders nothing; the camera and route line
+  # interpolate from initialView toward this keyframe as the reader scrolls.
+  - id: ch_d1_move
+    type: move
+    to:
+      coordinates: [-115.120, 50.740]
+      zoom: 11
+      tilt: 55
+      routeProgress: 0.34
+    ease: ease
+    publishedAt: "2026-06-15T03:12:00Z"
+
+  - id: ch_d1_text
+    type: article
+    text: |
+      Rolling out of Banff felt like leaving a postcard. The climb went on
+      longer than the map suggested, which is apparently the theme.
+    publishedAt: "2026-06-15T03:12:00Z"
+
+  # ── Dispatch entry 2 — a later publishedAt. Day 2 is skipped entirely. ─────
+  - id: ch_d3_head
+    type: article
+    heading: "Day 3"
+    stats: { legId: leg_d3 }
+    publishedAt: "2026-06-17T04:40:00Z"
+
+  - id: ch_d3_move
+    type: move
+    to:
+      coordinates: [-114.980, 50.310]
+      zoom: 12
+      routeProgress: 1.0
+    publishedAt: "2026-06-17T04:40:00Z"
+
+  - id: ch_d3_gallery
+    type: gallery
+    layout: duo
+    images:
+      - src: /media/divide/0001.webp
+        caption: "Elk Pass, before the weather"
+      - src: /media/divide/0002.webp
+    publishedAt: "2026-06-17T04:40:00Z"

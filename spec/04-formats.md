@@ -14,21 +14,30 @@ and a set of defaults.
 A format is a point in that space. Report = map + scroll + backward. A stageless prose piece =
 none + scroll + backward. A narrated slideshow = time-driven.
 
-## Posture is structural, not cosmetic
+## Posture is derived, never declared *(revised — `decisions/0012`)*
+
+**There is no `posture` field and no format picker.** One editor, one document. Whether something
+is a dispatch is inferred from whether chapters carry distinct `publishedAt` values, and **chapters
+sharing a `publishedAt` are one dispatch entry.** A report is simply the absence of incremental
+publication.
+
+The distinction below is still real — it just isn't something anyone declares.
+
+## The distinction itself
 
 | | **Dispatch** | **Report** |
 |---|---|---|
 | Published | *forward* — as the trip happens | *backward* — after, with hindsight |
 | Mutability | append-only; entries ship before the next exists | mutable, reorderable |
 | Knowledge | can't know the ending | shaped by knowing the ending |
-| `publishedAt` per segment | required | meaningless |
+| `publishedAt` per chapter | present, distinct | absent or uniform |
 
 **A Report can be a collapsed Dispatch. A Dispatch cannot be authored retroactively** without lying
 about when things were known. So Dispatch is the primary capture mode and Report is a derived
 projection — which is why the retention argument falls out of the data model rather than being
 bolted on.
 
-**A dispatch entry is exactly one segment, published on its own.**
+**A dispatch entry is the set of chapters sharing a `publishedAt`.** No grouping object needed.
 
 ## Plan vs actual
 

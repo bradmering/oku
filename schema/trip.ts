@@ -19,74 +19,65 @@ export const ISODateTime = z.string().datetime({ offset: true })
 
 export const SpecVersion = z.literal(1)
 
-// ── Cue ──────────────────────────────────────────────────────────────────────
-// The instruction a chapter sends to the stage. Presence of a cue is what makes
-// a chapter stage-driving. See decisions/0005 for why `time` exists before
-// anything uses it.
+// ── Keyframe ─────────────────────────────────────────────────────────────────
+// A target for the stage, carried by a `move` chapter. NOT a trigger: the stage
+// interpolates between consecutive keyframes as the reader scrolls (or as the
+// driving media plays). See decisions/0012.
 
-export const PositionCue = z.object({
-  kind: z.literal('position'),
+export const Keyframe = z.object({
   coordinates: LngLat.optional(),
   zoom: z.number().optional(),
   /** Camera angle in degrees. NOT `pitch` — see decisions/0007. */
   tilt: z.number().min(0).max(85).optional(),
   bearing: z.number().optional(),
-  /** 0..1 along the stage route. */
+  /** 0..1 along the stage route. A value to interpolate TOWARD, not a state to set. */
   routeProgress: z.number().min(0).max(1).optional(),
   /** Topo stage: image-space bounds, top-left origin. */
   bounds: z.tuple([z.tuple([z.number(), z.number()]), z.tuple([z.number(), z.number()])]).optional(),
   marker: z.boolean().optional(),
 })
 
-export const TimeCue = z.object({
-  kind: z.literal('time'),
-  /** Offset into the driving media — audio spine, pre-rendered flyover. */
-  offsetMs: z.number().nonnegative(),
-})
-
-export const Cue = z.discriminatedUnion('kind', [PositionCue, TimeCue])
+/** What drives interpolation between keyframes. One mechanism, two clocks —
+ *  the audio-spine format is not a special case. */
+export const Clock = z.enum(['scroll', 'time'])
 
 // ── Stage ────────────────────────────────────────────────────────────────────
 // Zero or one per trip. Omitting it entirely is valid — see decisions/0003.
 
-export const MapView = z.object({
-  coordinates: LngLat,
-  zoom: z.number(),
-  tilt: z.number().min(0).max(85).optional(),
-  bearing: z.number().optional(),
-})
-
 export const MapStage = z.object({
   type: z.literal('map'),
   style: z.string().optional(),
-  initialView: MapView,
+  initialView: Keyframe,
   route: z.array(LngLat).optional(),
   /** 3D relief. A mode on the map stage, not a separate stage. */
   terrain: z.boolean().optional(),
+  clock: Clock.default('scroll'),
 })
 
 export const TopoStage = z.object({
   type: z.literal('topo'),
   topoSlug: z.string(),
+  clock: Clock.default('scroll'),
 })
 
 /** PROPOSED, not built. The test of whether `stage` is a real abstraction. */
 export const TimelineStage = z.object({
   type: z.literal('timeline'),
+  clock: Clock.default('scroll'),
 })
 
 export const Stage = z.discriminatedUnion('type', [MapStage, TopoStage, TimelineStage])
 
-// ── Segment ──────────────────────────────────────────────────────────────────
-// An optional grouping over consecutive chapters. NOT a day — see decisions/0006.
+// ── Legs — journey facts ─────────────────────────────────────────────────────
+// A leg is a FACT about the trip, derived by ingest from tracks and timestamps.
+// It exists whether or not anyone writes about it. The document does NOT have to
+// mirror the legs: the data proposes, the author disposes. See decisions/0012.
 
 export const ActivityMode = z.enum([
   'hike', 'paddle', 'ride', 'climb', 'ski', 'portage', 'travel', 'rest',
 ])
 
-export const LabelScheme = z.enum(['day', 'pitch', 'phase', 'leg', 'place', 'custom'])
-
-export const SegmentStats = z.object({
+export const LegStats = z.object({
   distanceM: z.number().nonnegative().optional(),
   ascentM: z.number().optional(),
   descentM: z.number().optional(),
@@ -94,29 +85,16 @@ export const SegmentStats = z.object({
   highPointM: z.number().optional(),
 })
 
-export const PlannedSegment = z.object({
-  label: z.string().optional(),
-  date: ISODate.optional(),
-  coordinates: LngLat.optional(),
-  routePoints: z.array(LngLat).optional(),
-  description: z.string().optional(),
-  stats: SegmentStats.optional(),
-})
-
-export const Segment = z.object({
+export const Leg = z.object({
   id: z.string(),
-  /** "Day 4" · "Pitch 12" · "Approach" · "Slovenia" */
-  label: z.string(),
-  labelScheme: LabelScheme.optional(),
-  index: z.number().int().optional(),
+  /** "Day 4" · "the portage" — a SUGGESTION for the author, not a heading. */
+  label: z.string().optional(),
+  startedAt: ISODateTime,
+  endedAt: ISODateTime,
   mode: ActivityMode.optional(),
-  /** MAY BE ABSENT. A rest day is a real segment with no track. */
+  /** MAY BE ABSENT. A rest day is a real leg with no track. */
   trackId: z.string().optional(),
-  stats: SegmentStats.optional(),
-  /** The plan side. A plan and a report are the same object — see 04-formats.md. */
-  planned: PlannedSegment.optional(),
-  /** Dispatch only: when this segment shipped. */
-  publishedAt: ISODateTime.optional(),
+  stats: LegStats.optional(),
 })
 
 // ── Chapters ─────────────────────────────────────────────────────────────────
@@ -127,12 +105,9 @@ const chapter = <T extends z.ZodRawShape>(shape: T) => z.object(shape).strict()
 
 const chapterBase = {
   id: z.string(),
-  segmentId: z.string().optional(),
-  cue: Cue.optional(),
-  /** Does the cue outlive this chapter? Defaults true for stage-driving chapters.
-   *  `persist: false` is how a full-bleed map lives inside the thread — see decisions/0004. */
-  persist: z.boolean().optional(),
   align: z.enum(['left', 'right']).optional(),
+  /** When this chapter shipped. Distinct values across chapters ARE what makes a
+   *  trip a dispatch — posture is derived, never declared. See decisions/0012. */
   publishedAt: ISODateTime.optional(),
 }
 
@@ -149,12 +124,29 @@ const prose = {
   text: z.string().optional(),
 }
 
+/** Advances the stage. Renders nothing — it is a keyframe you drop into the
+ *  thread. The stage INTERPOLATES between consecutive moves as the reader
+ *  scrolls, so the camera eases and the route line draws smoothly. */
+export const MoveChapter = chapter({
+  ...chapterBase,
+  type: z.literal('move'),
+  to: Keyframe,
+  /** ms into the driving media. Only meaningful when the stage clock is 'time'. */
+  at: z.number().nonnegative().optional(),
+  ease: z.enum(['linear', 'ease', 'none']).optional(),
+})
+
 export const TitleChapter = chapter({ ...chapterBase, ...prose, type: z.literal('title'), image: z.string().optional() })
 export const SplashChapter = chapter({ ...chapterBase, ...prose, type: z.literal('splash'), image: z.string() })
 export const MapChapter = chapter({ ...chapterBase, ...prose, type: z.literal('map') })
+/** Heading and stats are the base condition; prose is optional. A "Day 4" marker
+ *  is this chapter with a heading, stats on, and nothing written. */
 export const ArticleChapter = chapter({
   ...chapterBase, ...prose,
   type: z.literal('article'),
+  /** Presence ⇒ render this leg's stats. Bound explicitly — ingest pre-fills the
+   *  reference, the author can change it. Beats inferring from position. */
+  stats: z.object({ legId: z.string() }).optional(),
   heroImage: MediaRef.optional(),
   media: z.array(MediaRef.extend({ type: z.enum(['image', 'video']) })).optional(),
 })
@@ -190,6 +182,7 @@ export const TopoChapter = chapter({
 })
 
 export const Chapter = z.discriminatedUnion('type', [
+  MoveChapter,
   TitleChapter, SplashChapter, MapChapter, ArticleChapter, ImageChapter,
   GalleryChapter, VideoChapter, ParallaxVideoChapter, OverviewChapter,
   LogisticsChapter, TopoChapter,
@@ -211,12 +204,14 @@ export const MediaItem = z.object({
   kind: z.enum(['image', 'video', 'audio']),
   capturedAt: ISODateTime.optional(),
   coordinates: LngLat.optional(),
-  segmentId: z.string().optional(),
+  legId: z.string().optional(),
 })
 
 export const Sources = z.object({
   tracks: z.array(Track).default([]),
   media: z.array(MediaItem).default([]),
+  /** Journey facts derived from tracks + timestamps. Scaffolding, not a constraint. */
+  legs: z.array(Leg).default([]),
 })
 
 // ── Trip ─────────────────────────────────────────────────────────────────────
@@ -242,18 +237,20 @@ export const Trip = z.object({
   authors: z.array(Author).min(1),
 
   /** Omit for a stageless longform story — decisions/0003. */
-  stage: Stage.optional(),
+  /** THE FOUNDATION — tracks, media, and the legs derived from them. */
   sources: Sources.optional(),
-  segments: z.array(Segment).optional(),
+  stage: Stage.optional(),
   chapters: z.array(Chapter),
 
-  posture: z.enum(['dispatch', 'report']).default('report'),
+  /** No `posture` field: dispatch vs report is DERIVED from whether chapters
+   *  carry distinct `publishedAt` values. Never declared. See decisions/0012.
+   *  No `segments`: the thread is flat. */
   /** PHASE 3. Present so it isn't a retrofit; nothing enforces it yet — decisions/0008. */
   visibility: Visibility.default('unlisted'),
 })
 
 export type Trip = z.infer<typeof Trip>
 export type Chapter = z.infer<typeof Chapter>
-export type Segment = z.infer<typeof Segment>
+export type Leg = z.infer<typeof Leg>
 export type Stage = z.infer<typeof Stage>
-export type Cue = z.infer<typeof Cue>
+export type Keyframe = z.infer<typeof Keyframe>
