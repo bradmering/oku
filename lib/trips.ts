@@ -1,37 +1,22 @@
-import { readdirSync, readFileSync, existsSync } from 'node:fs'
-import path from 'node:path'
-import { load as yamlLoad } from 'js-yaml'
-import { Trip } from '@/schema/trip'
+import type { Trip } from '@/schema/trip'
+import baked from './trips.generated.json'
 
-/** Every fixture except `legacy/` — those are pre-spec evidence and don't parse
- *  (decisions/0011). Migrated + forward documents are what the renderer shows. */
-const ROOTS = ['fixtures/migrated', 'fixtures/forward']
-
-function collect(dir: string): string[] {
-  if (!existsSync(dir)) return []
-  return readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
-    const p = path.join(dir, e.name)
-    return e.isDirectory() ? collect(p) : /\.ya?ml$/.test(e.name) ? [p] : []
-  })
-}
-
-const files = () => ROOTS.flatMap(collect)
+/**
+ * Trips are baked into the bundle at build time by `scripts/build-trips.ts`.
+ *
+ * Deliberately NOT read from the filesystem here: this module runs at request
+ * time in workerd, which has no filesystem. See that script's header for the
+ * failure this caused.
+ *
+ * When stories move to R2 this becomes an async fetch — the call sites are
+ * already shaped for it.
+ */
+const entries = baked as unknown as { source: string; trip: Trip }[]
 
 export function getTrip(slug: string): Trip | null {
-  for (const f of files()) {
-    const raw = yamlLoad(readFileSync(f, 'utf8'))
-    const r = Trip.safeParse(raw)
-    if (r.success && r.data.slug === slug) return r.data
-  }
-  return null
+  return entries.find((e) => e.trip.slug === slug)?.trip ?? null
 }
 
 export function getAllTrips(): { trip: Trip; source: string }[] {
-  return files()
-    .map((f) => {
-      const r = Trip.safeParse(yamlLoad(readFileSync(f, 'utf8')))
-      return r.success ? { trip: r.data, source: f } : null
-    })
-    .filter((x): x is { trip: Trip; source: string } => x !== null)
-    .sort((a, b) => a.trip.title.localeCompare(b.trip.title))
+  return entries
 }

@@ -217,3 +217,31 @@ short-circuits its endpoints.
 there's no Mapbox token so the fallback is a route line on flat ground (enough to judge the
 motion, not the map); legacy media paths 404 locally since the images still live in the blog repo;
 `?debug` shows a live camera readout.
+
+---
+
+## 2026-08-08 — Deployed to Cloudflare Workers; the filesystem bug
+
+Live at **https://oku.brad-mering.workers.dev**, deployed from `main` by GitHub Actions.
+Next 16 on Workers via OpenNext 1.20. Bundle is 5,816 KiB raw / **1,190 KiB gzipped** against a
+10 MB limit — and nearly all of that is Next's server runtime, not our code.
+
+**The first deploy looked successful and served a broken site.** Index said "No fixtures found";
+every story 404'd. Build logs were clean — CI prerendered all seven pages correctly.
+
+The cause: `lib/trips.ts` read `fixtures/` with `node:fs`. With no incremental cache configured,
+Next re-renders on demand at request time, and **`workerd` has no filesystem**, so the reads
+returned nothing. Reading files is a *build-time* capability; the code silently assumed it was a
+runtime one.
+
+Fixed by baking trips into the bundle (`scripts/build-trips.ts` → `lib/trips.generated.json`,
+93 KB, wired to `prebuild`/`predev`). Verified in the real runtime with `wrangler dev --local`
+before redeploying: 4 stories listed, 7 moves and 7 articles rendering.
+
+**The lesson is the one DEPLOY.md already stated and I didn't follow:** `npm run dev` runs Node,
+production runs `workerd`, and only `preview`/`wrangler dev` tells the truth. I deployed straight
+from a passing Node build. Cost about fifteen minutes; would have cost far more with a real
+audience on it.
+
+Also worth recording: I reported the bundle as "2KB" earlier from measuring `worker.js`, which is
+just an entry stub. The real figure needs `wrangler deploy --dry-run --outdir`.

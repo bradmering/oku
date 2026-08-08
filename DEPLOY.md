@@ -54,6 +54,18 @@ Either works. Actions is here because it needs no dashboard OAuth and lives in v
 if Workers Builds is connected later, delete the `preview` and `deploy` jobs so they don't both
 deploy.
 
+## ⚠ The filesystem is a build-time capability
+
+The renderer originally read `fixtures/` with `node:fs` on each request. That works in
+`next dev` (Node) and **fails silently in production** — `workerd` has no filesystem, so the
+index came up empty and every story 404'd, while the build logs looked perfectly healthy.
+
+Trips are now baked into the bundle by `scripts/build-trips.ts` (wired to `prebuild`/`predev`).
+
+**The general rule: anything the renderer needs at request time must be in the bundle, or in
+R2/KV/D1.** `npm run preview` (or `wrangler dev`) runs the real `workerd` runtime and catches
+this class of bug; `npm run dev` does not.
+
 ## Notes
 
 - Build output: `.open-next/worker.js` + `.open-next/assets` (~4.8 MB of assets today).
