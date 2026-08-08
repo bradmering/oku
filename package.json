@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "node --experimental-strip-types scripts/validate-fixtures.ts",
-    "validate": "node --experimental-strip-types scripts/validate-fixtures.ts"
+    "validate": "node --experimental-strip-types scripts/validate-fixtures.ts",
+    "migrate": "node --experimental-strip-types scripts/migrate-legacy.ts"
   },
   "dependencies": {
     "js-yaml": "^4.1.0",

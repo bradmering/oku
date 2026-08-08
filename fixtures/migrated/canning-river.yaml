@@ -1,0 +1,499 @@
+# MIGRATED by scripts/migrate-legacy.ts — do not hand-edit.
+# Source: fixtures/legacy/canning-river.yaml (left unmodified as the drift record).
+
+specVersion: 1
+id: trip_canning-river
+slug: canning-river
+title: Canning River
+subtitle: Seven days floating through the Arctic National Wildlife Refuge
+dates:
+  start: '2022-06-26'
+tags:
+  - adventures
+  - alaska
+  - packrafting
+visibility: unlisted
+authors:
+  - id: auth_brad
+    name: Brad Mering
+stage:
+  type: map
+  style: mapbox://styles/mapbox/satellite-streets-v12
+  clock: scroll
+  initialView:
+    coordinates:
+      - -145.95
+      - 68.98
+    zoom: 7
+    bearing: 0
+    tilt: 30
+  route:
+    - - -146.122542
+      - 68.737939
+    - - -146.141974
+      - 68.735324
+    - - -146.14574
+      - 68.731118
+    - - -146.155461
+      - 68.730093
+    - - -146.154692
+      - 68.725026
+    - - -146.166138
+      - 68.723502
+    - - -146.174295
+      - 68.721226
+    - - -146.158841
+      - 68.72346
+    - - -146.168966
+      - 68.720944
+    - - -146.178606
+      - 68.718755
+    - - -146.184769
+      - 68.717719
+    - - -146.187594
+      - 68.718105
+    - - -146.189074
+      - 68.719362
+    - - -146.189003
+      - 68.721086
+    - - -146.187174
+      - 68.722876
+    - - -146.183381
+      - 68.724328
+    - - -146.176291
+      - 68.725167
+    - - -146.166042
+      - 68.725662
+    - - -146.165494
+      - 68.726681
+    - - -146.144064
+      - 68.727273
+    - - -146.136336
+      - 68.729217
+    - - -146.13276
+      - 68.73192
+    - - -146.132002
+      - 68.735107
+    - - -146.132096
+      - 68.738984
+    - - -146.131074
+      - 68.743757
+    - - -146.126969
+      - 68.749633
+    - - -146.124443
+      - 68.763706
+    - - -146.114107
+      - 68.769376
+    - - -146.100325
+      - 68.779242
+    - - -146.092809
+      - 68.786496
+    - - -146.084665
+      - 68.792842
+    - - -146.078619
+      - 68.799737
+    - - -146.075045
+      - 68.805626
+    - - -146.072539
+      - 68.809476
+    - - -146.06087
+      - 68.814265
+    - - -146.064103
+      - 68.817558
+    - - -146.085068
+      - 68.81672
+    - - -146.10355
+      - 68.817738
+    - - -146.120779
+      - 68.818644
+    - - -146.124533
+      - 68.821247
+    - - -146.123092
+      - 68.824608
+    - - -146.117326
+      - 68.820682
+    - - -146.108557
+      - 68.821249
+    - - -146.092582
+      - 68.820004
+    - - -146.073699
+      - 68.817758
+    - - -146.062486
+      - 68.817978
+    - - -146.056513
+      - 68.820079
+    - - -146.053161
+      - 68.823403
+    - - -146.04716
+      - 68.827811
+    - - -146.049177
+      - 68.833001
+    - - -146.045975
+      - 68.838919
+    - - -146.04145
+      - 68.845704
+    - - -146.048584
+      - 68.85359
+    - - -146.066416
+      - 68.860017
+    - - -146.084566
+      - 68.868809
+    - - -146.091387
+      - 68.878637
+    - - -146.101619
+      - 68.890506
+    - - -146.082303
+      - 68.907274
+    - - -146.087988
+      - 68.919946
+    - - -146.096825
+      - 68.93547
+    - - -146.085952
+      - 68.951095
+    - - -146.084142
+      - 68.966058
+    - - -146.087849
+      - 68.977793
+    - - -146.077447
+      - 68.992045
+    - - -146.073824
+      - 69.021912
+    - - -146.058029
+      - 69.037387
+    - - -146.047158
+      - 69.05488
+    - - -146.036032
+      - 69.068326
+    - - -146.019116
+      - 69.072465
+    - - -145.999376
+      - 69.07414
+    - - -145.999068
+      - 69.081077
+    - - -146.00369
+      - 69.087244
+    - - -145.984289
+      - 69.092563
+    - - -145.980127
+      - 69.097589
+    - - -145.965627
+      - 69.109223
+    - - -145.949753
+      - 69.113436
+    - - -145.940252
+      - 69.122141
+    - - -145.920526
+      - 69.128946
+    - - -145.902769
+      - 69.135429
+    - - -145.881636
+      - 69.13184
+    - - -145.879383
+      - 69.138303
+    - - -145.878462
+      - 69.141278
+    - - -145.876563
+      - 69.145109
+    - - -145.876847
+      - 69.148781
+    - - -145.87809
+      - 69.153323
+    - - -145.881823
+      - 69.155443
+    - - -145.886098
+      - 69.15668
+    - - -145.888964
+      - 69.158572
+    - - -145.888472
+      - 69.162658
+    - - -145.889461
+      - 69.169695
+    - - -145.88633
+      - 69.176824
+    - - -145.880692
+      - 69.183728
+    - - -145.86785
+      - 69.193521
+    - - -145.847113
+      - 69.197203
+    - - -145.848633
+      - 69.205742
+    - - -145.864506
+      - 69.213559
+    - - -145.89133
+      - 69.221256
+    - - -145.922346
+      - 69.228503
+    - - -145.950792
+      - 69.234965
+    - - -145.969908
+      - 69.240311
+    - - -145.977061
+      - 69.244022
+    - - -145.976758
+      - 69.246319
+    - - -145.972949
+      - 69.24798
+    - - -145.969583
+      - 69.249785
+    - - -145.97826
+      - 69.251919
+    - - -145.995806
+      - 69.256468
+    - - -146.010531
+      - 69.259241
+    - - -146.018509
+      - 69.261571
+    - - -146.022592
+      - 69.265231
+    - - -146.016943
+      - 69.268447
+    - - -146.007154
+      - 69.270854
+    - - -146.006291
+      - 69.273104
+    - - -146.015319
+      - 69.274772
+    - - -146.02146
+      - 69.27793
+    - - -146.02665
+      - 69.280663
+    - - -146.030928
+      - 69.282958
+    - - -146.03433
+      - 69.2848
+    - - -146.036894
+      - 69.286178
+chapters:
+  - id: title
+    type: title
+    heading: Canning River
+    subheading: Seven days through the Arctic National Wildlife Refuge
+    image: /images/canning-river/IMG_0444.webp
+    text: >
+      The Canning River originates in the Philip Smith Mountains at the eastern edge of the Brooks
+      Range, drains north across the Arctic National Wildlife Refuge, and empties into the Beaufort
+      Sea near the Alaska–Yukon border. I got to share it with my Dad, sister Liz, and my friend
+      Chris.
+  - id: headwaters-move
+    type: move
+    to:
+      coordinates:
+        - -146.185
+        - 68.718
+      zoom: 11
+      tilt: 50
+      bearing: -15
+      routeProgress: 0.06
+      marker: true
+  - id: headwaters
+    type: article
+    heading: The Headwaters
+    subheading: June 26 — 68.7°N, 1,360m
+    text: >
+      We stepped off the de Havilland Beaver onto a gravel bar at 1,360 meters, packs thudding
+      against the tundra. The Canning unwound above us in a braided silver thread, cutting between
+      walls of schist that rose 300 meters on either side.
+
+
+      No trails. No other parties. Just the sound of water finding its way north.
+    align: left
+  - id: headwaters-gallery
+    type: gallery
+    layout: duo
+    images:
+      - src: /images/canning-river/IMG_0452.webp
+        caption: The put-in at 1,360m — the highest point of the trip
+      - src: /images/canning-river/IMG_0444.webp
+        caption: Looking downstream into the upper canyon
+  - id: first-day-lower-move
+    type: move
+    to:
+      coordinates:
+        - -146.149
+        - 68.726
+      zoom: 12
+      tilt: 45
+      bearing: 10
+      routeProgress: 0.18
+  - id: first-day-lower
+    type: article
+    heading: First Miles
+    subheading: June 26 — Into the valley
+    text: >
+      The first day we carried up river, looking for the headwaters and a good spot to camp.  The
+      river was fast and once we were on it we'd fly down river.  There was no need to hurry.  We
+      forded the river, then headed upstream to a beautiful campsite on a ridge above the river. Ch
+    align: right
+  - id: first-day-image
+    type: image
+    image: /images/canning-river/IMG_0473.webp
+    caption: Evening light on the upper valley walls, day one
+  - id: second-day-move
+    type: move
+    to:
+      coordinates:
+        - -146.073
+        - 68.794
+      zoom: 11
+      tilt: 40
+      bearing: -25
+      routeProgress: 0.32
+      marker: true
+  - id: second-day
+    type: article
+    heading: Downstream
+    subheading: June 27 — Day 2
+    text: >
+      A grizzly and two cubs crossed ahead of us in the morning, unhurried. The mother paused on the
+      far bank, nose tilted into the wind, then moved into the willows without looking back.
+
+
+      We held our paddles still and let the current carry us past.
+    align: left
+  - id: ridge-pano
+    type: image
+    image: /images/canning-river/IMG_0641.webp
+    caption: The ridge at 1,332m — looking north across the coastal plain toward the Beaufort Sea
+  - id: ridge-move
+    type: move
+    to:
+      coordinates:
+        - -146.123
+        - 68.825
+      zoom: 12
+      tilt: 55
+      bearing: 35
+      routeProgress: 0.42
+      marker: true
+  - id: ridge
+    type: article
+    heading: The High Ridge
+    subheading: June 27 — 1,332m
+    text: >
+      We'd climbed 500 meters off the river into a silence that felt geologic. The ridge connected
+      two unnamed peaks and looked north across terrain so flat it bent at the edges with the
+      **curvature of the earth**.
+
+
+      Weather systems were stacking out over the Beaufort. We could see them from here — grey
+      columns of cloud sixty miles away, moving slow.
+    align: right
+  - id: day3-image
+    type: image
+    image: /images/canning-river/LIZ70431.webp
+    caption: On the ridge above camp, day two
+  - id: foothills-move
+    type: move
+    to:
+      coordinates:
+        - -146.046
+        - 68.839
+      zoom: 10
+      tilt: 35
+      bearing: 15
+      routeProgress: 0.5
+      marker: true
+  - id: foothills
+    type: article
+    heading: Into the Foothills
+    subheading: June 28 — Day 3
+    text: >
+      The character of the river changed around noon. Canyon walls fell back, the gradient eased,
+      and the Canning spread into braids three hundred meters wide. Geese fed in the shallows. The
+      Brooks Range was behind us now.
+
+
+      We were moving into older, softer country.
+    align: left
+  - id: foothills-article
+    type: image
+    image: /images/canning-river/LIZ80600.webp
+    caption: Afternoon light on the tundra, day four
+  - id: plain-image
+    type: image
+    image: /images/canning-river/IMG_0797.webp
+    caption: The coastal plain at 69°N — the landscape flattens completely
+  - id: final-approach-move
+    type: move
+    to:
+      coordinates:
+        - -145.91
+        - 69.22
+      zoom: 11
+      tilt: 25
+      bearing: 20
+      routeProgress: 0.82
+      marker: true
+  - id: final-approach
+    type: article
+    heading: The Final Miles
+    subheading: July 1 — 69.2°N
+    text: ''
+    align: left
+  - id: final-gallery
+    type: gallery
+    layout: trio
+    images:
+      - src: /images/canning-river/IMG_0875.webp
+        caption: Final day on the river
+      - src: /images/canning-river/IMG_0896.webp
+        caption: Approaching the coastal lagoon
+      - src: /images/canning-river/IMG_0917.webp
+        caption: The takeout
+  - id: all-photos
+    type: gallery
+    layout: grid
+    images:
+      - src: /images/canning-river/IMG_0401.webp
+      - src: /images/canning-river/IMG_0412.webp
+      - src: /images/canning-river/IMG_0444.webp
+      - src: /images/canning-river/IMG_0452.webp
+      - src: /images/canning-river/IMG_0468.webp
+      - src: /images/canning-river/IMG_0473.webp
+      - src: /images/canning-river/IMG_0527.webp
+      - src: /images/canning-river/IMG_0570.webp
+      - src: /images/canning-river/IMG_0582.webp
+      - src: /images/canning-river/IMG_0610.webp
+      - src: /images/canning-river/IMG_0641.webp
+      - src: /images/canning-river/IMG_0652.webp
+      - src: /images/canning-river/IMG_0695.webp
+      - src: /images/canning-river/IMG_0797.webp
+      - src: /images/canning-river/IMG_0823.webp
+      - src: /images/canning-river/IMG_0839.webp
+      - src: /images/canning-river/IMG_0840.webp
+      - src: /images/canning-river/IMG_0875.webp
+      - src: /images/canning-river/IMG_0896.webp
+      - src: /images/canning-river/IMG_0906.webp
+      - src: /images/canning-river/IMG_0917.webp
+      - src: /images/canning-river/IMG_0918.webp
+      - src: /images/canning-river/LIZ60256.webp
+      - src: /images/canning-river/LIZ70431.webp
+      - src: /images/canning-river/LIZ80593.webp
+      - src: /images/canning-river/LIZ80600.webp
+      - src: /images/canning-river/LIZ80606.webp
+      - src: /images/canning-river/LIZ91056.webp
+  - id: journey-end-move
+    type: move
+    to:
+      coordinates:
+        - -146.037
+        - 69.287
+      zoom: 12
+      tilt: 35
+      bearing: -10
+      routeProgress: 1
+      marker: true
+  - id: journey-end
+    type: article
+    heading: Journey's End
+    subheading: July 2 — 69.3°N, 372m
+    text: >
+      The final morning was eight hours against a headwind on the coastal lagoon, spray in our
+      faces, the Arctic Ocean grey and indistinguishable from the overcast above it.
+
+
+      We made the pickup strip on the last of our energy. The Beaver banked over the ANWR boundary
+      on the way out and we looked down at the river we'd just floated — **a thin silver line in all
+      that emptiness**.
+    align: right

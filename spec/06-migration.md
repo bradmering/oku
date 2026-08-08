@@ -101,6 +101,49 @@ slices — **the fourth schema**, and the plan side of `04-formats.md`.
 `planned` belongs on a Segment or a plan is its own Trip — has to be answered before this fixture
 can pass. Leaving it failing is the honest state.
 
+## ✅ DONE — 2026-08-08
+
+Run with `npm run migrate` (add `--dry-run` to preview). Reads `fixtures/legacy/`, writes
+`fixtures/migrated/`. **Legacy is never modified** — it stays the drift record.
+
+| Document | In | Out | Moves extracted | `map` → `article` |
+|---|---|---|---|---|
+| `brooks-range.yaml` | 19 chapters | 19 content | **11** | 1 |
+| `canning-river.yaml` | 16 chapters | 16 content | **7** | 7 |
+| `great-wheel.yaml` | 24 chapters | 24 content | **9** | 9 |
+
+All three validate. **`hulahula-plan` is deliberately not migrated** — it has no `chapters` array,
+and force-fitting it would prejudge the plan model.
+
+### Why the diff is reviewable despite its size
+
+The codemod carries **two assertions**, so a 3,000-line reformat is backed by a machine-checked
+claim rather than by someone reading it:
+
+1. **In-memory** — every heading, subheading, text block, caption, and media reference is
+   byte-identical before and after. Proves the *transform* is lossless.
+2. **On disk** — the written file is re-read and compared again. Proves the *serialization* is
+   lossless too. This one matters: `js-yaml` re-styles block scalars when dumping (`|` → `>`), and
+   folding changes newline handling, so an in-memory check alone would miss real prose corruption.
+
+It is also **idempotent** — a document carrying `specVersion` is skipped, so re-running is a no-op —
+and **accounting**: any key not consumed by a named transform is carried through unchanged *and
+reported*, so nothing is dropped silently.
+
+### The one thing that has no home
+
+`imagePins` (brooks-range only) is reported as unmigrated and preserved as-is at the top level.
+**It is not in the schema**, so it currently passes validation only because `Trip` is not
+`.strict()`. That's a real gap on both counts.
+
+### ⚠ This changes how the stories read
+
+Legacy rendered *move-while-reading*: a chapter carried its own cue, so the map moved as that
+chapter scrolled into view. Migrated renders *move-then-read*, and the stage now **interpolates**
+between consecutive moves rather than jumping. That is the intended behaviour (`decisions/0012`) and
+the fix for the abrupt jump — but it is a real behavioural change, not a neutral reshuffle. **Look
+at the three stories in a preview before trusting it.**
+
 ## Migration order
 
 1. **Add `specVersion`, `id`, `slug`, `dates`, `authors`** to the three stories. Mechanical.

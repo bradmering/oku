@@ -157,3 +157,28 @@ a day marker needs no separate type. Bound explicitly rather than inferred from 
 Wrote the first forward fixture (`formats/dispatch-with-moves.yaml`) and it validates — flat thread,
 moves, a rest-day leg with no chapter, two authors, derived dispatch posture. ADR 0012 records all
 of it; `02` and `04` updated to match.
+
+---
+
+## 2026-08-08 — Legacy stories migrated to moves
+
+`npm run migrate` reads `fixtures/legacy/`, writes `fixtures/migrated/`, and leaves legacy
+untouched. All three validate. **27 moves extracted** across the three documents, and 17 legacy
+`map` chapters became `move` + `article`.
+
+**Two assertions, not one.** The first compares prose and media in memory — proves the transform is
+lossless. The second re-reads the written file and compares again — proves the *serialization* is.
+That second one earned its keep: `js-yaml` re-styles block scalars on dump (`|` → `>`), and folding
+changes newline handling, so an in-memory check alone could pass while the prose on disk was
+quietly mangled. It isn't, but I only know that because the check exists.
+
+The point of both is that a ~3,000-line reformat is unreviewable by eye. The diff is backed by a
+machine-checked claim instead: *only these three transforms were applied, nothing else changed.*
+
+**`imagePins` has no home.** Reported as unmigrated and preserved at the top level. It passes
+validation only because `Trip` isn't `.strict()` — so it's two gaps, not one, and worth fixing
+together.
+
+**Behavioural change, flagged loudly:** the stories now render move-then-read with interpolation
+between keyframes, rather than move-while-reading with a jump. That's the intended fix, but it isn't
+neutral — the three stories should be looked at in a preview before this is trusted.
