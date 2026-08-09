@@ -10,3 +10,4 @@ dist/
 .wrangler/
 tsconfig.tsbuildinfo
 lib/trips.generated.json
+.media-manifest.json

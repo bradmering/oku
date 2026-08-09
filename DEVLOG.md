@@ -351,3 +351,25 @@ bundle — the Mapbox token should be URL-restricted in their dashboard.
 **The lesson worth keeping:** the upload script's "success" was measured against paths it had
 found, not against paths the documents actually reference. A completeness check should compare
 against the document, not against its own search results.
+
+---
+
+## 2026-08-08 — The skip logic never worked: `wrangler r2 object list` doesn't exist
+
+Brad noticed `upload-media` re-sending all 122 files instead of the 18 new ones.
+
+I had written the skip check against `wrangler r2 object list`. **That command does not exist** —
+the CLI only offers `r2 object get`, `put`, and `delete`. I invented it. The call threw, a
+`catch` swallowed it, and the script printed a quiet "could not list the bucket; nothing will be
+skipped" before uploading everything. It reported the failure, but softly enough to miss.
+
+Two mistakes worth separating: inventing a CLI command without checking, and then wrapping it in a
+catch that degraded silently instead of failing loudly. The second is what made the first survive.
+
+Replaced with a local `.media-manifest.json` recording what's been sent, skipping files whose size
+is unchanged, written after every successful put so an interrupted run keeps its progress. It's
+honestly labelled as *our* record rather than the bucket's truth, with a note to delete it if the
+two disagree.
+
+The current run finishes in the right state regardless — it overwrites with identical bytes and
+picks up the missing videos.

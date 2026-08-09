@@ -9,12 +9,17 @@
  * mirror the document paths exactly, so the documents need no rewriting — see
  * `app/images/[...path]/route.ts`.
  *
- * Idempotent by default: an object already in the bucket is skipped, so a
- * failed run can simply be re-run. Pass --force to overwrite.
+ * Re-runs are cheap: successfully uploaded files are recorded in
+ * `.media-manifest.json` and skipped unless their size changed. Pass --force to
+ * re-send everything.
+ *
+ * Note: there is no `wrangler r2 object list` — the CLI only does get/put/delete
+ * — so the manifest is OUR record, not the bucket's. If the two ever disagree,
+ * delete the manifest and re-run.
  */
 
 import { execFileSync } from 'node:child_process'
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 
 const BUCKET = 'oku-media'
@@ -22,6 +27,16 @@ const SOURCE = process.env.MEDIA_SOURCE
   ?? path.resolve('../../Blog/blog-site/public')
 const DRY = process.argv.includes('--dry-run')
 const FORCE = process.argv.includes('--force')
+
+/**
+ * What we've already uploaded, tracked locally.
+ *
+ * There is NO `wrangler r2 object list` — only get/put/delete — so the bucket
+ * can't be enumerated from the CLI. A local manifest is the pragmatic
+ * alternative: it makes re-runs fast, at the cost of being our record rather
+ * than the bucket's truth. `--force` ignores it.
+ */
+const MANIFEST = '.media-manifest.json'
 
 // ── every media path the documents reference ────────────────────────────────
 function fixtureFiles(dir: string): string[] {
@@ -51,20 +66,13 @@ if (!existsSync(SOURCE)) {
   process.exit(1)
 }
 
-// ── what's already there ────────────────────────────────────────────────────
-let existing = new Set<string>()
-if (!FORCE && !DRY) {
-  try {
-    const out = execFileSync(
-      'npx',
-      ['wrangler', 'r2', 'object', 'list', BUCKET],
-      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] },
-    )
-    for (const m of out.matchAll(/"key"\s*:\s*"([^"]+)"/g)) existing.add(m[1])
-    console.log(`${existing.size} object(s) already in the bucket — those are skipped\n`)
-  } catch {
-    console.log('(could not list the bucket; nothing will be skipped)\n')
-  }
+// ── what we've already sent ─────────────────────────────────────────────────
+type Sent = Record<string, { size: number; at: string }>
+let sent: Sent = {}
+if (!FORCE && existsSync(MANIFEST)) {
+  try { sent = JSON.parse(readFileSync(MANIFEST, 'utf8')) } catch { sent = {} }
+  const n = Object.keys(sent).length
+  if (n) console.log(`${n} file(s) previously uploaded (per ${MANIFEST}) — unchanged ones are skipped\n`)
 }
 
 // ── upload ──────────────────────────────────────────────────────────────────
@@ -75,9 +83,10 @@ for (const ref of paths) {
   const local = path.join(SOURCE, ref)
 
   if (!existsSync(local)) { missing.push(ref); continue }
-  if (existing.has(key)) { skipped++; continue }
 
   const size = statSync(local).size
+  // Skip only if we sent it AND the file hasn't changed since.
+  if (sent[key]?.size === size) { skipped++; continue }
   bytes += size
 
   if (DRY) {
@@ -93,6 +102,9 @@ for (const ref of paths) {
       { stdio: ['ignore', 'ignore', 'pipe'] },
     )
     uploaded++
+    sent[key] = { size, at: new Date().toISOString() }
+    // Written every time, so an interrupted run still records its progress.
+    writeFileSync(MANIFEST, JSON.stringify(sent, null, 0))
     process.stdout.write(`\r  uploaded ${uploaded}/${paths.length - missing.length - skipped}   `)
   } catch (e) {
     console.error(`\n  ✗ ${key}: ${(e as Error).message.split('\n')[0]}`)
