@@ -5,6 +5,30 @@ you, what you'd do differently. This is how the next cold session learns what ha
 
 ---
 
+## 2026-08-09 — Camera picker
+
+A `move` is four numbers you cannot picture, and authoring them meant editing YAML and reloading to
+squint. `/camera/<slug>` is a dev-only tool that shows the story's real stage — its own style, route
+and terrain — lets you fly the camera by hand, and hands back the YAML. It also lists the story's
+existing moves so you can jump to one, adjust, and copy it back.
+
+Two decisions worth recording. **`routeProgress` gets a slider, not a number box**, because it
+controls how much of the line is drawn and the only way to pick it is to watch the line; the full
+route is ghosted behind the drawn head so you can see where you are on the whole traverse. And
+**`keyframeYaml` lives in `lib/`, not in the component**, so it can be tested against the real
+schema: a tool whose entire job is emitting pasteable YAML has exactly one way to waste your time,
+which is emitting YAML that doesn't validate. Five tests cover both output forms.
+
+Caught while testing: `navigator.clipboard.writeText` rejects whenever the document isn't focused,
+and the unhandled rejection made the copy button a **silent no-op** — it looked like it worked. The
+snippet is now always on screen in a textarea, and a failed copy selects it instead. That is also
+strictly better as a tool: you can see what you're about to paste.
+
+Dev-only is enforced by `notFound()` on `NODE_ENV === 'production'`; verified against a real
+production build, where `/camera` prerenders as a 404 with none of the picker's markup in it.
+
+---
+
 ## 2026-08-09 — Live Photos aren't videos; first review notes on White Rim
 
 Brad read the White Rim draft and the first note was that almost every clip should be a still. He
