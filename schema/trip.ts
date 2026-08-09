@@ -331,3 +331,33 @@ export type Chapter = z.infer<typeof Chapter>
 export type Leg = z.infer<typeof Leg>
 export type Stage = z.infer<typeof Stage>
 export type Keyframe = z.infer<typeof Keyframe>
+
+// ── The resolved document — what the renderer actually gets ──────────────────
+
+/**
+ * The document AFTER `lib/resolve-media.ts` has run — see decisions/0016.
+ *
+ * `src` is optional in the authored schema because a reference may carry
+ * `mediaId` instead, and `type` on article media is optional because it is
+ * inferred from the item's `kind`. **The bake collapses both**, so by the time
+ * anything renders, every pointer has a literal `src` and every media item a
+ * `type`.
+ *
+ * Stating that here is what keeps `decisions/0016`'s promise honest: the
+ * renderer never learned about `mediaId`, and it does not have to handle an
+ * absence the bake has already ruled out.
+ */
+type Resolve<T> =
+  // Tuples — LngLat, bounds — must survive as tuples rather than widening to
+  // number[], which is what a naive array branch would do to them.
+  T extends readonly [unknown, ...unknown[]] ? T :
+  T extends (infer U)[] ? Resolve<U>[] :
+  T extends object
+    ? Omit<{ [K in keyof T]: Resolve<T[K]> }, 'mediaId' | 'imageId'> &
+      ('mediaId' extends keyof T
+        ? { src: string } & ('type' extends keyof T ? { type: NonNullable<T['type']> } : unknown)
+        : unknown)
+    : T
+
+export type ResolvedChapter = Resolve<Chapter>
+export type ResolvedTrip = Omit<Trip, 'chapters'> & { chapters: ResolvedChapter[] }

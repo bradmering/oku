@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import type { Trip, Chapter } from '@/schema/trip'
+import type { ResolvedTrip as Trip, ResolvedChapter as Chapter } from '@/schema/trip'
 import { pickCamera, resolve, type Camera } from '@/lib/interpolate'
 import Stage from './Stage'
 import ChapterView from './chapters'
