@@ -55,7 +55,9 @@ export default function DrawnLine() {
            C 158 990, 320 1000, 300 1100
            S 150 1240, 200 1380"
         fill="none"
-        stroke="var(--accent)"
+        // `--accent` died in the Tailwind v4 switch; the ember is a theme token
+        // now, so take it from the scale rather than reintroducing a one-off var.
+        stroke="var(--color-ember)"
         strokeWidth="2"
         strokeLinecap="round"
         style={{

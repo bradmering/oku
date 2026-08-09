@@ -5,6 +5,77 @@ you, what you'd do differently. This is how the next cold session learns what ha
 
 ---
 
+## 2026-08-09 — Media identity settled; White Rim ingested end-to-end
+
+**FIT needed no dependency.** The handoff said reading `.fit` was the single biggest gap and
+proposed `fit-file-parser` or `@garmin/fitsdk`. Neither was necessary: the messages ingest actually
+consumes (`record`, `session`, `sport`, `lap`) have stable field numbers, and `lib/ingest/fit.ts` is
+~150 lines of `DataView` maths with no Node APIs, so it runs in a browser or a Worker unchanged.
+That is the shape `decisions/0008` wanted. The lesson generalizes: before adopting a parser, check
+what fraction of the format you consume — here it was under 5%.
+
+**`mediaId` landed first, deliberately, because the scaffold had to encode the choice.**
+`decisions/0016`: every media reference gains an indirect form (`mediaId`, `imageId`), `src` stays
+legal for hand-written documents, and `build-trips.ts` collapses indirect → direct at bake time —
+so **not one renderer component changed.** The forcing argument wasn't elegance, it was that a
+background converter finishes *after* the document is written; with bare paths, every chapter
+mentioning a file gets rewritten when its rendition lands. The "exactly one of src/mediaId" rule
+lives in `lib/resolve-media.ts` rather than Zod, because `MediaRef` is consumed via `.shape`/
+`.extend()` and a `.refine()` returns a ZodEffects that can't be spread — and dangling-id detection
+is cross-referential, so Zod couldn't express it either way. 16 unit tests cover the rejections a
+fixture can't (a fixture that fails on purpose just fails the build).
+
+**What surprised me was the data, not the code.** Filename order is not chronological — the Lathrop
+Canyon *run* sorts between two rides — and the Brooks Range organizer only worked because those
+filenames happened to encode order. The run ends at 18:03:21 and the ride to Murphy starts at
+18:08:28: five minutes apart, which is the sub-day/multi-mode case arriving unforced and a hard
+floor on gap detection. All 123 media files bucketed onto 8 legs (3 with no track) with 66 of them
+placed by timestamp alone. The side trip holds 38 files against 4 for the ride after it — the run
+is the event and the "day" is connective tissue, which nobody would have recovered from memory.
+
+Two things bit. `ActivityMode` had no **`run`** — added; the enum already separates ski from hike
+from ride, so a run was the odd one out. And the iPhone video is **HEVC**, which Safari plays and
+Chrome and Firefox do not — it would have looked fine locally and been broken for most readers.
+That draws the real line in the ingest architecture: **parsing is client-side work, transcoding is
+not.** 500 KB of telemetry in milliseconds versus 350 MB of media, CPU-bound, needing native
+binaries. `decisions/0008` is right about the parse half and was never tested against the other.
+
+**What I'd do differently:** I added `poster` to the ingest output after generating the document and
+had to regenerate — the media-path audit caught it (162 unique paths, 0 missing), but only because I
+ran it. Ingest should assert its own output resolves on disk rather than leaving that to a separate
+step. Also: leg labels derived from filenames give you "Camp — after White Rim Mineral Bottom to
+Airport", which is what deriving prose from a filename deserves.
+
+**Follow-up, same day — the uploader and the landing line.** The "it re-uploads everything" report
+turned out to be a first successful run: a second dry-run skips all 122 correctly. The *real* bug
+was that media now lives in **two roots** — `.media/` for ingested stories, the blog repo for
+migrated ones — and `MEDIA_SOURCE` held one, so 164 White Rim files reported missing. It is now a
+colon-separated list, searched in order. Two smaller fixes fell out: the scanner regexed YAML for
+anything shaped like a path, which swept up `renditions` entries and tried to upload phantom
+alternates, so it now walks `lib/trips.generated.json` (post-bake, every `mediaId` resolved — exactly
+the paths the renderer requests) and skips `renditions` explicitly. And my `media-identity` fixture
+had squatted on `/images/white-rim/…`, so its illustrative paths collided with the real story's
+namespace; moved to its own.
+
+The landing page's orange line broke in the Tailwind v4 switch: `DrawnLine.tsx` still asked for
+`var(--accent)`, which that commit replaced with the `--color-ember` theme token. An undefined var
+means no stroke, so the line was drawing invisibly the whole time. **A grep for the old variable
+name at rename time would have caught it** — worth doing whenever a token is renamed. Colour
+verified in the browser; the scroll-driven *drawing* could not be, because the automation pane runs
+with `visibilityState: 'hidden'` and the component coalesces updates through `requestAnimationFrame`,
+which never fires there. Needs a human scroll to confirm.
+
+Full friction list in `spec/09-white-rim-friction.md` — that list is the point of the exercise.
+Real stories now live in a top-level `stories/`, not in `fixtures/`: a story is not a fixture, and
+mixing them would blur what `forward/` means.
+
+**Not done:** media is converted locally into `.media/` (84 images + 39 videos + 39 posters, 355 MB
+→ 146 MB) but **not uploaded to R2**, so the story can't be seen with its pictures yet. Nothing is
+committed. `stage.pins` should now be computed rather than stored — `decisions/0013`'s expiry
+condition is finally met.
+
+---
+
 ## 2026-08-01 — Repo scaffolded; spec extracted from existing work
 
 Created the repo under the code name **oku** (奥, "the deep interior" — Bashō). Code name only; the
