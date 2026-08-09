@@ -5,6 +5,40 @@ you, what you'd do differently. This is how the next cold session learns what ha
 
 ---
 
+## 2026-08-09 — Live Photos aren't videos; first review notes on White Rim
+
+Brad read the White Rim draft and the first note was that almost every clip should be a still. He
+was right, and the data was blunter than the complaint: **37 of the 39 "videos" have a same-stem
+still.** They are Live Photos — iOS and Google Photos export one photograph as two files. Only two
+were real clips. Emitting both made one photograph look like two media items and turned stills into
+things that flash and stop.
+
+**Pairing is the discriminator, not duration.** My first instinct was a duration threshold, which
+would have caught most of them and mislabelled the edges: the shortest real clip is 5.4s but two
+Live Photos run 3.2 and 3.4s. A clip someone meant to shoot has no still twin. The motion is kept as
+`renditions.live` rather than deleted — the fact survives without the story showing it. 123 media
+items → 86. The converter learned the same rule, so it stops transcoding 37 files nothing
+references.
+
+Also: title moved from `route` to `image` layout (the route layout plays the same beat the overview
+plays seconds later), and a logistics chapter now pre-fills from what the tracks know — 165 km, 4
+days, 3,069 m — with links and packing left as a TODO, because ingest has no source for permit
+details and inventing them would be worse than a gap.
+
+Two chapter ideas captured in `spec/08-chapter-ideas.md`. Writing up the **route flyover** turned up
+something worth knowing before building it: most of it already exists, since a flyover is just a run
+of `move` keyframes with text between them. What actually blocks it is that **route progress is
+monotonic and a flyover has to rewind** — it ends at 1, then the story starts at 0 and redraws the
+same line. There is a unit test asserting progress never goes backwards, and it encodes a real
+intent, so the fix isn't to delete it. Cheapest answer is probably that the flyover moves the camera
+and draws nothing.
+
+That, plus the panorama idea, both run into **the camera problem**: a `move` is four numbers you
+cannot picture. Recommended building a camera picker before either chapter, and before an editor —
+it is a prerequisite for the flyover rather than a competitor to it.
+
+---
+
 ## 2026-08-09 — Pins are computed; `stage.pins` retired
 
 `decisions/0013` stored pins with an explicit expiry: compute them once chapters reference media by

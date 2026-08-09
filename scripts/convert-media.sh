@@ -14,6 +14,8 @@
 #   --quality N      WebP quality (default 85)
 #   --images-only    Skip video
 #   --video-only     Skip images
+#   --live-photos    Also transcode Live Photo clips (a video with a same-stem
+#                    still). Skipped by default — ingest collapses them.
 #   --force          Re-convert files that already exist in the output
 #   --dry-run        Print the plan only
 #
@@ -35,6 +37,7 @@ MAX_PX=2400
 QUALITY=85
 DO_IMAGES=true
 DO_VIDEO=true
+LIVE=false
 FORCE=false
 DRY_RUN=false
 
@@ -46,6 +49,7 @@ while [ $# -gt 0 ]; do
     --quality)     QUALITY="$2";  shift 2 ;;
     --images-only) DO_VIDEO=false;  shift ;;
     --video-only)  DO_IMAGES=false; shift ;;
+    --live-photos) LIVE=true;        shift ;;
     --force)       FORCE=true;      shift ;;
     --dry-run)     DRY_RUN=true;    shift ;;
     -h|--help)     grep '^#' "$0" | grep -v '^#!/' | sed 's/^# \{0,1\}//'; exit 0 ;;
@@ -90,11 +94,20 @@ if $DO_IMAGES; then
 fi
 
 # ── video ────────────────────────────────────────────────────────────────────
-VID_OK=0; VID_SKIP=0; VID_FAIL=0
+VID_OK=0; VID_SKIP=0; VID_FAIL=0; VID_LIVE=0
 if $DO_VIDEO; then
   while IFS= read -r src; do
     base=$(basename "$src"); name="${base%.*}"
     dest="$VID_OUT/${name}.mp4"; poster="$VID_OUT/${name}.jpg"
+
+    # Live Photo: a clip with a same-stem still is the motion half of one
+    # photograph, and ingest collapses it into the still. Transcoding it would
+    # burn minutes producing a file no document references. Same rule as
+    # scripts/ingest-trip.ts — pairing, not duration.
+    if ! $LIVE && compgen -G "$INPUT_DIR/${name}."[jJhHpP]* >/dev/null 2>&1; then
+      VID_LIVE=$((VID_LIVE+1)); continue
+    fi
+
     if ! $FORCE && [ -f "$dest" ] && [ -f "$poster" ]; then VID_SKIP=$((VID_SKIP+1)); continue; fi
     if $DRY_RUN; then printf "  would  %s → %s.mp4 + poster\n" "$base" "$name"; VID_OK=$((VID_OK+1)); continue; fi
 
@@ -117,6 +130,6 @@ fi
 
 echo ""
 echo "Images: ${IMG_OK} converted, ${IMG_SKIP} skipped, ${IMG_FAIL} failed"
-echo "Video:  ${VID_OK} transcoded, ${VID_SKIP} skipped, ${VID_FAIL} failed"
+echo "Video:  ${VID_OK} transcoded, ${VID_SKIP} skipped, ${VID_FAIL} failed, ${VID_LIVE} Live Photo clip(s) ignored"
 echo ""
 echo "Next:  MEDIA_SOURCE=$OUT_ROOT npm run upload-media -- --dry-run"
