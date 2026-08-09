@@ -11,6 +11,7 @@
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "typecheck": "tsc --noEmit",
+    "pretest": "npm run bake",
     "test": "npm run typecheck && node --experimental-strip-types scripts/test-interpolate.ts && node --experimental-strip-types scripts/test-resolve-media.ts && node --experimental-strip-types scripts/validate-fixtures.ts",
     "validate": "node --experimental-strip-types scripts/validate-fixtures.ts",
     "migrate": "node --experimental-strip-types scripts/migrate-legacy.ts",
