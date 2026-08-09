@@ -432,3 +432,30 @@ makes the whole layout legible, which is a bigger deal than any single missing i
 
 Still outstanding on this story: `parallax-video` renders as a plain video, and `imagePins` (37 of
 them) has nowhere to go until the schema question is settled.
+
+---
+
+## 2026-08-08 — Switched to Tailwind. It should have been Tailwind from the start.
+
+Brad: *"Why aren't we using tailwind is an interesting question? If tailwind would have gotten us
+to parity quicker, why not use it? Why flatten into per component css?"*
+
+Fair, and the honest answer is that **I never considered it.** I scaffolded the app, wrote a
+`globals.css`, and kept going. Not a weighed trade-off — an unforced default.
+
+The cost compounded. The blog is Tailwind, so every ported component became a *translation*, and
+every translation invented its own values: the gallery had one caption size, the article another,
+the landing a third. That inconsistency is what I'd been about to propose fixing with "a design
+token layer" — which was really just describing Tailwind badly.
+
+Matched the blog exactly: Tailwind v4, config-free via `@import "tailwindcss"`, plus the typography
+plugin. `globals.css` went from **409 lines to 43** — theme, body, `.move-anchor` (kept as CSS
+because its height is a tuning knob), and a mapbox canvas rule.
+
+Story components now carry the blog's classes near-verbatim. Verified the emitted CSS contains the
+blog-parity utilities and that the article markup has `md:w-[46%]`, `md:min-h-[85vh]` and
+`bg-stone-50` in the right counts.
+
+**The lesson for the remaining ports:** parity is now copy-adjust rather than redesign, which is
+what Brad was saying when he said clearing that bar isn't as big as I was making it out to be. He
+was right — I'd manufactured the difficulty and then argued from it.

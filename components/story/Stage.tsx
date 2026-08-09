@@ -112,10 +112,10 @@ export default function Stage({
   }, [camera, route])
 
   return (
-    <div className="stage">
-      <div ref={el} className="stage-canvas" />
+    <div className="fixed inset-0 z-0">
+      <div ref={el} className="absolute inset-0 w-full h-full" />
       {!TOKEN && (
-        <p className="stage-note">
+        <p className="absolute left-4 bottom-4 z-20 m-0 max-w-sm px-3 py-2.5 rounded bg-black/80 text-stone-400 font-mono text-[11px] leading-relaxed">
           No <code>NEXT_PUBLIC_MAPBOX_TOKEN</code> at build time — the map can&apos;t render.
           It&apos;s inlined into the client bundle, so it must be set when Next builds.
         </p>

@@ -8,13 +8,10 @@ type Media = { type: 'image' | 'video'; src: string; caption?: string; poster?: 
 /**
  * The article chapter — a light panel over the dark stage.
  *
- * Three parts, ported from the blog renderer:
- *   · a hero image beside the prose, filling ~85vh, side alternating with `align`
- *   · a wrapped row of media images on light ground beneath
- *   · full-width videos in the scroll, which play only while on screen
- *
- * This is where Brooks Range keeps almost all of its photographs — 10 hero
- * images and 37 in `media[]`. Rendering only the text made the story look empty.
+ * Classes are the blog's, near-verbatim: hero beside the prose at 85vh with the
+ * side alternating on `align`, a wrapped media strip beneath, and full-width
+ * videos in the scroll. This is where Brooks Range keeps almost all of its
+ * photographs — 10 hero images and 37 in `media[]`.
  */
 export default function Article({
   heading,
@@ -34,6 +31,7 @@ export default function Article({
   stats?: React.ReactNode
 }) {
   const [open, setOpen] = useState<number | null>(null)
+  const isLeft = align !== 'right'
 
   const images = useMemo(() => (media ?? []).filter((m) => m.type === 'image'), [media])
   const videos = useMemo(() => (media ?? []).filter((m) => m.type === 'video'), [media])
@@ -48,31 +46,50 @@ export default function Article({
   const offset = heroImage ? 1 : 0
 
   return (
-    <section className="art">
-      <div className={`art-main ${align === 'right' ? 'art-main--right' : ''}`}>
+    <div className="relative z-10 bg-white pointer-events-auto">
+      <div className={`flex flex-col md:flex-row md:min-h-[85vh] ${isLeft ? '' : 'md:flex-row-reverse'}`}>
         {heroImage && (
-          <figure className="art-hero" onClick={() => setOpen(0)}>
-            <img src={heroImage.src} alt={heroImage.caption ?? ''} loading="lazy" decoding="async" />
-            {heroImage.caption && <figcaption>{heroImage.caption}</figcaption>}
-          </figure>
+          <div className="md:w-[46%] w-full flex-shrink-0 relative overflow-hidden group">
+            <img
+              src={heroImage.src}
+              alt={heroImage.caption ?? ''}
+              loading="lazy"
+              decoding="async"
+              className="block w-full h-64 sm:h-96 md:h-full object-cover cursor-zoom-in transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
+              onClick={() => setOpen(0)}
+            />
+            {heroImage.caption && (
+              <p className="md:absolute md:bottom-0 md:left-0 md:right-0 mt-1.5 md:mt-0 px-4 py-2 md:py-3 text-stone-400 md:text-white/85 text-xs italic md:bg-gradient-to-t md:from-black/60 md:to-transparent pointer-events-none">
+                {heroImage.caption}
+              </p>
+            )}
+          </div>
         )}
 
-        <div className="art-body">
-          <div className="art-col">
-            {subheading && <p className="art-kicker">{subheading}</p>}
-            {heading && <h2>{heading}</h2>}
-            {stats}
-            {text && (
-              <div className="art-prose">
-                {text.trim().split(/\n{2,}/).map((p, i) => <p key={i}>{p}</p>)}
-              </div>
+        <div className="flex-1 flex items-center px-6 sm:px-12 py-14 sm:py-20">
+          <div className="max-w-xl mx-auto md:mx-0">
+            {subheading && (
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-stone-400 mb-3">
+                {subheading}
+              </p>
             )}
+            {heading && (
+              <h2 className="text-2xl font-bold text-stone-900 mb-4 leading-snug tracking-tight">
+                {heading}
+              </h2>
+            )}
+            {stats}
+            {text?.split(/\n{2,}/).map((p, i) => (
+              <p key={i} className="mb-4 text-stone-700 leading-8 text-[1.02rem] last:mb-0">
+                {p}
+              </p>
+            ))}
           </div>
         </div>
       </div>
 
       {images.length > 0 && (
-        <div className="art-strip">
+        <div className="flex flex-wrap gap-2 justify-center items-center px-4 sm:px-8 py-8 bg-stone-50">
           {images.map((m, i) => (
             <img
               key={i}
@@ -80,6 +97,7 @@ export default function Article({
               alt={m.caption ?? ''}
               loading="lazy"
               decoding="async"
+              className="h-64 sm:h-80 w-auto max-w-full rounded-sm shadow-sm cursor-zoom-in transition-transform duration-500 ease-out hover:scale-[1.02]"
               onClick={() => setOpen(offset + i)}
             />
           ))}
@@ -91,7 +109,7 @@ export default function Article({
       {open !== null && (
         <Lightbox images={lightbox} index={open} onClose={() => setOpen(null)} onNav={setOpen} />
       )}
-    </section>
+    </div>
   )
 }
 
@@ -112,7 +130,7 @@ function ScrollVideo({ media }: { media: Media }) {
   }, [])
 
   return (
-    <figure className="art-video">
+    <figure className="relative w-full bg-black m-0">
       <video
         ref={ref}
         src={media.src}
@@ -122,8 +140,13 @@ function ScrollVideo({ media }: { media: Media }) {
         playsInline
         preload="none"
         controls
+        className="w-full h-auto max-h-[90vh] object-contain mx-auto"
       />
-      {media.caption && <figcaption>{media.caption}</figcaption>}
+      {media.caption && (
+        <figcaption className="absolute bottom-4 left-0 right-0 text-center text-white/70 text-sm italic px-6 pointer-events-none drop-shadow">
+          {media.caption}
+        </figcaption>
+      )}
     </figure>
   )
 }

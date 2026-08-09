@@ -44,7 +44,7 @@ export default function DrawnLine() {
   const drawn = len * (0.06 + progress * 0.94)
 
   return (
-    <svg className="drawn" viewBox="0 0 400 1400" preserveAspectRatio="none" aria-hidden="true">
+    <svg className="drawn-line absolute top-0 left-0 w-full h-full z-0 opacity-45 pointer-events-none" viewBox="0 0 400 1400" preserveAspectRatio="none" aria-hidden="true">
       <path
         ref={path}
         d="M 60 20

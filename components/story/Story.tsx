@@ -91,13 +91,13 @@ export default function Story({ trip }: { trip: Trip }) {
   const hasStage = !!stage
 
   return (
-    <div className={hasStage ? 'story story--staged' : 'story'} ref={wrap}>
+    <div className="relative" ref={wrap}>
       {isMap && (
         <Stage styleUrl={stage.style} route={route} camera={camera} terrain={stage.terrain} />
       )}
 
       {debug && (
-        <div className="hud">
+        <div className="fixed top-4 right-4 z-50 px-3 py-2.5 rounded bg-black/85 border border-white/15 font-mono text-[11px] leading-relaxed text-stone-400 [&_b]:text-white [&_b]:font-medium">
           <div>keyframes <b>{keyframes.length}</b></div>
           <div>center <b>{camera.center[0].toFixed(3)}, {camera.center[1].toFixed(3)}</b></div>
           <div>zoom <b>{camera.zoom.toFixed(2)}</b> · tilt <b>{camera.pitch.toFixed(0)}</b> · brg <b>{camera.bearing.toFixed(0)}</b></div>
@@ -106,7 +106,7 @@ export default function Story({ trip }: { trip: Trip }) {
         </div>
       )}
 
-      <div className="thread">
+      <div className="relative z-10">
         {trip.chapters.map((ch: Chapter) =>
           ch.type === 'move' ? (
             // Renders nothing. It exists in the flow purely as a scroll anchor —
