@@ -3,6 +3,8 @@ import Gallery from './Gallery'
 import Article from './Article'
 import ParallaxVideo from './ParallaxVideo'
 import Title from './Title'
+import Logistics from './Logistics'
+import Overview from './Overview'
 
 /** Renders one content chapter. `move` never reaches here — the thread handles
  *  it as a scroll anchor. */
@@ -45,19 +47,19 @@ export default function ChapterView({ chapter: ch, trip }: { chapter: Chapter; t
         />
       )
 
-    case 'overview':
+    case 'overview': {
+      const stage = trip.stage?.type === 'map' ? trip.stage : undefined
       return (
-        <section className="relative z-10 bg-white pointer-events-auto py-20 px-6 sm:px-12">
-          <div className="max-w-2xl mx-auto">
-            {ch.heading && (
-              <h2 className="text-2xl font-bold text-stone-900 mb-4 leading-snug tracking-tight">{ch.heading}</h2>
-            )}
-            {ch.text?.split(/\n{2,}/).map((p, i) => (
-              <p key={i} className="mb-4 text-stone-700 leading-8 text-[1.02rem] last:mb-0">{p}</p>
-            ))}
-          </div>
-        </section>
+        <Overview
+          heading={ch.heading}
+          subheading={ch.subheading}
+          text={ch.text}
+          styleUrl={stage?.style}
+          route={stage?.route as [number, number][] | undefined}
+          pins={stage?.pins as never}
+        />
       )
+    }
 
     case 'image':
       return (
@@ -100,26 +102,14 @@ export default function ChapterView({ chapter: ch, trip }: { chapter: Chapter; t
 
     case 'logistics':
       return (
-        <section className="relative z-10 bg-stone-100 pointer-events-auto py-20 px-6 sm:px-12">
-          <div className="max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold text-stone-900 mb-4">{ch.heading ?? 'Logistics'}</h2>
-            {ch.text?.split(/\n{2,}/).map((p, i) => (
-              <p key={i} className="mb-4 text-stone-700 leading-8 last:mb-0">{p}</p>
-            ))}
-            {ch.links?.length ? (
-              <ul className="mt-6 space-y-2">
-                {ch.links.map((l, i) => (
-                  <li key={i} className="text-stone-700">
-                    <a href={l.url} target="_blank" rel="noreferrer" className="underline decoration-stone-300 hover:decoration-stone-600">
-                      {l.label}
-                    </a>
-                    {l.note && <span className="text-stone-500"> — {l.note}</span>}
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-          </div>
-        </section>
+        <Logistics
+          heading={ch.heading}
+          subheading={ch.subheading}
+          text={ch.text}
+          links={ch.links}
+          quads={ch.quads}
+          packing={ch.packing}
+        />
       )
 
     default:

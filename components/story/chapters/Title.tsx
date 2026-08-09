@@ -32,7 +32,19 @@ export default function Title({
 }) {
   const mode = layout ?? (image ? 'image' : 'text')
   const ref = useRef<HTMLDivElement>(null)
+  const heroRef = useRef<HTMLImageElement>(null)
   const [reveal, setReveal] = useState(0)
+
+  // `image` parallax: the hero drifts at ~⅓ scroll speed behind the title.
+  useEffect(() => {
+    if (mode !== 'image') return
+    const onScroll = () => {
+      if (heroRef.current) heroRef.current.style.transform = `translateY(${window.scrollY * 0.38}px)`
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [mode])
 
   // Only the reveal variant needs scroll. Same event-driven pattern as the
   // camera — no free-running loop.
@@ -156,17 +168,45 @@ export default function Title({
     )
   }
 
+  // `image` — the blog's opening, ported: a parallaxing hero with the title
+  // anchored bottom-left, then a dark panel carrying the opening prose.
   return (
-    <header className="relative z-10 min-h-screen flex flex-col justify-center items-center text-center px-6 py-24 overflow-hidden">
-      {image && (
-        <>
-          <img src={image} alt="" className="absolute inset-0 w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/35 to-black/70" />
-        </>
-      )}
-      <div className="relative flex flex-col items-center">
-        <Words />
+    <>
+      <div className="relative h-screen overflow-hidden z-10 pointer-events-auto">
+        {image ? (
+          <img
+            ref={heroRef}
+            src={image}
+            alt=""
+            className="absolute inset-0 w-full object-cover will-change-transform"
+            style={{ height: '130%', top: '-15%' }}
+          />
+        ) : (
+          <div className="absolute inset-0 bg-stone-900" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent" />
+        <div className="absolute bottom-12 left-6 right-6 sm:left-10 sm:right-10 max-w-3xl">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white leading-tight tracking-tight">
+            {heading}
+          </h1>
+          {subheading && (
+            <p className="mt-3 text-lg sm:text-xl text-white/65 font-light">{subheading}</p>
+          )}
+          <p className="mt-6 text-[11px] uppercase tracking-[0.18em] text-white/45 font-mono">{byline}</p>
+        </div>
       </div>
-    </header>
+
+      {text && (
+        <div className="relative z-10 bg-black pointer-events-auto">
+          <div className="max-w-4xl mx-auto px-8 sm:px-14 pt-16 pb-32">
+            {text.split(/\n{2,}/).map((p, i) => (
+              <p key={i} className={`text-stone-200 text-xl leading-[1.85] ${i > 0 ? 'mt-10' : ''}`}>
+                {p}
+              </p>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   )
 }

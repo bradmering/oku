@@ -605,3 +605,35 @@ undo the separation 0012 bought.
 
 The ADR ends by saying it's a precedent to argue against rather than follow, which is the part I
 expect to matter in three months.
+
+---
+
+## 2026-08-08 — Logistics, the whole-route overview, and title parity
+
+Three ports, all now matching the blog.
+
+**Logistics** was the largest and the most mechanical: intro, a two-column resources grid that
+distinguishes downloads from external links by icon, the USGS topo quad table, and the packing list.
+Substituted `ember` for the blog's `red-500` — same role in the palette, and using literal red would
+have been copying a value rather than a decision.
+
+**The whole-route overview** turned out to be two things, not one. The chapter is a frosted panel
+deliberately covering as little of the map as possible — it's the one narrative chapter whose job is
+to let you *look at the map* — and behind it sits `FullMap`, the interactive escape hatch.
+
+That escape hatch matters more than it looks. Everywhere else the map is deliberately
+non-interactive, because scroll drives the camera and letting the mouse fight it would feel broken.
+`FullMap` is the one place a reader can drag, zoom, and tap a photograph to see where it was taken.
+It fits the whole traverse on open, which is the reason to open it.
+
+**Title parity** meant replacing my centred card with the blog's actual `image` layout: a hero that
+parallaxes at ~⅓ scroll speed, the title anchored bottom-left rather than centred, and the opening
+prose in a separate black panel below rather than over the photograph. Those are meaningfully
+different decisions and mine were worse — bottom-left with the gradient reads as a magazine cover;
+centred reads as a slide.
+
+Verified all three against Brooks Range.
+
+Noted while porting: the blog's overview *fits the whole route* by computing bounds, which under our
+model is a camera framing nobody authored. Right now it inherits whatever the preceding move set.
+Worth a `fit` keyframe option eventually — the same class of thing as the `route` title.
