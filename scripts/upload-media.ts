@@ -4,10 +4,22 @@
  *   npx wrangler login            # once
  *   npm run upload-media          # add --dry-run to see the plan first
  *
- * Reads every `/images/...` path referenced by fixtures, finds the file in the
- * blog repo, and puts it in the `oku-media` bucket under the same key. Keys
- * mirror the document paths exactly, so the documents need no rewriting — see
- * `app/images/[...path]/route.ts`.
+ * Reads every media path the BAKED documents reference, finds the file under one
+ * of the source roots, and puts it in the `oku-media` bucket under the same key.
+ * Keys mirror the document paths exactly, so the documents need no rewriting —
+ * see `app/images/[...path]/route.ts`.
+ *
+ * **Media lives in more than one root.** Ingested stories land in `.media/`
+ * (built by `scripts/convert-media.sh`); the migrated blog stories still live in
+ * the blog repo. `MEDIA_SOURCE` is therefore a colon-separated LIST, searched in
+ * order, first hit wins. A single root silently reported 164 White Rim files as
+ * missing.
+ *
+ * **Paths come from `lib/trips.generated.json`, not from a regex over YAML.**
+ * The bake has already resolved every `mediaId`, so it holds exactly the paths
+ * the renderer will request — no more, no less. Regexing the YAML also swept up
+ * `renditions` entries, which are alternates that need not exist locally, and
+ * uploaded phantom files for them.
  *
  * Re-runs are cheap: successfully uploaded files are recorded in
  * `.media-manifest.json` and skipped unless their size changed. Pass --force to
@@ -19,12 +31,15 @@
  */
 
 import { execFileSync } from 'node:child_process'
-import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 
 const BUCKET = 'oku-media'
-const SOURCE = process.env.MEDIA_SOURCE
-  ?? path.resolve('../../Blog/blog-site/public')
+/** Colon-separated, searched in order. Ingested media first — it is the
+ *  authoritative copy for anything `scripts/ingest-trip.ts` produced. */
+const SOURCES = (process.env.MEDIA_SOURCE ?? `.media:${path.resolve('../../Blog/blog-site/public')}`)
+  .split(':')
+  .filter(Boolean)
 const DRY = process.argv.includes('--dry-run')
 const FORCE = process.argv.includes('--force')
 
@@ -39,31 +54,62 @@ const FORCE = process.argv.includes('--force')
 const MANIFEST = '.media-manifest.json'
 
 // ── every media path the documents reference ────────────────────────────────
-function fixtureFiles(dir: string): string[] {
-  if (!existsSync(dir)) return []
-  return readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
-    const p = path.join(dir, e.name)
-    return e.isDirectory() ? fixtureFiles(p) : /\.ya?ml$/.test(e.name) ? [p] : []
-  })
+const BAKED = 'lib/trips.generated.json'
+if (!existsSync(BAKED)) {
+  console.error(`${BAKED} not found — run \`npm run bake\` first.`)
+  process.exit(1)
 }
 
-const referenced = new Set<string>()
-for (const f of ['fixtures/migrated', 'fixtures/forward'].flatMap(fixtureFiles)) {
-  const text = readFileSync(f, 'utf8')
-  // Documents reference several prefixes — /images AND /videos (mp4s plus their
-  // jpg posters). Matching only /images silently skipped 18 files on the first run.
-  for (const m of text.matchAll(/(\/(?:images|videos|audio)\/[^\s"'\]]+)/g)) referenced.add(m[1])
+const MEDIA_PATH = /^\/(?:images|videos|audio)\//
+
+/**
+ * Walk the baked documents for servable media paths.
+ *
+ * `renditions` is skipped deliberately: those are named alternates a converter
+ * may or may not have produced, and the renderer never requests them. Uploading
+ * them meant chasing files that were never supposed to exist.
+ */
+function collectPaths(node: unknown, into: Set<string>): void {
+  if (typeof node === 'string') {
+    if (MEDIA_PATH.test(node)) into.add(node)
+    return
+  }
+  if (Array.isArray(node)) {
+    for (const v of node) collectPaths(v, into)
+    return
+  }
+  if (node && typeof node === 'object') {
+    for (const [key, value] of Object.entries(node)) {
+      if (key === 'renditions') continue
+      collectPaths(value, into)
+    }
+  }
 }
+
+const baked = JSON.parse(readFileSync(BAKED, 'utf8')) as { source: string; trip: unknown }[]
+const referenced = new Set<string>()
+for (const { trip } of baked) collectPaths(trip, referenced)
 
 const paths = [...referenced].sort()
-console.log(`\n${paths.length} media path(s) referenced by the documents`)
-console.log(`Source: ${SOURCE}`)
-console.log(`Bucket: ${BUCKET}${DRY ? '   [dry run]' : ''}\n`)
+console.log(`\n${paths.length} media path(s) referenced by ${baked.length} baked document(s)`)
+console.log(`Sources: ${SOURCES.join('  ·  ')}`)
+console.log(`Bucket:  ${BUCKET}${DRY ? '   [dry run]' : ''}\n`)
 
-if (!existsSync(SOURCE)) {
-  console.error(`Source directory not found: ${SOURCE}`)
-  console.error(`Set MEDIA_SOURCE to the blog repo's public/ directory.`)
+const usable = SOURCES.filter((s) => existsSync(s))
+if (!usable.length) {
+  console.error(`None of the source roots exist:\n  ${SOURCES.join('\n  ')}`)
+  console.error(`Set MEDIA_SOURCE to a colon-separated list of media roots.`)
   process.exit(1)
+}
+for (const s of SOURCES) if (!existsSync(s)) console.log(`  (skipping missing root ${s})\n`)
+
+/** First root that has the file. */
+function locate(ref: string): string | null {
+  for (const root of usable) {
+    const p = path.join(root, ref)
+    if (existsSync(p)) return p
+  }
+  return null
 }
 
 // ── what we've already sent ─────────────────────────────────────────────────
@@ -80,9 +126,9 @@ let uploaded = 0, skipped = 0, missing: string[] = [], bytes = 0
 
 for (const ref of paths) {
   const key = ref.replace(/^\//, '')                 // /images/a/b.webp → images/a/b.webp
-  const local = path.join(SOURCE, ref)
+  const local = locate(ref)
 
-  if (!existsSync(local)) { missing.push(ref); continue }
+  if (!local) { missing.push(ref); continue }
 
   const size = statSync(local).size
   // Skip only if we sent it AND the file hasn't changed since.
@@ -114,10 +160,11 @@ for (const ref of paths) {
 console.log(`\n\n${uploaded} uploaded · ${skipped} already present · ${(bytes / 1024 / 1024).toFixed(1)} MB`)
 
 if (missing.length) {
-  console.log(`\n⚠️  ${missing.length} referenced file(s) not found under ${SOURCE}:`)
+  console.log(`\n⚠️  ${missing.length} referenced file(s) not found in any source root:`)
   for (const m of missing.slice(0, 15)) console.log(`     ${m}`)
   if (missing.length > 15) console.log(`     … and ${missing.length - 15} more`)
-  console.log(`\nThese will 404 until the files are located. Not fatal — the documents`)
-  console.log(`are the record; the media just isn't where the blog repo keeps it.`)
+  console.log(`\nNot fatal — the documents are the record. Expect this for the`)
+  console.log(`forward/ fixtures, whose media is illustrative and never existed.`)
+  console.log(`For a real story it means a source root is missing from MEDIA_SOURCE.`)
 }
 console.log()

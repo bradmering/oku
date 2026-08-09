@@ -1,4 +1,4 @@
-import type { Trip } from '@/schema/trip'
+import type { ResolvedTrip } from '@/schema/trip'
 import baked from './trips.generated.json'
 
 /**
@@ -11,12 +11,12 @@ import baked from './trips.generated.json'
  * When stories move to R2 this becomes an async fetch — the call sites are
  * already shaped for it.
  */
-const entries = baked as unknown as { source: string; trip: Trip }[]
+const entries = baked as unknown as { source: string; trip: ResolvedTrip }[]
 
-export function getTrip(slug: string): Trip | null {
+export function getTrip(slug: string): ResolvedTrip | null {
   return entries.find((e) => e.trip.slug === slug)?.trip ?? null
 }
 
-export function getAllTrips(): { trip: Trip; source: string }[] {
+export function getAllTrips(): { trip: ResolvedTrip; source: string }[] {
   return entries
 }

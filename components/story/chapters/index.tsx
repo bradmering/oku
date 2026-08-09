@@ -1,4 +1,4 @@
-import type { Trip, Chapter } from '@/schema/trip'
+import type { ResolvedTrip as Trip, ResolvedChapter as Chapter } from '@/schema/trip'
 import Gallery from './Gallery'
 import Article from './Article'
 import ParallaxVideo from './ParallaxVideo'

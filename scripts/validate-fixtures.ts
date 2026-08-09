@@ -13,6 +13,7 @@ import { readdirSync, readFileSync, existsSync } from 'node:fs'
 import path from 'node:path'
 import { load as yamlLoad } from 'js-yaml'
 import { Trip, Chapter } from '../schema/trip.ts'
+import { resolveMedia } from '../lib/resolve-media.ts'
 
 const FIXTURES = 'fixtures'
 const LEGACY = path.join(FIXTURES, 'legacy')
@@ -36,7 +37,13 @@ function check(file: string): Result {
     return { file, ok: false, issues: [`YAML parse error: ${(e as Error).message}`] }
   }
   const r = Trip.safeParse(doc)
-  if (r.success) return { file, ok: true, issues: [] }
+  if (r.success) {
+    // Shape is only half of it. "Exactly one of src/mediaId" and dangling ids are
+    // cross-referential, so they live in the resolver — decisions/0016.
+    const { issues } = resolveMedia(r.data)
+    if (!issues.length) return { file, ok: true, issues: [] }
+    return { file, ok: false, issues: issues.map((i) => `${i.path}: ${i.message}`) }
+  }
   const issues = r.error.issues.map((i) => {
     const at = i.path.length ? i.path.join('.') : '(root)'
     return `${at}: ${i.message}`
@@ -90,7 +97,11 @@ function chapterDrift(file: string): string[] {
 }
 
 const legacyFiles = collect(LEGACY)
-const currentFiles = collect(FIXTURES).filter((f) => !f.startsWith(LEGACY + path.sep))
+// Authored stories must conform exactly as fixtures do — they just aren't fixtures.
+const currentFiles = [
+  ...collect(FIXTURES).filter((f) => !f.startsWith(LEGACY + path.sep)),
+  ...collect('stories'),
+]
 
 let failed = 0
 

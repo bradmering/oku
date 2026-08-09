@@ -13,8 +13,11 @@ import { readdirSync, readFileSync, existsSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { load as yamlLoad } from 'js-yaml'
 import { Trip } from '../schema/trip.ts'
+import { resolveMedia } from '../lib/resolve-media.ts'
 
-const ROOTS = ['fixtures/migrated', 'fixtures/forward']
+/** `stories/` holds real authored trips. `fixtures/` is the conformance suite —
+ *  a story is not a fixture, and mixing them would blur what `forward/` means. */
+const ROOTS = ['fixtures/migrated', 'fixtures/forward', 'stories']
 const OUT = 'lib/trips.generated.json'
 
 function collect(dir: string): string[] {
@@ -25,6 +28,8 @@ function collect(dir: string): string[] {
   })
 }
 
+let refErrors = 0
+
 const trips = ROOTS.flatMap(collect)
   .map((file) => {
     const r = Trip.safeParse(yamlLoad(readFileSync(file, 'utf8')))
@@ -32,7 +37,17 @@ const trips = ROOTS.flatMap(collect)
       console.warn(`  ⚠️  skipped ${file} — does not validate`)
       return null
     }
-    return { source: file, trip: r.data }
+    // Collapse mediaId/imageId into literal paths so the renderer never has to
+    // look anything up — decisions/0016.
+    const { trip, issues } = resolveMedia(r.data)
+    if (issues.length) {
+      refErrors += issues.length
+      console.error(`  ❌ ${file} — ${issues.length} unresolved media reference(s)`)
+      for (const i of issues.slice(0, 8)) console.error(`       ${i.path}: ${i.message}`)
+      if (issues.length > 8) console.error(`       … and ${issues.length - 8} more`)
+      return null
+    }
+    return { source: file, trip }
   })
   .filter((x): x is { source: string; trip: unknown } => x !== null)
   .sort((a, b) => (a.trip as { title: string }).title.localeCompare((b.trip as { title: string }).title))
@@ -45,3 +60,9 @@ for (const { trip, source } of trips) {
   console.log(`  · ${t.slug.padEnd(16)} ${source}`)
 }
 console.log()
+
+// A dangling reference is a build failure, not a page that 404s at read time.
+if (refErrors) {
+  console.error(`${refErrors} unresolved media reference(s) — see above.\n`)
+  process.exit(1)
+}

@@ -212,6 +212,33 @@ Full catalogue in `02-chapter-types.md`.
 
 ---
 
+## Media identity — chapters point at `sources.media[]`
+
+Every media reference has a direct form and an indirect one, and **exactly one must be present**:
+
+| Direct | Indirect | Where |
+|---|---|---|
+| `src` | `mediaId` | article hero + media, video, parallax-video, gallery images |
+| `image` | `imageId` | title, splash, image |
+
+**Hand-written documents use the direct form; ingested documents use the indirect one.** Both are
+correct. A story with no `sources` at all stays writable by hand — the same instinct as GPX-first,
+not GPX-required (`decisions/0003`).
+
+The indirect form exists because **a background converter finishes after the document is written.**
+With bare paths, every chapter mentioning a file has to be rewritten when its WebP or HLS rendition
+lands. With ids, the converter updates one `sources.media[]` entry and every reference follows.
+
+**`build-trips.ts` collapses indirect → direct at bake time**, so the renderer only ever sees
+literal paths and no component needs a trip object threaded down to it. The resolver
+(`lib/resolve-media.ts`) is also where "exactly one" and dangling-id detection are enforced —
+neither is expressible in Zod. See `decisions/0016`.
+
+On a media item, **`src` is always the path to serve**; `renditions` holds named alternates
+(`original`, `thumb`, `hls`), and those names are converter-defined, not spec-defined.
+
+---
+
 ## Posture is derived, never declared
 
 **The author never picks a format.** No dispatch-or-report dropdown, no mode selector. One editor,
@@ -237,9 +264,6 @@ not more.
 - **The plan side.** `hulahula-plan` is a fourth schema — planned stops with cues, dates, and route
   slices. Is a plan a Trip whose legs are `planned` rather than recorded, or its own object? See
   `04-formats.md`.
-- **Media identity.** Chapters reference `src: string`; `Sources.media[]` has capture time and
-  coordinates. Nothing connects them, so fusion knowledge is lost at authoring time. Chapters
-  probably need `mediaId`.
 - **Per-chapter authorship.** Multi-person composition is the differentiator and `authors` lives
   only on Trip. A POV switch needs `authorId` on the chapter.
 - **A move with no stage** — undefined. Ignored, or invalid?

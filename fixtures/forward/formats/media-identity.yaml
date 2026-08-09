@@ -1,0 +1,122 @@
+# Exercises media identity (decisions/0016):
+#   · chapters referencing media by `mediaId` / `imageId` instead of a bare path
+#   · `src` still legal in the SAME document — hand-written and ingested refs mix
+#   · article media `type` omitted and filled from the media item's `kind`
+#   · a ref's own `poster` beating the media item's
+#   · `renditions` on a media item, with `src` as the path to serve
+#   · a media item nobody references (fusion output the author didn't use)
+#
+# What to look at: bake this and read `lib/trips.generated.json` — every `mediaId`
+# should be gone, replaced by the item's `src`, and no renderer knows the difference.
+
+specVersion: 1
+id: 01J9ABCD0000000000000000
+slug: media-identity
+title: "Referencing media by id"
+subtitle: "The same document, both ways"
+dates:
+  start: "2026-05-02"
+  end: "2026-05-03"
+visibility: unlisted
+
+authors:
+  - id: auth_brad
+    name: Brad Mering
+
+sources:
+  tracks:
+    - id: trk_d1
+      name: "Day 1"
+      startedAt: "2026-05-02T14:00:00Z"
+      endedAt: "2026-05-02T22:30:00Z"
+  legs:
+    - id: leg_d1
+      label: "Day 1"
+      startedAt: "2026-05-02T14:00:00Z"
+      endedAt: "2026-05-02T22:30:00Z"
+      mode: ride
+      trackId: trk_d1
+      stats:
+        distanceM: 63930
+        ascentM: 906
+  media:
+    # `src` is the path to SERVE. The original sits under renditions, which is
+    # where a background converter files it after producing the webp.
+    - id: med_0001
+      src: /images/media-identity/IMG_4724.webp
+      kind: image
+      capturedAt: "2026-05-02T15:12:00Z"
+      coordinates: [-109.99046, 38.50941]
+      legId: leg_d1
+      renditions:
+        original: /images/media-identity/IMG_4724.JPG
+        thumb: /images/media-identity/IMG_4724.thumb.webp
+    - id: med_0002
+      src: /images/media-identity/IMG_4764.webp
+      kind: image
+      capturedAt: "2026-05-02T17:40:00Z"
+      legId: leg_d1
+    - id: med_0003
+      src: /videos/media-identity/IMG_2424.mp4
+      kind: video
+      capturedAt: "2026-05-02T18:20:51Z"
+      coordinates: [-109.90986, 38.32342]
+      legId: leg_d1
+      poster: /videos/media-identity/IMG_2424.jpg
+    # Referenced by nobody. Ingest found it; the author left it out. That is
+    # allowed — the data proposes, the author disposes (decisions/0012).
+    - id: med_0004
+      src: /images/media-identity/IMG_4890.webp
+      kind: image
+      capturedAt: "2026-05-03T01:05:00Z"
+      legId: leg_d1
+
+chapters:
+  # imageId, not image.
+  - id: ch_title
+    type: title
+    layout: image
+    imageId: med_0001
+    heading: "Referencing media by id"
+
+  - id: ch_day1
+    type: article
+    heading: "Day 1"
+    stats:
+      legId: leg_d1
+    text: |
+      The hero comes from `sources.media[]`; the strip below mixes an id-based
+      reference with a literal path, because both are correct.
+    heroImage:
+      mediaId: med_0002
+      caption: "Caption lives on the reference — sources hold facts, chapters hold voice."
+    media:
+      # No `type`: it is `kind` on the item, and the resolver fills it in.
+      - mediaId: med_0001
+        caption: "Dropping into Mineral Bottom"
+      # No `poster` here either — inherited from the media item.
+      - mediaId: med_0003
+        caption: "The wash below Murphy"
+        loop: true
+      # A literal path in the same document as the ids above.
+      - type: image
+        src: /images/media-identity/IMG_4769.webp
+        caption: "Hand-written, no sources entry, still valid"
+
+  # A gallery mixing both forms.
+  - id: ch_gallery
+    type: gallery
+    layout: trio
+    images:
+      - mediaId: med_0001
+      - mediaId: med_0002
+        caption: "The reference's caption wins"
+      - src: /images/media-identity/IMG_4777.webp
+        caption: "Literal"
+
+  # The ref's own poster beats the item's.
+  - id: ch_video
+    type: video
+    mediaId: med_0003
+    poster: /images/media-identity/IMG_4840.webp
+    caption: "Explicit poster overrides the media item's"
