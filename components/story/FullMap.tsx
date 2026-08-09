@@ -2,8 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import mapboxgl from 'mapbox-gl'
-
-type Pin = { coordinates: [number, number]; thumbnail: string; image: string; caption?: string }
+import type { DerivedPin as Pin } from '@/schema/trip'
 
 /**
  * The interactive escape hatch.

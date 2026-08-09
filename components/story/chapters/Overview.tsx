@@ -2,8 +2,7 @@
 
 import { useState } from 'react'
 import FullMap from '../FullMap'
-
-type Pin = { coordinates: [number, number]; thumbnail: string; image: string; caption?: string }
+import type { DerivedPin as Pin } from '@/schema/trip'
 
 /**
  * The whole-route card. A frosted panel over the map rather than a solid block —

@@ -14,6 +14,7 @@ import path from 'node:path'
 import { load as yamlLoad } from 'js-yaml'
 import { Trip } from '../schema/trip.ts'
 import { resolveMedia } from '../lib/resolve-media.ts'
+import { derivePins } from '../lib/derive-pins.ts'
 
 /** `stories/` holds real authored trips. `fixtures/` is the conformance suite —
  *  a story is not a fixture, and mixing them would blur what `forward/` means. */
@@ -37,9 +38,15 @@ const trips = ROOTS.flatMap(collect)
       console.warn(`  ⚠️  skipped ${file} — does not validate`)
       return null
     }
-    // Collapse mediaId/imageId into literal paths so the renderer never has to
-    // look anything up — decisions/0016.
+    // Pins first: derived from the AUTHORED document, while `mediaId` is still
+    // there to match on — decisions/0017.
+    const pins = derivePins(r.data)
+    // Then collapse mediaId/imageId into literal paths so the renderer never has
+    // to look anything up — decisions/0016.
     const { trip, issues } = resolveMedia(r.data)
+    if (pins.length && trip.stage?.type === 'map') {
+      ;(trip.stage as typeof trip.stage & { pins: typeof pins }).pins = pins
+    }
     if (issues.length) {
       refErrors += issues.length
       console.error(`  ❌ ${file} — ${issues.length} unresolved media reference(s)`)
