@@ -167,6 +167,7 @@ function capturedAt(e: Exif): number | null {
 
 type Item = {
   id: string; src: string; original: string; kind: 'image' | 'video'
+  stem: string; live?: string
   t: number; lat: number | null; lng: number | null; legId?: string
 }
 
@@ -184,6 +185,7 @@ for (const e of exif) {
     src: isVideo ? `/videos/${SLUG}/${stem}.mp4` : `/images/${SLUG}/${stem}.webp`,
     original: e.FileName,
     kind: isVideo ? 'video' : 'image',
+    stem,
     t,
     lat: e.GPSLatitude ?? null,
     lng: e.GPSLongitude ?? null,
@@ -191,12 +193,47 @@ for (const e of exif) {
 }
 items.sort((a, b) => a.t - b.t)
 
-// Ids must be unique — IMG_2424.HEIC and IMG_2424.MP4 share a stem.
+/**
+ * Collapse Live Photos.
+ *
+ * iOS and Google Photos export one photograph as TWO files — a still and a 1–3
+ * second motion clip under the same stem. Emitting both makes one photograph
+ * look like two media items, and turns a still into a video that flashes and
+ * stops. On the White Rim dump that was 37 of 39 "videos"; only two files were
+ * real clips.
+ *
+ * **Pairing is the discriminator, not duration.** A genuinely short clip someone
+ * meant to shoot has no still twin, and a 3.4s Live Photo does. Deciding on a
+ * duration threshold would have caught most of these and mislabelled the edges.
+ *
+ * The motion is not thrown away — it is recorded under `renditions.live`, so the
+ * fact survives without the story having to show it.
+ */
+const byStem = new Map<string, Item[]>()
+for (const it of items) {
+  if (!byStem.has(it.stem)) byStem.set(it.stem, [])
+  byStem.get(it.stem)!.push(it)
+}
+const livePhotos: string[] = []
+const dropped = new Set<Item>()
+for (const group of byStem.values()) {
+  const still = group.find((x) => x.kind === 'image')
+  const motion = group.filter((x) => x.kind === 'video')
+  if (!still || !motion.length) continue
+  still.live = motion[0].original
+  for (const m of motion) dropped.add(m)
+  livePhotos.push(still.stem)
+}
+const collapsed = items.filter((it) => !dropped.has(it))
+items.length = 0
+items.push(...collapsed)
+
+// Ids must still be unique — two different cameras can produce the same stem.
 const seen = new Map<string, number>()
 for (const it of items) {
   const n = (seen.get(it.id) ?? 0) + 1
   seen.set(it.id, n)
-  if (n > 1) it.id = `${it.id}-${it.kind}`
+  if (n > 1) it.id = `${it.id}-${n}`
 }
 
 // ── legs ─────────────────────────────────────────────────────────────────────
@@ -287,17 +324,38 @@ const firstImage = (legId: string) => mediaFor(legId).find((m) => m.kind === 'im
 
 const chapters: unknown[] = []
 
+// A photograph opens the story. `image` rather than `route`: the route layout
+// holds the title over the drawing map, which is the same beat the overview
+// chapter plays a moment later.
 const opener = items.find((m) => m.kind === 'image')
 chapters.push({
   id: 'ch_title',
   type: 'title',
-  layout: 'route',
+  layout: opener ? 'image' : 'text',
   heading: opt('title', humanize(SLUG)),
   subheading: `${startDate} — ${endDate}`,
   ...(opener ? { imageId: opener.id } : {}),
 })
 
 chapters.push({ id: 'ch_overview', type: 'overview', heading: 'The route' })
+
+// Logistics, pre-filled with what the TRACKS know and nothing else. Links,
+// quads and packing are the author's — ingest has no source for them and
+// inventing permit details would be worse than leaving them out.
+const totalM = tracks.reduce((n, t) => n + (t.distanceM ?? 0), 0)
+const totalAscent = tracks.reduce((n, t) => n + (t.ascentM ?? 0), 0)
+const rideM = routeTracks.reduce((n, t) => n + (t.distanceM ?? 0), 0)
+const dayCount = new Set(legs.map((l) => iso(l.start).slice(0, 10))).size
+chapters.push({
+  id: 'ch_logistics',
+  type: 'logistics',
+  heading: 'Logistics',
+  text:
+    `${(rideM / 1000).toFixed(0)} km of riding over ${dayCount} days, ` +
+    `${(totalAscent).toLocaleString('en-US')} m of climbing across ` +
+    `${tracks.length} recorded activities (${(totalM / 1000).toFixed(0)} km total). ` +
+    `\n\nTODO: permits, shuttle, water caches, camps.`,
+})
 
 for (const leg of legs) {
   const legMedia = mediaFor(leg.id)
@@ -377,7 +435,11 @@ const doc = {
         : {}),
       ...(m.legId ? { legId: m.legId } : {}),
       // Where the file came from, so a converter can be re-run or audited.
-      renditions: { original: `raw/${m.original}` },
+      // `live` is a Live Photo's motion clip: kept as a fact, not shown.
+      renditions: {
+        original: `raw/${m.original}`,
+        ...(m.live ? { live: `raw/${m.live}` } : {}),
+      },
     })),
   },
   stage: {
@@ -412,6 +474,10 @@ for (const l of legs) {
 const geo = items.filter((m) => m.lat != null).length
 console.log(`\n${items.length} media item(s) · ${geo} geotagged · ${items.length - geo} placed by timestamp alone`)
 console.log(`${usedFallbackTz} file(s) had no EXIF offset and used the --tz fallback (${TZ})`)
+console.log(
+  `${livePhotos.length} Live Photo pair(s) collapsed to their stills — ` +
+  `${items.filter((m) => m.kind === 'video').length} real video(s) remain`,
+)
 if (undated.length) console.log(`${undated.length} file(s) had no usable timestamp: ${undated.join(', ')}`)
 console.log(`Route: ${routePoints.length} points from ${routeTracks.length} ride track(s), decimated to ${route.length}`)
 
