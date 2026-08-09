@@ -5,6 +5,8 @@ import type { Trip, Chapter } from '@/schema/trip'
 import { pickCamera, resolve, type Camera } from '@/lib/interpolate'
 import Stage from './Stage'
 import ChapterView from './chapters'
+import ChapterNav from './ChapterNav'
+import ReadingProgress from './ReadingProgress'
 
 /**
  * The thread, and the scroll→camera binding.
@@ -16,6 +18,11 @@ import ChapterView from './chapters'
 export default function Story({ trip }: { trip: Trip }) {
   const wrap = useRef<HTMLDivElement>(null)
   const anchors = useRef<Map<string, HTMLElement>>(new Map())
+  const chapterEls = useRef<Map<string, HTMLElement>>(new Map())
+
+  /** Nav lists narrative chapters only — moves render nothing. See ChapterNav. */
+  const navChapters = useMemo(() => trip.chapters.filter((c) => c.type !== 'move'), [trip])
+  const [activeId, setActiveId] = useState<string | null>(null)
 
   const stage = trip.stage
   const isMap = stage?.type === 'map'
@@ -64,6 +71,15 @@ export default function Story({ trip }: { trip: Trip }) {
       })
 
       setCamera(pickCamera(keyframes.map((k) => k.cam), tops, vh))
+
+      // Active chapter = the last one whose top has passed the same line the
+      // camera uses, so the nav and the map agree about where you are.
+      let current: string | null = null
+      for (const c of navChapters) {
+        const el = chapterEls.current.get(c.id)
+        if (el && el.getBoundingClientRect().top - line <= 0) current = c.id
+      }
+      setActiveId(current ?? navChapters[0]?.id ?? null)
     }
 
     // Coalesce to one update per frame, but drive it from real events rather
@@ -86,7 +102,7 @@ export default function Story({ trip }: { trip: Trip }) {
       window.removeEventListener('resize', onChange)
       ro.disconnect()
     }
-  }, [keyframes])
+  }, [keyframes, navChapters])
 
   const hasStage = !!stage
 
@@ -106,6 +122,9 @@ export default function Story({ trip }: { trip: Trip }) {
         </div>
       )}
 
+      <ReadingProgress />
+      <ChapterNav chapters={navChapters} activeId={activeId} />
+
       <div className="relative z-10">
         {trip.chapters.map((ch: Chapter) =>
           ch.type === 'move' ? (
@@ -118,7 +137,13 @@ export default function Story({ trip }: { trip: Trip }) {
               ref={(el) => { if (el) anchors.current.set(ch.id, el) }}
             />
           ) : (
-            <ChapterView key={ch.id} chapter={ch} trip={trip} />
+            <div
+              key={ch.id}
+              id={ch.id}
+              ref={(el) => { if (el) chapterEls.current.set(ch.id, el) }}
+            >
+              <ChapterView chapter={ch} trip={trip} />
+            </div>
           ),
         )}
       </div>

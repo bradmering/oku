@@ -485,3 +485,25 @@ Worth noting the z-index worked out without fighting: the thread is `relative z-
 z-0` stage, which makes the thread its own stacking context, so the parallax's internal z-15/z-20
 are scoped to it. No ancestor sets `overflow`, which is what would silently break `position:
 sticky`.
+
+---
+
+## 2026-08-08 — Chapter nav + reading progress
+
+`ReadingProgress` is a straight port, pinned to `top-0` rather than the blog's `top-14` since oku
+has no nav bar to sit under.
+
+**`ChapterNav` needed a decision rather than a port**, which is the thing I'd flagged when listing
+what was left. The blog's nav lists every chapter; our thread also contains `move` chapters, which
+render nothing. Listing them would fill the menu with unlabelled entries and make the counter
+meaningless — "7 / 30" where 11 of the 30 are invisible.
+
+So **the nav's unit is the narrative chapter, not the thread entry.** Moves are excluded. Brooks
+Range shows 19, not 30, which is the number a reader would actually count.
+
+Active-chapter tracking reuses the scroll handler that already drives the camera, and deliberately
+uses **the same anchor line** — so the nav and the map always agree about where you are. Two
+independent notions of "current position" would drift apart and feel broken in a way that's hard to
+diagnose.
+
+Each content chapter now carries its `id` as a DOM id, so nav jumps and `#fragment` links work.
