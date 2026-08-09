@@ -1,37 +1,26 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { Map as MapLibreMap, type StyleSpecification, type GeoJSONSource } from 'maplibre-gl'
+import mapboxgl from 'mapbox-gl'
 import type { Camera } from '@/lib/interpolate'
 import { routeHead } from '@/lib/interpolate'
 
 /**
  * The persistent map stage.
  *
- * Deliberately dumb: it takes a Camera every frame and applies it with
- * `jumpTo`. All easing lives in the interpolation, because scroll position IS
- * the animation parameter — using flyTo/easeTo here would fight the scroll and
- * reintroduce exactly the abrupt, disconnected motion this model removes.
+ * Deliberately dumb: it takes a Camera and applies it with `jumpTo`. All easing
+ * lives in the interpolation, because scroll position IS the animation
+ * parameter — an easing animation here would fight the scroll and reintroduce
+ * exactly the abrupt motion this model exists to remove.
+ *
+ * mapbox-gl rather than maplibre-gl: the trip documents specify Mapbox styles
+ * (`mapbox://styles/mapbox/satellite-streets-v12`), and a Mapbox style's own
+ * sprites, glyphs and sources are `mapbox://` URLs. MapLibre dropped that
+ * protocol when it forked, so those styles load with every internal asset
+ * failing — a blank map with no obvious error.
  */
 
-const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
-
-/** Self-contained fallback so the renderer works with no secrets. The route
- *  line against a flat ground is enough to judge the interpolation, which is
- *  the thing worth looking at first. */
-const FALLBACK_STYLE: StyleSpecification = {
-  version: 8,
-  sources: {},
-  layers: [{ id: 'bg', type: 'background', paint: { 'background-color': '#101416' } }],
-}
-
-function resolveStyle(styleUrl?: string): string | StyleSpecification {
-  if (styleUrl?.startsWith('mapbox://') && MAPBOX_TOKEN) {
-    const id = styleUrl.replace('mapbox://styles/', '')
-    return `https://api.mapbox.com/styles/v1/${id}?access_token=${MAPBOX_TOKEN}`
-  }
-  return FALLBACK_STYLE
-}
+const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
 
 export default function Stage({
   styleUrl,
@@ -45,24 +34,36 @@ export default function Stage({
   terrain?: boolean
 }) {
   const el = useRef<HTMLDivElement>(null)
-  const map = useRef<MapLibreMap | null>(null)
+  const map = useRef<mapboxgl.Map | null>(null)
   const ready = useRef(false)
 
   useEffect(() => {
-    if (!el.current || map.current) return
-    const m = new MapLibreMap({
+    if (!el.current || map.current || !TOKEN) return
+    mapboxgl.accessToken = TOKEN
+
+    const m = new mapboxgl.Map({
       container: el.current,
-      style: resolveStyle(styleUrl),
+      style: styleUrl ?? 'mapbox://styles/mapbox/satellite-streets-v12',
       center: camera.center,
       zoom: camera.zoom,
       pitch: camera.pitch,
       bearing: camera.bearing,
-      interactive: false,          // scroll drives the camera, not the mouse
+      interactive: false,        // scroll drives the camera, not the mouse
       attributionControl: false,
     })
     map.current = m
 
-    m.on('load', () => {
+    m.on('style.load', () => {
+      if (terrain) {
+        m.addSource('dem', {
+          type: 'raster-dem',
+          url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
+          tileSize: 512,
+          maxzoom: 14,
+        })
+        m.setTerrain({ source: 'dem', exaggeration: 1.4 })
+      }
+
       if (route && route.length >= 2) {
         m.addSource('route', {
           type: 'geojson',
@@ -73,7 +74,7 @@ export default function Stage({
           type: 'line',
           source: 'route',
           layout: { 'line-join': 'round', 'line-cap': 'round' },
-          paint: { 'line-color': '#f0623c', 'line-width': 14, 'line-opacity': 0.22, 'line-blur': 8 },
+          paint: { 'line-color': '#f0623c', 'line-width': 16, 'line-opacity': 0.25, 'line-blur': 6 },
         })
         m.addLayer({
           id: 'route-line',
@@ -90,7 +91,7 @@ export default function Stage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Apply the camera every time it changes. jumpTo, never flyTo.
+  // Apply the camera whenever it changes. jumpTo, never flyTo.
   useEffect(() => {
     const m = map.current
     if (!m) return
@@ -101,7 +102,7 @@ export default function Stage({
       bearing: camera.bearing,
     })
     if (ready.current && route && route.length >= 2) {
-      const src = m.getSource('route') as GeoJSONSource | undefined
+      const src = m.getSource('route') as mapboxgl.GeoJSONSource | undefined
       src?.setData({
         type: 'Feature',
         properties: {},
@@ -113,10 +114,10 @@ export default function Stage({
   return (
     <div className="stage">
       <div ref={el} className="stage-canvas" />
-      {!MAPBOX_TOKEN && styleUrl?.startsWith('mapbox://') && (
+      {!TOKEN && (
         <p className="stage-note">
-          No <code>NEXT_PUBLIC_MAPBOX_TOKEN</code> — showing the route on a flat ground.
-          The interpolation is the thing to watch.
+          No <code>NEXT_PUBLIC_MAPBOX_TOKEN</code> at build time — the map can&apos;t render.
+          It&apos;s inlined into the client bundle, so it must be set when Next builds.
         </p>
       )}
     </div>

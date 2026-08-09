@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import 'maplibre-gl/dist/maplibre-gl.css'
+import 'mapbox-gl/dist/mapbox-gl.css'
 
 export const metadata: Metadata = {
   title: 'oku',

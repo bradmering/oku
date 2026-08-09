@@ -373,3 +373,28 @@ two disagree.
 
 The current run finishes in the right state regardless — it overwrites with identical bytes and
 picks up the missing videos.
+
+---
+
+## 2026-08-08 — MapLibre → mapbox-gl: `mapbox://` URLs inside a style
+
+Brad added the token and still saw no map. The secret was present and the deploy that followed it
+built with it, so the wiring was fine — the library was wrong.
+
+**MapLibre can't render a Mapbox style.** I was translating `mapbox://styles/mapbox/...` into the
+Style API URL, which fetches fine — but the style JSON it returns refers to its own sprites, glyphs
+and sources with `mapbox://` URLs, and MapLibre dropped that protocol when it forked from Mapbox GL
+JS. So the style loads and every asset inside it silently fails: blank map, no useful error.
+
+I chose MapLibre so the renderer would work with no token, which was reasonable then and wrong
+once real styles mattered. The blog has used `mapbox-gl` all along with these exact styles — the
+proof was sitting next door.
+
+Swapped to `mapbox-gl`, and took the opportunity to wire `setTerrain` with a raster-dem source
+behind the existing `stage.terrain` flag, which is the 3D relief the spec has wanted since
+Session 5.
+
+Worth noting for later: mapbox-gl is BSL-licensed and bills per map load, where MapLibre is open
+and free. Fine at this scale and with a token already in hand, but it's a dependency with terms —
+if that ever matters, the escape route is a non-Mapbox style (Protomaps, OpenFreeMap) plus a
+switch back.
