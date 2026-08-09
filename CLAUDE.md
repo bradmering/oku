@@ -1,7 +1,8 @@
 # oku — agent brief
 
-Read this before doing anything. Then read `spec/01-data-model.md`. Then read the relevant ADRs in
-`spec/decisions/`.
+**If you are starting a session on the White Rim story, read `HANDOFF.md` first.**
+
+Otherwise: read this, then `spec/01-data-model.md`, then the relevant ADRs in `spec/decisions/`.
 
 ## What this is
 

@@ -637,3 +637,30 @@ Verified all three against Brooks Range.
 Noted while porting: the blog's overview *fits the whole route* by computing bounds, which under our
 model is a camera framing nobody authored. Right now it inherits whatever the preceding move set.
 Worth a `fit` keyframe option eventually — the same class of thing as the `route` title.
+
+---
+
+## 2026-08-09 — White Rim source data surveyed; handoff written
+
+Brad dropped the White Rim material at `Projects/whiterim` and asked for a handoff to a fresh
+session. Surveyed rather than assumed. `HANDOFF.md` is the result; the findings that matter:
+
+**These are `.fit` files, and nothing in this repo reads FIT.** `gpx-import.mjs` is GPX-only, and
+`exiftool` returns filesystem metadata and no telemetry from them (header signature confirms they're
+valid FIT). That blocks everything downstream and is the first task.
+
+**Four activities, not three days** — and the fourth is `Lathrop_canyon_run_with_mark.fit`. A run
+rather than a ride, a side trip rather than a day, with a second person. It exercises `Leg.mode`,
+sub-day segmentation and multi-author in one file — three things the schema was designed for that no
+existing document has ever tested. That single file is the best argument for writing this story.
+
+**I was wrong about timezones.** `organize-media.mjs` *requires* `--tz` because "photos record local
+time with no offset and it cannot be guessed." 67 of these files carry `OffsetTimeOriginal: -06:00`.
+True of the Brooks Range camera, false here — read the offset when present, fall back to the flag.
+
+Other numbers worth having: 123 files / 355 MB (5× Brooks Range), 41 HEIC needing conversion, 39
+video clips against Brooks Range's 9, and **only 57 of 123 carrying GPS** — so timestamp alignment
+does the work rather than geotags, which is a harder and more honest test of the fusion layer than
+Brooks Range gave it. Media spans five days (04-26 → 04-30) for a trip described as three.
+
+Also pointed `CLAUDE.md` at the handoff so a cold session finds it first.
