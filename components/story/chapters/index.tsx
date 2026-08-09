@@ -1,5 +1,6 @@
 import type { Trip, Chapter } from '@/schema/trip'
 import Gallery from './Gallery'
+import Article from './Article'
 
 /** Renders one content chapter. `move` never reaches here — it's handled in the
  *  thread as a scroll anchor. */
@@ -26,14 +27,15 @@ export default function ChapterView({ chapter: ch, trip }: { chapter: Chapter; t
 
     case 'article':
       return (
-        <section className={`ch ch--article ch--${ch.align ?? 'left'}`}>
-          <div className="card">
-            {ch.heading && <h2>{ch.heading}</h2>}
-            {ch.subheading && <p className="sub">{ch.subheading}</p>}
-            {ch.stats && <Stats trip={trip} legId={ch.stats.legId} />}
-            {ch.text && <Prose text={ch.text} />}
-          </div>
-        </section>
+        <Article
+          heading={ch.heading}
+          subheading={ch.subheading}
+          text={ch.text}
+          align={ch.align}
+          heroImage={ch.heroImage}
+          media={ch.media}
+          stats={ch.stats ? <Stats trip={trip} legId={ch.stats.legId} /> : null}
+        />
       )
 
     case 'overview':

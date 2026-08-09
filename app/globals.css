@@ -339,3 +339,71 @@ a { color: inherit; }
   margin: 0; color: rgba(255,255,255,.45);
   font-family: ui-monospace, SFMono-Regular, monospace; font-size: .74rem;
 }
+
+/* ── article ─────────────────────────────────────────────────────────────── */
+/* A light panel over the dark stage. The contrast is the point: prose sits on
+   paper, the map is the world behind it. */
+.art { position: relative; z-index: 1; background: var(--paper); color: var(--ink); }
+
+.art-main { display: flex; flex-direction: column; }
+.art-hero { margin: 0; position: relative; overflow: hidden; cursor: zoom-in; }
+.art-hero img {
+  width: 100%; height: 16rem; object-fit: cover;
+  transition: transform 1.2s ease-out;
+}
+.art-hero:hover img { transform: scale(1.04); }
+.art-hero figcaption {
+  padding: .5rem 1rem; color: #8a8a86; font-size: .78rem; font-style: italic;
+}
+
+.art-body { flex: 1; display: flex; align-items: center; padding: 3.5rem 1.5rem; }
+.art-col { max-width: 36rem; margin: 0 auto; }
+.art-kicker {
+  margin: 0 0 .7rem; color: #9a978f;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: .66rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase;
+}
+.art-col h2 {
+  margin: 0 0 1rem; font-size: 1.7rem; line-height: 1.3;
+  letter-spacing: -0.015em; color: #1c1c1a;
+}
+.art-prose p { margin: 0 0 1rem; color: #3a3a37; line-height: 1.75; font-size: 1.04rem; }
+.art-prose p:last-child { margin-bottom: 0; }
+
+/* Media images: a wrapped row on slightly cooler ground, so it reads as a
+   contact strip rather than part of the prose. */
+.art-strip {
+  display: flex; flex-wrap: wrap; gap: .5rem;
+  justify-content: center; align-items: center;
+  padding: 2rem 1rem; background: #ece9e2;
+}
+.art-strip img {
+  height: 16rem; width: auto; max-width: 100%; border-radius: 2px;
+  cursor: zoom-in; box-shadow: 0 1px 4px rgba(0,0,0,.12);
+  transition: transform .5s ease-out;
+}
+.art-strip img:hover { transform: scale(1.02); }
+
+.art-video { margin: 0; position: relative; background: #000; }
+.art-video video { width: 100%; height: auto; max-height: 90vh; object-fit: contain; margin: 0 auto; }
+.art-video figcaption {
+  position: absolute; bottom: 1rem; left: 0; right: 0; text-align: center;
+  color: rgba(255,255,255,.72); font-size: .85rem; font-style: italic;
+  pointer-events: none; text-shadow: 0 1px 6px rgba(0,0,0,.6); padding: 0 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .art-main { flex-direction: row; min-height: 85vh; }
+  .art-main--right { flex-direction: row-reverse; }
+  .art-hero { width: 46%; flex-shrink: 0; }
+  .art-hero img { height: 100%; }
+  .art-hero figcaption {
+    position: absolute; bottom: 0; left: 0; right: 0; padding: 2.5rem 1.25rem .9rem;
+    color: rgba(255,255,255,.88);
+    background: linear-gradient(to top, rgba(0,0,0,.6), transparent);
+  }
+  .art-body { padding: 4.5rem 3rem; }
+  .art-col { margin: 0; }
+  .art-strip { padding: 2.5rem 2rem; }
+  .art-strip img { height: 20rem; }
+}

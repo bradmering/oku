@@ -398,3 +398,37 @@ Worth noting for later: mapbox-gl is BSL-licensed and bills per map load, where 
 and free. Fine at this scale and with a token already in hand, but it's a dependency with terms —
 if that ever matters, the escape route is a non-Mapbox style (Protomaps, OpenFreeMap) plus a
 switch back.
+
+---
+
+## 2026-08-08 — The images were never missing; the article chapter wasn't rendering them
+
+Brad reported no maps and no images on Brooks Range. I'd guessed twice already, so I checked the
+document instead of the page.
+
+**Brooks Range has no gallery chapters at all.** Its types are `title`, `move`, `article`,
+`parallax-video`, `overview`, `logistics`. So the gallery + lightbox work from earlier — real
+parity progress — touches this story not at all.
+
+Its photographs live where my renderer wasn't looking:
+
+| Location | Count | Was rendered? |
+|---|---|---|
+| `article.heroImage` | 10 | no |
+| `article.media[]` | 37 | no |
+| `imagePins` | 37 | no — still unmodeled in the schema |
+
+My `article` case rendered heading, subheading, stats and prose, and silently dropped every image.
+The R2 uploads were fine the whole time; nothing was ever asking for them.
+
+Ported the blog's article properly: hero image beside the prose filling ~85vh with the side
+alternating on `align`, a wrapped media-image strip on cooler ground beneath, and full-width videos
+that play only while on screen. Kept `preload="none"` — nine videos preloading would cost tens of
+megabytes at load.
+
+The structural point I'd missed: **an article is a light panel over the dark stage.** Prose on
+paper, the map as the world behind it. Rendering it as a small dark card lost the contrast that
+makes the whole layout legible, which is a bigger deal than any single missing image.
+
+Still outstanding on this story: `parallax-video` renders as a plain video, and `imagePins` (37 of
+them) has nowhere to go until the schema question is settled.
