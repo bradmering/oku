@@ -19,13 +19,16 @@ export default function Title({
   image,
   layout,
   byline,
+  anchorRef,
 }: {
   heading?: string
   subheading?: string
   text?: string
   image?: string
-  layout?: 'image' | 'text' | 'reveal'
+  layout?: 'image' | 'text' | 'reveal' | 'split' | 'plate' | 'route'
   byline: string
+  /** `route` only: the tall span registers as a stage anchor. See decisions/0015. */
+  anchorRef?: (el: HTMLElement | null) => void
 }) {
   const mode = layout ?? (image ? 'image' : 'text')
   const ref = useRef<HTMLDivElement>(null)
@@ -103,6 +106,51 @@ export default function Title({
           <div className="relative max-w-5xl mx-auto w-full">
             <Words />
           </div>
+        </div>
+      </header>
+    )
+  }
+
+  if (mode === 'split') {
+    return (
+      <header className="relative z-10 min-h-screen flex flex-col md:flex-row">
+        {image && (
+          <div className="md:w-1/2 h-64 md:h-auto shrink-0 overflow-hidden">
+            <img src={image} alt="" className="w-full h-full object-cover" />
+          </div>
+        )}
+        <div className="flex-1 flex items-center bg-ink px-8 sm:px-14 py-16">
+          <div className="max-w-xl"><Words /></div>
+        </div>
+      </header>
+    )
+  }
+
+  if (mode === 'plate') {
+    return (
+      <header className="relative z-10 min-h-screen flex flex-col justify-center items-center text-center px-6">
+        <div className="absolute inset-0 -z-10 bg-ink/90 pointer-events-none" />
+        <div className="max-w-2xl">
+          <p className="text-ember font-mono text-[10px] uppercase tracking-[0.4em] mb-10">{byline}</p>
+          <h1 className="text-2xl sm:text-3xl font-normal tracking-[0.02em] leading-relaxed text-balance text-white">
+            {heading}
+          </h1>
+          {subheading && (
+            <p className="mt-8 text-stone-500 text-sm tracking-wide">{subheading}</p>
+          )}
+          <div className="mt-14 mx-auto w-10 h-px bg-white/20" />
+        </div>
+      </header>
+    )
+  }
+
+  if (mode === 'route') {
+    return (
+      <header ref={anchorRef} className="relative z-10 h-[200vh]" data-route-title="">
+        <div className="sticky top-0 h-screen flex flex-col justify-end px-6 sm:px-12 pb-24 pointer-events-none">
+          {/* Only a floor of shade — the map is the point. */}
+          <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-ink via-ink/70 to-transparent" />
+          <div className="relative max-w-4xl mx-auto w-full"><Words /></div>
         </div>
       </header>
     )

@@ -1,14 +1,13 @@
-# The three title presentations (decisions/0014). Same content, three cards —
-# `layout` is a property, not three chapter types.
+# The six title presentations. `layout` is a VARIANT — a property on one chapter
+# type, not six chapter types. See spec/07-variants.md.
 #
-# Only the first is rendered as the story's opening; the others follow so all
-# three can be compared on one page.
+# They run one after another so they can be compared on a single page.
 
 specVersion: 1
 id: 01J9AA0000000000000000TL
 slug: title-layouts
 title: "Title layouts"
-subtitle: "image · text · reveal"
+subtitle: "image · text · reveal · split · plate · route"
 dates:
   start: "2026-08-08"
 visibility: unlisted
@@ -66,3 +65,27 @@ chapters:
     subheading: "reveal — the photograph arrives as you scroll"
     text: |
       A taller card. The words land first and the place assembles behind them.
+
+  - id: t-split
+    type: title
+    layout: split
+    image: /images/stories/brooks-range/IMG_2028.webp
+    heading: "Across the Romanzof Mountains"
+    subheading: "split — photograph and words side by side"
+    text: |
+      Quieter. The photograph gets its own half rather than carrying everything.
+
+  - id: t-plate
+    type: title
+    layout: plate
+    heading: "Seven days floating through the Arctic National Wildlife Refuge"
+    subheading: "plate — restraint as the statement"
+
+  # The one only we can do: the title holds while the whole route draws itself.
+  - id: t-route
+    type: title
+    layout: route
+    heading: "From the Hulahula to the Arctic Ocean"
+    subheading: "route — the line draws as the opening gesture"
+    text: |
+      The map answers *where is this* before a word of prose does.

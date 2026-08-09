@@ -157,13 +157,17 @@ export const MoveChapter = chapter({
  *   image  — full-bleed photograph, text over a scrim. The common default.
  *   text   — typographic only; the stage shows through.
  *   reveal — text first, the photograph fading in behind it as you scroll.
+ *   split  — photograph and words side by side. Quieter, editorial.
+ *   plate  — small type and a great deal of air. A book's title page.
+ *   route  — the title holds over the map while the whole route draws itself.
+ *            ⚠ The one variant that drives the stage — see decisions/0015.
  * Defaults to `image` when an image is present, `text` otherwise.
  */
 export const TitleChapter = chapter({
   ...chapterBase, ...prose,
   type: z.literal('title'),
   image: z.string().optional(),
-  layout: z.enum(['image', 'text', 'reveal']).optional(),
+  layout: z.enum(['image', 'text', 'reveal', 'split', 'plate', 'route']).optional(),
 })
 export const SplashChapter = chapter({ ...chapterBase, ...prose, type: z.literal('splash'), image: z.string() })
 export const MapChapter = chapter({ ...chapterBase, ...prose, type: z.literal('map') })

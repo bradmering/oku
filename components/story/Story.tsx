@@ -28,8 +28,14 @@ export default function Story({ trip }: { trip: Trip }) {
   const isMap = stage?.type === 'map'
   const route = (isMap ? stage.route : undefined) as [number, number][] | undefined
 
-  /** Every move resolved into a full camera, each inheriting from the last so a
-   *  move that only sets `zoom` doesn't reset the rest. */
+  /**
+   * Every keyframe, resolved into a full camera, each inheriting from the last
+   * so a move that only sets `zoom` doesn't reset the rest.
+   *
+   * A `title` with `layout: 'route'` contributes one too: it holds over the map
+   * while the whole route draws. That is the single place a presentation drives
+   * the stage — see decisions/0015 for why it earns the exception.
+   */
   const keyframes = useMemo(() => {
     const initial: Camera = {
       center: (isMap ? stage.initialView.coordinates : [0, 0]) as [number, number],
@@ -41,6 +47,13 @@ export default function Story({ trip }: { trip: Trip }) {
     const out: { id: string; cam: Camera }[] = [{ id: '__initial', cam: initial }]
     let prev = initial
     for (const ch of trip.chapters) {
+      if (ch.type === 'title' && ch.layout === 'route') {
+        // Hold the opening framing and draw the whole line.
+        const cam = { ...prev, routeProgress: 1 }
+        out.push({ id: ch.id, cam })
+        prev = cam
+        continue
+      }
       if (ch.type !== 'move') continue
       const cam = resolve(ch.to, prev)
       out.push({ id: ch.id, cam })
@@ -143,7 +156,13 @@ export default function Story({ trip }: { trip: Trip }) {
             <div
               key={ch.id}
               id={ch.id}
-              ref={(el) => { if (el) chapterEls.current.set(ch.id, el) }}
+              ref={(el) => {
+                if (!el) return
+                chapterEls.current.set(ch.id, el)
+                // A route title is its own stage anchor: its tall span is the
+                // scroll distance the line draws across.
+                if (ch.type === 'title' && ch.layout === 'route') anchors.current.set(ch.id, el)
+              }}
             >
               <ChapterView chapter={ch} trip={trip} />
             </div>

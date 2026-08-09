@@ -33,7 +33,9 @@ accretion. Naming thread + stage is what stops a fourth drift.
 3. `03-stages.md` — map, topo, and the timeline test.
 4. `04-formats.md` — report / dispatch / guide as projections; plan vs actual.
 5. `05-ingest.md` — tracks, media, timeline alignment.
-6. `decisions/` — **read before re-opening any settled question.**
+6. `07-variants.md` — one chapter type, several presentations. The rules that keep it from
+   becoming a settings panel.
+7. `decisions/` — **read before re-opening any settled question.**
 
 ## Non-goals right now
 

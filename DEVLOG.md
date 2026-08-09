@@ -571,3 +571,37 @@ types — consistent with the properties-vs-types split in `02-chapter-types.md`
 
 Defaults to `image` when an image is present, `text` otherwise, so existing documents are
 unaffected. Landed with a fixture showing all three on one page.
+
+---
+
+## 2026-08-08 — Six title variants; named the variant concept
+
+Built `split`, `plate` and `route`, taking title layouts to six. Fixture at
+`/stories/title-layouts` shows all of them on one page — which is the point, since these are chosen
+by looking rather than by reading a word like "reveal."
+
+**Named the pattern.** `gallery.layout`, `parallax-video.layout` and `title.layout` were three types
+that had each independently invented a `layout` property with different value sets. That was a
+concept forming by accident, so `spec/07-variants.md` now states it: one chapter type, several
+presentations, with the test being *if switching the value would require rewriting the content, it
+isn't a variant — it's a different chapter type.*
+
+The rule I most wanted written down is **flat curated presets, never a parameter matrix.** The
+tempting refactor is to decompose title layout into media × typography × arrival; three axes of four
+values is sixty-four combinations, six of which are good, and it hands the author exactly the
+blank-canvas problem the product exists to avoid.
+
+Also drew the boundary explicitly: **structure is inferred, presentation is chosen.** Format,
+posture and segmentation are never a dropdown (0012) — but whether a story opens on a photograph or
+a sentence is a judgment no amount of ingest can derive.
+
+**`route` breaks a rule, on purpose.** 0012 removed cues from chapters so only `move` drives the
+stage, and the route title is a presentation that contributes a keyframe. ADR 0015 argues it earns
+the exception: every other variant is a photograph treatment any magazine has, while an opening card
+where *the line traces the trip while you read the title* is structurally unavailable to anyone
+without tracks fused to a narrative. The two model-pure alternatives were both worse — a following
+`move` would draw the line after the title had scrolled away, and letting moves carry prose would
+undo the separation 0012 bought.
+
+The ADR ends by saying it's a precedent to argue against rather than follow, which is the part I
+expect to matter in three months.
