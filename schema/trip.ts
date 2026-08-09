@@ -87,8 +87,12 @@ export const Stage = z.discriminatedUnion('type', [MapStage, TopoStage, Timeline
 // It exists whether or not anyone writes about it. The document does NOT have to
 // mirror the legs: the data proposes, the author disposes. See decisions/0012.
 
+/** `run` was added when the White Rim Lathrop Canyon track arrived: a FIT file
+ *  with sport=running that is neither a hike nor a ride. The enum already
+ *  separates ski from hike from ride, so collapsing a run into `hike` would be
+ *  the odd one out. See spec/09-white-rim-friction.md. */
 export const ActivityMode = z.enum([
-  'hike', 'paddle', 'ride', 'climb', 'ski', 'portage', 'travel', 'rest',
+  'hike', 'run', 'paddle', 'ride', 'climb', 'ski', 'portage', 'travel', 'rest',
 ])
 
 export const LegStats = z.object({
@@ -125,8 +129,26 @@ const chapterBase = {
   publishedAt: ISODateTime.optional(),
 }
 
+/** Every media reference has a direct form and an indirect one, and EXACTLY ONE
+ *  must be present — see decisions/0016.
+ *
+ *  `src` is a concrete path; hand-written documents use it, and a story with no
+ *  `sources` at all stays first-class (the same instinct as decisions/0003).
+ *  `mediaId` points into `sources.media[]`; ingest emits it, so fusion knowledge
+ *  survives authoring and a background converter can update one entry instead of
+ *  every chapter that mentions the file.
+ *
+ *  ⚠ The "exactly one" rule is enforced in `lib/resolve-media.ts`, NOT here: this
+ *  shape is consumed via `.shape` and `.extend()`, and a `.refine()` would return
+ *  a ZodEffects that cannot be spread. Dangling-id detection is cross-referential
+ *  and can't live in Zod anyway, so both checks belong together in the resolver. */
+const mediaPointer = {
+  src: z.string().optional(),
+  mediaId: z.string().optional(),
+}
+
 export const MediaRef = z.object({
-  src: z.string(),
+  ...mediaPointer,
   caption: z.string().optional(),
   poster: z.string().optional(),
   loop: z.boolean().optional(),
@@ -167,9 +189,16 @@ export const TitleChapter = chapter({
   ...chapterBase, ...prose,
   type: z.literal('title'),
   image: z.string().optional(),
+  /** Indirect form of `image` — decisions/0016. At most one of the two. */
+  imageId: z.string().optional(),
   layout: z.enum(['image', 'text', 'reveal', 'split', 'plate', 'route']).optional(),
 })
-export const SplashChapter = chapter({ ...chapterBase, ...prose, type: z.literal('splash'), image: z.string() })
+export const SplashChapter = chapter({
+  ...chapterBase, ...prose,
+  type: z.literal('splash'),
+  image: z.string().optional(),
+  imageId: z.string().optional(),
+})
 export const MapChapter = chapter({ ...chapterBase, ...prose, type: z.literal('map') })
 /** Heading and stats are the base condition; prose is optional. A "Day 4" marker
  *  is this chapter with a heading, stats on, and nothing written. */
@@ -180,14 +209,22 @@ export const ArticleChapter = chapter({
    *  reference, the author can change it. Beats inferring from position. */
   stats: z.object({ legId: z.string() }).optional(),
   heroImage: MediaRef.optional(),
-  media: z.array(MediaRef.extend({ type: z.enum(['image', 'video']) })).optional(),
+  /** `type` is OPTIONAL when the item carries a `mediaId` — it is `kind` on the
+   *  media item, and the resolver fills it in. See decisions/0016. */
+  media: z.array(MediaRef.extend({ type: z.enum(['image', 'video']).optional() })).optional(),
 })
-export const ImageChapter = chapter({ ...chapterBase, type: z.literal('image'), image: z.string(), caption: z.string().optional() })
+export const ImageChapter = chapter({
+  ...chapterBase,
+  type: z.literal('image'),
+  image: z.string().optional(),
+  imageId: z.string().optional(),
+  caption: z.string().optional(),
+})
 export const GalleryChapter = chapter({
   ...chapterBase,
   type: z.literal('gallery'),
   layout: z.enum(['single', 'duo', 'trio', 'quad', 'grid']),
-  images: z.array(z.object({ src: z.string(), caption: z.string().optional() })),
+  images: z.array(z.object({ ...mediaPointer, caption: z.string().optional() })),
 })
 export const VideoChapter = chapter({ ...chapterBase, type: z.literal('video'), ...MediaRef.shape })
 export const ParallaxVideoChapter = chapter({
@@ -232,11 +269,19 @@ export const Track = z.object({
 
 export const MediaItem = z.object({
   id: z.string(),
+  /** THE PATH TO SERVE — always. A converter that produces a WebP updates this
+   *  and files the original under `renditions.original`. See decisions/0016. */
   src: z.string(),
   kind: z.enum(['image', 'video', 'audio']),
   capturedAt: ISODateTime.optional(),
   coordinates: LngLat.optional(),
   legId: z.string().optional(),
+  /** Video still. Used when a reference doesn't name its own. */
+  poster: z.string().optional(),
+  /** Named alternates — `original`, `thumb`, `hls`, whatever a converter emits.
+   *  Names are CONVERTER-defined, not spec-defined (cf. segment labels, 0006),
+   *  which is why the resolver never has to know one: it reads `src`. */
+  renditions: z.record(z.string(), z.string()).optional(),
 })
 
 export const Sources = z.object({
