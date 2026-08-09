@@ -67,53 +67,59 @@ t('routeHead clamps out-of-range progress', () => {
 
 console.log()
 
-console.log('pickCamera — the scroll binding\n')
+console.log('pickCamera — travels while the map shows, holds while you read\n')
 
 const cams: Camera[] = [
-  { center: [0, 0], zoom: 5, pitch: 0, bearing: 0, routeProgress: 0 },     // initial
+  { center: [0, 0], zoom: 5, pitch: 0, bearing: 0, routeProgress: 0 },      // initial
   { center: [10, 0], zoom: 10, pitch: 30, bearing: 0, routeProgress: 0.5 }, // move 1
   { center: [20, 0], zoom: 12, pitch: 60, bearing: 0, routeProgress: 1 },   // move 2
 ]
+const VH = 800
+const H = 620   // a 78vh anchor
 
-t('holds the initial view while the first move is far below', () => {
-  // Both moves well ahead; the first is a full viewport away.
-  assert.deepEqual(pickCamera(cams, [800, 1600], 800), cams[0])
+t('holds the initial view before the first anchor enters', () => {
+  assert.deepEqual(pickCamera(cams, [{ top: VH, height: H }, { top: VH * 3, height: H }], VH), cams[0])
 })
 
-t('eases out of the initial view as the first move approaches', () => {
-  const c = pickCamera(cams, [400, 1200], 800)   // halfway there
-  assert.ok(c.zoom > 5 && c.zoom < 10, `expected between, got ${c.zoom}`)
-  assert.ok(c.routeProgress > 0 && c.routeProgress < 0.5)
+t('is mid-travel when the anchor is centred — i.e. when the map is visible', () => {
+  // Anchor top at 90 ⇒ it fills most of the viewport ⇒ the map is on screen.
+  const c = pickCamera(cams, [{ top: 90, height: H }, { top: VH * 2, height: H }], VH)
+  assert.ok(c.routeProgress > 0.1 && c.routeProgress < 0.9, `expected mid-draw, got ${c.routeProgress}`)
 })
 
-t('lands exactly on a keyframe when its anchor is on the line', () => {
-  assert.deepEqual(pickCamera(cams, [0, 800], 800), cams[1])
+t('completes only once the anchor has left the top', () => {
+  assert.deepEqual(pickCamera(cams, [{ top: -H, height: H }, { top: VH * 2, height: H }], VH), cams[1])
 })
 
-t('interpolates between two passed/ahead moves', () => {
-  // move1 is 400 above the line, move2 is 400 below ⇒ exactly halfway.
-  const c = pickCamera(cams, [-400, 400], 800)
-  assert.ok(c.routeProgress > 0.5 && c.routeProgress < 1)
-  assert.ok(c.zoom > 10 && c.zoom < 12)
+t('HOLDS between two moves — the regression this model fixes', () => {
+  // Anchor 1 gone, anchor 2 far below: a long article is on screen. The camera
+  // must not creep forward while the map is hidden behind it.
+  const a = pickCamera(cams, [{ top: -H - 100, height: H }, { top: VH * 4, height: H }], VH)
+  const b = pickCamera(cams, [{ top: -H - 2000, height: H }, { top: VH * 2, height: H }], VH)
+  assert.deepEqual(a, cams[1])
+  assert.deepEqual(b, cams[1])
 })
 
 t('holds the last keyframe past the end', () => {
-  assert.deepEqual(pickCamera(cams, [-2000, -1000], 800), cams[2])
+  assert.deepEqual(pickCamera(cams, [{ top: -9000, height: H }, { top: -9000, height: H }], VH), cams[2])
 })
 
-t('route progress never goes backwards as the reader scrolls down', () => {
+t('route progress never goes backwards while scrolling down', () => {
   let prev = -1
-  for (let scroll = 0; scroll <= 2400; scroll += 25) {
-    // Two anchors 800px apart, moving up the page as `scroll` grows.
-    const c = pickCamera(cams, [800 - scroll, 1600 - scroll], 800)
+  for (let scroll = 0; scroll <= 5000; scroll += 25) {
+    const c = pickCamera(
+      cams,
+      [{ top: VH - scroll, height: H }, { top: VH * 3 - scroll, height: H }],
+      VH,
+    )
     assert.ok(c.routeProgress >= prev - 1e-9, `went backwards at scroll ${scroll}`)
     prev = c.routeProgress
   }
 })
 
-t('degrades safely with no viewport (hidden tab) or a single keyframe', () => {
-  assert.deepEqual(pickCamera(cams, [0, 0], 0), cams[0])
-  assert.deepEqual(pickCamera([cams[0]], [], 800), cams[0])
+t('degrades safely with no viewport or a single keyframe', () => {
+  assert.deepEqual(pickCamera(cams, [{ top: 0, height: H }], 0), cams[0])
+  assert.deepEqual(pickCamera([cams[0]], [], VH), cams[0])
 })
 
 console.log(`\n${n} passed\n`)

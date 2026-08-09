@@ -1,0 +1,68 @@
+# The three title presentations (decisions/0014). Same content, three cards —
+# `layout` is a property, not three chapter types.
+#
+# Only the first is rendered as the story's opening; the others follow so all
+# three can be compared on one page.
+
+specVersion: 1
+id: 01J9AA0000000000000000TL
+slug: title-layouts
+title: "Title layouts"
+subtitle: "image · text · reveal"
+dates:
+  start: "2026-08-08"
+visibility: unlisted
+authors:
+  - id: auth_brad
+    name: Brad Mering
+
+stage:
+  type: map
+  clock: scroll
+  initialView:
+    coordinates: [-144.629, 69.098]
+    zoom: 8
+    tilt: 45
+  route:
+    - [-144.629, 69.098]
+    - [-144.120, 69.480]
+    - [-143.640, 70.100]
+
+chapters:
+  # 1. The common default: full-bleed photograph, text over a scrim.
+  - id: t-image
+    type: title
+    layout: image
+    image: /images/stories/brooks-range/IMG_1738.webp
+    heading: "From the Hulahula to the Arctic Ocean"
+    subheading: "image — a photograph carries the opening"
+    text: |
+      The default. A single frame, full screen, everything else on top of it.
+
+  # 2. No photograph at all. The stage is the opening image.
+  - id: t-text
+    type: title
+    layout: text
+    heading: "The months and days are the travellers of eternity"
+    subheading: "text — typographic, with the map behind"
+    text: |
+      No photograph. The stage shows through a veil, so the opening image is
+      the country itself rather than a picture of it.
+
+  - id: t-move
+    type: move
+    to:
+      coordinates: [-144.120, 69.480]
+      zoom: 10
+      tilt: 55
+      routeProgress: 0.5
+
+  # 3. Text first; the photograph fades in behind it as you scroll.
+  - id: t-reveal
+    type: title
+    layout: reveal
+    image: /images/stories/brooks-range/IMG_2290.webp
+    heading: "There came a day when the clouds drifting along with the wind"
+    subheading: "reveal — the photograph arrives as you scroll"
+    text: |
+      A taller card. The words land first and the place assembles behind them.

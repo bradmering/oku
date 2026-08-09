@@ -2,6 +2,7 @@ import type { Trip, Chapter } from '@/schema/trip'
 import Gallery from './Gallery'
 import Article from './Article'
 import ParallaxVideo from './ParallaxVideo'
+import Title from './Title'
 
 /** Renders one content chapter. `move` never reaches here — the thread handles
  *  it as a scroll anchor. */
@@ -9,23 +10,14 @@ export default function ChapterView({ chapter: ch, trip }: { chapter: Chapter; t
   switch (ch.type) {
     case 'title':
       return (
-        <header className="relative z-10 min-h-screen flex flex-col justify-center items-center text-center px-6 py-24">
-          {ch.image && <img src={ch.image} alt="" className="w-full max-w-4xl rounded-sm mb-10" />}
-          <h1 className="text-5xl sm:text-7xl font-bold tracking-tight leading-[1.05] max-w-4xl">
-            {ch.heading}
-          </h1>
-          {ch.subheading && (
-            <p className="mt-4 text-lg text-stone-400 max-w-2xl">{ch.subheading}</p>
-          )}
-          {ch.text && (
-            <div className="mt-6 max-w-2xl text-stone-300 leading-8">
-              {ch.text.split(/\n{2,}/).map((p, i) => <p key={i} className="mb-4 last:mb-0">{p}</p>)}
-            </div>
-          )}
-          <p className="mt-10 text-[11px] uppercase tracking-[0.18em] text-stone-500 font-mono">
-            {trip.authors.map((a) => a.name).join(' · ')}
-          </p>
-        </header>
+        <Title
+          heading={ch.heading}
+          subheading={ch.subheading}
+          text={ch.text}
+          image={ch.image}
+          layout={ch.layout}
+          byline={trip.authors.map((a) => a.name).join(' · ')}
+        />
       )
 
     case 'splash':

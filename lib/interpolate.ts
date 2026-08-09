@@ -78,36 +78,44 @@ export function routeHead(route: [number, number][], progress: number): [number,
   return head
 }
 
+/** A move anchor's geometry in viewport coordinates. */
+export type Span = { top: number; height: number }
+
 /**
  * Pick the camera for a given scroll state.
  *
- * Pure on purpose. The component only supplies geometry — each move anchor's
- * offset from the anchor line, and the viewport height — so the decision of
- * *which pair of keyframes we are between, and how far* is testable without a
- * browser. That matters: the DOM path depends on layout and rAF, neither of
- * which is available in a headless check.
+ * **The camera travels only while a move anchor is on screen, and holds while
+ * you read.** That's the whole timing model, and it matters: articles are
+ * opaque panels and galleries are full-bleed, so the map is *visible* only
+ * during the move anchors. Interpolating across the content between them —
+ * which is what this did first — spent the entire drawing budget behind
+ * whatever was covering the map, so the route line was already drawn by the
+ * time you could see it.
  *
- * `tops[j]` is the distance from the anchor line to keyframe `j + 1`'s anchor:
- * negative once passed, positive while still ahead. `cams[0]` is the initial
- * view, so `cams[j + 1]` pairs with `tops[j]`.
+ * Pure on purpose: the component supplies geometry, so the decision is testable
+ * without a browser.
+ *
+ * `spans[j]` is the anchor for keyframe `j + 1`; `cams[0]` is the initial view.
  */
-export function pickCamera(cams: Camera[], tops: number[], vh: number): Camera {
+export function pickCamera(cams: Camera[], spans: Span[], vh: number): Camera {
   if (cams.length < 2 || !vh) return cams[0]
 
-  let i = 0
-  while (i < tops.length && tops[i] <= 0) i++
+  // Which anchors have finished transiting? An anchor is done once its bottom
+  // has left the top of the viewport.
+  let done = 0
+  while (done < spans.length && spans[done].top + spans[done].height <= 0) done++
 
-  // Approaching the first move — ease out of the initial view.
-  if (i === 0) {
-    const t = 1 - Math.min(1, Math.max(0, tops[0] / vh))
-    return blend(cams[0], cams[1], t)
-  }
+  if (done >= spans.length) return cams[cams.length - 1]
 
-  // Past the last move — hold it.
-  if (i >= tops.length) return cams[cams.length - 1]
+  const s = spans[done]
+  // Transit runs from the anchor entering the bottom of the viewport to its
+  // bottom leaving the top: total travel is vh + height.
+  const travelled = vh - s.top
+  const total = vh + s.height
+  const t = total > 0 ? travelled / total : 0
 
-  const from = tops[i - 1]   // ≤ 0, passed
-  const to = tops[i]         // > 0, ahead
-  const t = from === to ? 1 : (0 - from) / (to - from)
-  return blend(cams[i], cams[i + 1], t)
+  // Not yet entered ⇒ hold the previous keyframe. This is the "hold while you
+  // read" half: content between two moves leaves the camera exactly where the
+  // last move put it.
+  return blend(cams[done], cams[done + 1], t)
 }

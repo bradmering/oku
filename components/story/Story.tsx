@@ -62,15 +62,18 @@ export default function Story({ trip }: { trip: Trip }) {
       const vh = window.innerHeight
       if (!vh) return   // not laid out yet (hidden tab, SSR hydration)
 
-      // Anchor line, a little above centre. A move is "reached" when its
-      // anchor crosses it.
-      const line = vh * 0.45
-      const tops = keyframes.slice(1).map(({ id }) => {
+      // Each move anchor's geometry. The camera travels across an anchor's
+      // transit and holds otherwise — see pickCamera.
+      const spans = keyframes.slice(1).map(({ id }) => {
         const el = anchors.current.get(id)
-        return el ? el.getBoundingClientRect().top - line : Number.POSITIVE_INFINITY
+        if (!el) return { top: Number.POSITIVE_INFINITY, height: 0 }
+        const r = el.getBoundingClientRect()
+        return { top: r.top, height: r.height }
       })
 
-      setCamera(pickCamera(keyframes.map((k) => k.cam), tops, vh))
+      setCamera(pickCamera(keyframes.map((k) => k.cam), spans, vh))
+
+      const line = vh * 0.45
 
       // Active chapter = the last one whose top has passed the same line the
       // camera uses, so the nav and the map agree about where you are.

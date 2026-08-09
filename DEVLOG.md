@@ -537,3 +537,37 @@ but it's tappable with a thumb — scaling on hover, opening the lightbox on cli
 set navigable once open.
 
 Brooks Range's last structural gap is closed. The migration now reports **zero** unmigrated fields.
+
+---
+
+## 2026-08-08 — Camera timing was a model bug; three title layouts
+
+**Timing.** Brad: *"the lines are already largely drawn by the time you see enough of the map card
+to see what's happening."* That turned out not to be a tuning value.
+
+Interpolation ran between consecutive move anchors — so the camera's travel was spread across all
+the content in between. But articles are opaque white panels, galleries are full-bleed, parallax
+video covers the viewport. **The map is only visible during the move anchors.** The entire drawing
+budget was being spent behind whatever was covering the map.
+
+Raising the anchor height wouldn't have fixed that. A bigger share of a budget spent in the wrong
+place is still spent in the wrong place.
+
+Now: the camera travels across a move anchor's transit of the viewport and **holds** otherwise.
+Which also states "move-then-read" precisely — the move happens visibly, then you read. There's a
+test named for the regression (*"HOLDS between two moves"*) so it stays caught.
+
+The knob that's actually left is anchor height — a flat `78vh` for every move, when a long
+geographic jump probably wants more room than a short one. That argues for a `space` hint on the
+move chapter, but I'd rather see how the corrected model feels before adding it.
+
+**Title layouts.** Three presentations as a *property* on the title chapter, not three chapter
+types — consistent with the properties-vs-types split in `02-chapter-types.md`:
+
+- `image` — full-bleed photograph, text over a scrim. The blog's default.
+- `text` — no photograph; a veil over the stage, so the opening image is the country rather than a
+  picture of it.
+- `reveal` — a 200vh card where the words land first and the photograph fades in behind them.
+
+Defaults to `image` when an image is present, `text` otherwise, so existing documents are
+unaffected. Landed with a fixture showing all three on one page.

@@ -150,7 +150,21 @@ export const MoveChapter = chapter({
   ease: z.enum(['linear', 'ease', 'none']).optional(),
 })
 
-export const TitleChapter = chapter({ ...chapterBase, ...prose, type: z.literal('title'), image: z.string().optional() })
+/**
+ * The opening card. `layout` is a property rather than three chapter types —
+ * same content, three presentations (see 02-chapter-types.md on properties vs
+ * types).
+ *   image  — full-bleed photograph, text over a scrim. The common default.
+ *   text   — typographic only; the stage shows through.
+ *   reveal — text first, the photograph fading in behind it as you scroll.
+ * Defaults to `image` when an image is present, `text` otherwise.
+ */
+export const TitleChapter = chapter({
+  ...chapterBase, ...prose,
+  type: z.literal('title'),
+  image: z.string().optional(),
+  layout: z.enum(['image', 'text', 'reveal']).optional(),
+})
 export const SplashChapter = chapter({ ...chapterBase, ...prose, type: z.literal('splash'), image: z.string() })
 export const MapChapter = chapter({ ...chapterBase, ...prose, type: z.literal('map') })
 /** Heading and stats are the base condition; prose is optional. A "Day 4" marker
