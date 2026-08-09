@@ -44,22 +44,13 @@ export const Clock = z.enum(['scroll', 'time'])
 // ── Stage ────────────────────────────────────────────────────────────────────
 // Zero or one per trip. Omitting it entirely is valid — see decisions/0003.
 
-/** A photograph placed on the map.
- *
- *  ⚠ This is DERIVED data that we currently store — see decisions/0013. Pins
- *  are a geographic index over media the story already contains, and their
- *  coordinates come from EXIF. Once `sources.media[]` is populated by ingest,
- *  pins should be computed from media-with-coordinates and this field retired. */
-export const Pin = z.object({
-  coordinates: LngLat,
-  thumbnail: z.string(),
-  image: z.string(),
-  caption: z.string().optional(),
-})
-
+/** ⚠ NO `pins` FIELD — retired by decisions/0017, which met the expiry
+ *  decisions/0013 set on it. A pin is a geographic index over media the story
+ *  already contains, so it is computed at bake time by `lib/derive-pins.ts`
+ *  from `sources.media[]` and never stored. Re-adding it would be reintroducing
+ *  denormalized derived data that provably drifted. */
 export const MapStage = z.object({
   type: z.literal('map'),
-  pins: z.array(Pin).optional(),
   style: z.string().optional(),
   initialView: Keyframe,
   route: z.array(LngLat).optional(),
@@ -360,4 +351,21 @@ type Resolve<T> =
     : T
 
 export type ResolvedChapter = Resolve<Chapter>
-export type ResolvedTrip = Omit<Trip, 'chapters'> & { chapters: ResolvedChapter[] }
+
+/** A photograph placed on the map. Computed, never authored — decisions/0017.
+ *  It exists only on the resolved document, which is why it is a type here and
+ *  not a Zod shape: nothing ever parses one from a file. */
+export type DerivedPin = {
+  coordinates: [number, number]
+  thumbnail: string
+  image: string
+  caption?: string
+}
+
+/** The map stage gains its pins at bake time; other stages are unchanged. */
+type ResolvedStage<S = Stage> = S extends { type: 'map' } ? S & { pins?: DerivedPin[] } : S
+
+export type ResolvedTrip = Omit<Trip, 'chapters' | 'stage'> & {
+  chapters: ResolvedChapter[]
+  stage?: ResolvedStage
+}

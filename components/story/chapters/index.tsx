@@ -56,7 +56,7 @@ export default function ChapterView({ chapter: ch, trip }: { chapter: Chapter; t
           text={ch.text}
           styleUrl={stage?.style}
           route={stage?.route as [number, number][] | undefined}
-          pins={stage?.pins as never}
+          pins={stage?.pins}
         />
       )
     }

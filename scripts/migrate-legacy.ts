@@ -52,6 +52,7 @@ type Report = {
   mapSplits: number
   chaptersIn: number
   chaptersOut: number
+  pinsToMedia?: number
   unmigrated: string[]
   skipped?: boolean
 }
@@ -99,9 +100,34 @@ function migrate(file: string, author: { id: string; name: string }): Report {
       clock: 'scroll',
       initialView: iv,
       ...(raw.route ? { route: raw.route } : {}),
-      // Pins belong to the map, not the trip — see decisions/0013.
-      ...(raw.imagePins ? { pins: raw.imagePins } : {}),
     }
+  }
+
+  // ── 2b. imagePins → sources.media[] ───────────────────────────────────────
+  // Pins are DERIVED (decisions/0013) and the field is now retired
+  // (decisions/0017). What a legacy pin actually carried was a fact about a
+  // photograph — where it was taken — so it becomes a media item, and the bake
+  // recomputes the pins from it. The caption is deliberately NOT carried over:
+  // it is voice, it belongs on the chapter that shows the photograph, and the
+  // stored copies had measurably drifted from those chapters.
+  if (Array.isArray(raw.imagePins) && raw.imagePins.length) {
+    out.sources = {
+      tracks: [],
+      legs: [],
+      media: raw.imagePins.map((p: Record<string, any>) => {
+        const stem = path.basename(String(p.image)).replace(/\.[^.]+$/, '')
+        return {
+          id: `med_${stem.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+          src: p.image,
+          kind: 'image',
+          coordinates: p.coordinates,
+          ...(p.thumbnail && p.thumbnail !== p.image
+            ? { renditions: { thumb: p.thumbnail } }
+            : {}),
+        }
+      }),
+    }
+    rep.pinsToMedia = raw.imagePins.length
   }
 
   // ── 3 & 4. chapters → moves + content ─────────────────────────────────────
@@ -200,7 +226,8 @@ for (const f of files) {
   console.log(
     `  ✓  ${f.padEnd(22)} ${String(r.chaptersIn).padStart(3)} chapters in → ` +
     `${String(r.chaptersOut).padStart(3)} content + ${String(r.moves).padStart(2)} moves` +
-    (r.mapSplits ? `  (${r.mapSplits} map→article)` : ''),
+    (r.mapSplits ? `  (${r.mapSplits} map→article)` : '') +
+    (r.pinsToMedia ? `  [${r.pinsToMedia} imagePins → sources.media]` : ''),
   )
   for (const u of r.unmigrated) {
     console.log(`       ⚠️  unmigrated, preserved as-is: ${u}`)

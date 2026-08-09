@@ -1,7 +1,12 @@
 # 0013 — Image pins belong to the map, and are derived data
 
-**Status:** accepted (2026-08-08), with a known expiry · **Relates to:** 0011, and the open
-`src` vs `mediaId` question
+**Status:** superseded (2026-08-09) by `0017`, which met the expiry below and removed the field ·
+**Relates to:** 0011, 0016
+
+> **The expiry fired.** `sources.media[]` is populated, chapters reference media by id, and pins are
+> now computed at bake time. `MapStage.pins` no longer exists. Everything below is retained as the
+> reasoning that got there — including the prediction that storing derived data would let it drift,
+> which turned out to be true of 6 of the 37 pins. See `0017`.
 
 ## Decision
 

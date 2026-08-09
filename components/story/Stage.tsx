@@ -5,8 +5,7 @@ import mapboxgl from 'mapbox-gl'
 import type { Camera } from '@/lib/interpolate'
 import { routeHead } from '@/lib/interpolate'
 import Lightbox from './Lightbox'
-
-type Pin = { coordinates: [number, number]; thumbnail: string; image: string; caption?: string }
+import type { DerivedPin as Pin } from '@/schema/trip'
 
 /**
  * The persistent map stage.

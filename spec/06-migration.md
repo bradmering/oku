@@ -79,11 +79,20 @@ route: [...]                          tilt: 30
                                     route: [...]
 ```
 
-~~**`imagePins` is not in the schema at all.**~~ **Resolved 2026-08-08 — `decisions/0013`.** It
-moves to `stage.pins`, because it is map-specific. The finding that settled it: all 37 pins point
-at images that already appear in chapters, and their coordinates came from EXIF — so a pin is
-**derived data**, a geographic index over media the story already contains. It is stored only
-because `sources.media[]` is empty until ingest exists.
+~~**`imagePins` is not in the schema at all.**~~ **Resolved 2026-08-09 — `decisions/0017`**
+(superseding the interim `stage.pins` of `0013`). `imagePins` migrates to **`sources.media[]`**, and
+pins are computed at bake time by `lib/derive-pins.ts`.
+
+The finding that settled it: all 37 pins point at images that already appear in chapters, and their
+coordinates came from EXIF — so a pin is **derived data**, a geographic index over media the story
+already contains. Storing it under `stage.pins` was a holding position until `sources.media[]`
+existed; it now does.
+
+**The migration drops pin captions deliberately.** A caption is voice and belongs on the chapter
+showing the photograph. It is also the field that had drifted: 6 of the 37 stored captions
+disagreed with their chapter, two of them transposed with each other. Deriving resolves each toward
+the authored chapter text. All 37 pins still render; all 37 had `thumbnail === image`, so no
+thumbnail was lost.
 
 ### 4. Envelope fields the legacy documents have never had
 
@@ -131,11 +140,14 @@ It is also **idempotent** — a document carrying `specVersion` is skipped, so r
 and **accounting**: any key not consumed by a named transform is carried through unchanged *and
 reported*, so nothing is dropped silently.
 
-### The one thing that has no home
+### The one thing that had no home — now placed
 
-`imagePins` (brooks-range only) is reported as unmigrated and preserved as-is at the top level.
-**It is not in the schema**, so it currently passes validation only because `Trip` is not
-`.strict()`. That's a real gap on both counts.
+`imagePins` (brooks-range only) was carried through unmodelled, passing validation only because
+`Trip` is not `.strict()`. **Resolved 2026-08-09:** it is consumed into `sources.media[]`, and the
+bake recomputes the pins from there (`decisions/0017`). Nothing unmodelled survives the migration.
+
+`Trip` still isn't `.strict()`, so an unknown *top-level* key is still silently ignored. Chapters
+are strict; the envelope is not. That remains a real gap.
 
 ### ⚠ This changes how the stories read
 

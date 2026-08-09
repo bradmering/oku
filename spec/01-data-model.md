@@ -269,6 +269,5 @@ not more.
 - **A move with no stage** — undefined. Ignored, or invalid?
 - **`text` flavour** — markdown, but which. Legacy renders remark + gfm.
 - **`specVersion` rules** — nothing says what forces a bump.
-- **`imagePins`** — a real Brooks Range feature, unmodelled.
 - **Is `article` the right name** now that heading + stats is the base condition and prose is
   optional? Brad calls it a text chapter.

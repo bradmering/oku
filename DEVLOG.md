@@ -5,6 +5,41 @@ you, what you'd do differently. This is how the next cold session learns what ha
 
 ---
 
+## 2026-08-09 — Pins are computed; `stage.pins` retired
+
+`decisions/0013` stored pins with an explicit expiry: compute them once chapters reference media by
+id. `0016` met that condition, so `0017` removes the field. `lib/derive-pins.ts` runs at bake time
+beside the media resolver — on the *authored* document, before `mediaId` is collapsed — and the
+renderer is unchanged again.
+
+**The surprise was that the drift `0013` predicted had already happened.** Of Brooks Range's 37
+pins, 6 carried a caption disagreeing with the chapter showing the same photograph — and **two were
+transposed**, `IMG_1801` and `IMG_1827` holding each other's. Two more had degraded typography
+(`--` for `—`, `Inupiaq` for `Iñupiaq`). Nobody had noticed, in the only document that had pins.
+That is a much better argument for deriving than the one I'd have written from theory, and it
+settled where the caption comes from: the chapter reference, because sources hold facts and chapters
+hold voice.
+
+`0013` deferred on "the migrated documents have no `sources` to derive from." Fixed at the source
+rather than worked around: migration now turns `imagePins` into `sources.media[]` entries. A legacy
+pin always *was* a fact about a photograph wearing the wrong hat. All 37 survive — verified against
+the legacy document that all 37 point at images the chapters already show, and that all 37 had
+`thumbnail === image`, so no thumbnail was lost. White Rim derives 29 from its 29 geotagged images;
+its 28 geotagged videos are excluded, because a poster frame on a map reads as a photograph that
+isn't one.
+
+Small payoff worth noting: `DerivedPin` is now a real exported type, which replaced three identical
+local declarations in the renderer and let `pins={stage?.pins as never}` become `pins={stage?.pins}`.
+The `as never` was there precisely because the data was untyped.
+
+**What I could not verify:** that the pins actually render on the map. `SITE_PASSWORD` is now set
+locally so every story redirects to `/unlock`, and the automation pane runs `visibilityState:
+'hidden'`, where Mapbox has neither `requestAnimationFrame` nor a live WebGL context. The derived
+data is checked hard — counts, legacy parity, thumbnails, captions — but the pixels are unconfirmed.
+**Open Brooks Range and count pins before trusting this.**
+
+---
+
 ## 2026-08-09 — Media identity settled; White Rim ingested end-to-end
 
 **FIT needed no dependency.** The handoff said reading `.fit` was the single biggest gap and
