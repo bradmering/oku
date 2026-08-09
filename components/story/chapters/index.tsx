@@ -1,6 +1,7 @@
 import type { Trip, Chapter } from '@/schema/trip'
 import Gallery from './Gallery'
 import Article from './Article'
+import ParallaxVideo from './ParallaxVideo'
 
 /** Renders one content chapter. `move` never reaches here — the thread handles
  *  it as a scroll anchor. */
@@ -79,8 +80,22 @@ export default function ChapterView({ chapter: ch, trip }: { chapter: Chapter; t
     case 'gallery':
       return <Gallery layout={ch.layout} images={ch.images} />
 
-    case 'video':
     case 'parallax-video':
+      return (
+        <ParallaxVideo
+          src={ch.src}
+          poster={ch.poster}
+          loop={ch.loop}
+          caption={ch.caption}
+          heading={ch.heading}
+          subheading={ch.subheading}
+          text={ch.text}
+          align={ch.align}
+          layout={ch.layout}
+        />
+      )
+
+    case 'video':
       return (
         <section className="relative z-10 bg-black">
           <video src={ch.src} poster={ch.poster} muted loop playsInline controls preload="none"

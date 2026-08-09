@@ -459,3 +459,29 @@ blog-parity utilities and that the article markup has `md:w-[46%]`, `md:min-h-[8
 **The lesson for the remaining ports:** parity is now copy-adjust rather than redesign, which is
 what Brad was saying when he said clearing that bar isn't as big as I was making it out to be. He
 was right — I'd manufactured the difficulty and then argued from it.
+
+---
+
+## 2026-08-08 — Parallax video ported
+
+The mechanic, for anyone reading this cold: a **240vh container**, a `sticky` video that holds for
+its duration, and a text block in normal flow *inside* that container so it travels at page speed
+while the video stays put. Budget is 80vh of text, 80vh of the video holding alone, 80vh of
+release.
+
+Two layouts. `full` puts the video full-bleed with a frosted text card over a directional scrim;
+`split` gives the video its own 46% column, letterboxed from `sm:` up so portrait phone clips are
+never cropped, with the text alongside. Both flip on `align`.
+
+**One real adaptation rather than a straight copy:** the blog pins to `top: 56px` for its nav bar.
+oku has no nav, so the offset is 0 and the video fills the viewport. Copying the 56 would have left
+a dark band at the top of every clip.
+
+Brooks Range's five parallax chapters happen to cover all four combinations — full/left, full/right,
+split/left, split/right — so this is well exercised. Verified 5 containers at 240vh with 5 sticky
+pins.
+
+Worth noting the z-index worked out without fighting: the thread is `relative z-10` above a `fixed
+z-0` stage, which makes the thread its own stacking context, so the parallax's internal z-15/z-20
+are scoped to it. No ancestor sets `overflow`, which is what would silently break `position:
+sticky`.
