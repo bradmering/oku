@@ -31,7 +31,9 @@ body {
  * animation. Not a utility class because the height is a tuning knob.
  */
 .move-anchor {
-  height: 78vh;
+  /* `--space` is the per-move multiplier (schema: `move.space`). A flyover frame
+     wants a fraction of a screenful; a long jump may want more than one. */
+  height: calc(78vh * var(--space, 1));
   pointer-events: none;
 }
 

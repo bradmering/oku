@@ -150,6 +150,9 @@ export default function Story({ trip }: { trip: Trip }) {
               key={ch.id}
               className="move-anchor"
               data-move={ch.id}
+              // The scroll distance IS the camera's travel time, so `space`
+              // is how long this move takes. See decisions/0018.
+              style={ch.space ? ({ '--space': ch.space } as React.CSSProperties) : undefined}
               ref={(el) => { if (el) anchors.current.set(ch.id, el) }}
             />
           ) : (

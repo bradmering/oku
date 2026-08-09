@@ -5460,9 +5460,178 @@ chapters:
     heading: The White Rim
     subheading: 2024-04-26 — 2024-04-30
     imageId: med_img-2424
-  - id: ch_overview
-    type: overview
-    heading: The route
+  - id: ch_fly_white-rim-mineral-bottom-to-airport_label
+    type: article
+    heading: White Rim Mineral Bottom to Airport
+  - id: ch_fly_white-rim-mineral-bottom-to-airport_01
+    type: move
+    to:
+      coordinates:
+        - -109.99046
+        - 38.50941
+      zoom: 12.5
+      tilt: 62
+      bearing: 66
+    space: 0.4
+  - id: ch_fly_white-rim-mineral-bottom-to-airport_02
+    type: move
+    to:
+      coordinates:
+        - -109.80286
+        - 38.57245
+      zoom: 12.5
+      tilt: 62
+      bearing: 177
+    space: 0.4
+  - id: ch_fly_white-rim-mineral-bottom-to-airport_03
+    type: move
+    to:
+      coordinates:
+        - -109.78344
+        - 38.46009
+      zoom: 12.5
+      tilt: 62
+      bearing: 180
+    space: 0.4
+  - id: ch_fly_white-rim-mineral-bottom-to-airport_04
+    type: move
+    to:
+      coordinates:
+        - -109.79431
+        - 38.39192
+      zoom: 12.5
+      tilt: 62
+      bearing: 228
+    space: 0.4
+  - id: ch_fly_lathrop-canyon-run-with-mark_label
+    type: article
+    heading: Lathrop canyon run with mark
+  - id: ch_fly_lathrop-canyon-run-with-mark_01
+    type: move
+    to:
+      coordinates:
+        - -109.79376
+        - 38.40179
+      zoom: 12.5
+      tilt: 62
+      bearing: 290
+    space: 0.4
+  - id: ch_fly_lathrop-canyon-run-with-mark_02
+    type: move
+    to:
+      coordinates:
+        - -109.8125
+        - 38.41057
+      zoom: 12.5
+      tilt: 62
+      bearing: 345
+    space: 0.4
+  - id: ch_fly_lathrop-canyon-run-with-mark_03
+    type: move
+    to:
+      coordinates:
+        - -109.8113
+        - 38.41251
+      zoom: 12.5
+      tilt: 62
+      bearing: 207
+    space: 0.4
+  - id: ch_fly_lathrop-canyon-run-with-mark_04
+    type: move
+    to:
+      coordinates:
+        - -109.794
+        - 38.40171
+      zoom: 12.5
+      tilt: 62
+      bearing: 113
+    space: 0.4
+  - id: ch_fly_airport-to-murphy_label
+    type: article
+    heading: AirPort to Murphy
+  - id: ch_fly_airport-to-murphy_01
+    type: move
+    to:
+      coordinates:
+        - -109.79378
+        - 38.40181
+      zoom: 12.5
+      tilt: 62
+      bearing: 238
+    space: 0.4
+  - id: ch_fly_airport-to-murphy_02
+    type: move
+    to:
+      coordinates:
+        - -109.83363
+        - 38.34792
+      zoom: 12.5
+      tilt: 62
+      bearing: 136
+    space: 0.4
+  - id: ch_fly_airport-to-murphy_03
+    type: move
+    to:
+      coordinates:
+        - -109.85308
+        - 38.28011
+      zoom: 12.5
+      tilt: 62
+      bearing: 290
+    space: 0.4
+  - id: ch_fly_airport-to-murphy_04
+    type: move
+    to:
+      coordinates:
+        - -109.90986
+        - 38.32342
+      zoom: 12.5
+      tilt: 62
+      bearing: 309
+    space: 0.4
+  - id: ch_fly_murphy-to-rim_label
+    type: article
+    heading: Murphy to rim
+  - id: ch_fly_murphy-to-rim_01
+    type: move
+    to:
+      coordinates:
+        - -109.90988
+        - 38.32345
+      zoom: 12.5
+      tilt: 62
+      bearing: 7
+    space: 0.4
+  - id: ch_fly_murphy-to-rim_02
+    type: move
+    to:
+      coordinates:
+        - -109.98283
+        - 38.39284
+      zoom: 12.5
+      tilt: 62
+      bearing: 303
+    space: 0.4
+  - id: ch_fly_murphy-to-rim_03
+    type: move
+    to:
+      coordinates:
+        - -110.00011
+        - 38.46605
+      zoom: 12.5
+      tilt: 62
+      bearing: 325
+    space: 0.4
+  - id: ch_fly_murphy-to-rim_04
+    type: move
+    to:
+      coordinates:
+        - -109.99055
+        - 38.50928
+      zoom: 12.5
+      tilt: 62
+      bearing: 112
+    space: 0.4
   - id: ch_logistics
     type: logistics
     heading: Logistics
