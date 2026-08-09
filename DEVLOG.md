@@ -507,3 +507,33 @@ independent notions of "current position" would drift apart and feel broken in a
 diagnose.
 
 Each content chapter now carries its `id` as a DOM id, so nav jumps and `#fragment` links work.
+
+---
+
+## 2026-08-08 — imagePins: the data answered the design question
+
+Went in expecting to choose between "pins live on the stage" and "each pin becomes a chapter."
+Checked the data first, and it made the question different.
+
+**All 37 pins point at images that already appear in chapters.** Not one is unique content. And
+each carries coordinates that came from EXIF, via the same organize script that bucketed photos
+into days.
+
+So a pin isn't authored content at all — it's a **geographic index over media the story already
+contains**. "This photograph was taken here", where both halves are facts ingest already knows.
+
+The right model is therefore that pins are *computed*: every media item with coordinates that the
+story uses, placed on the map. `sources.media[]` already carries `coordinates` in the schema. What's
+missing is the link from chapters to media ids — the `src` vs `mediaId` question — and any `sources`
+at all in the migrated documents, since the legacy ones never had one.
+
+So: moved `imagePins` → `stage.pins` (it's map-specific and had no business at the trip root),
+rendered them, and wrote ADR 0013 recording that **this is denormalized derived data stored on
+purpose, with an expiry.** That's exactly the drift the spec exists to prevent, so it's worth being
+loud about rather than quietly shipping it as if it were the model.
+
+Rendering is the blog's: a 34px circular thumbnail in a 44px hit area — the visual size stays put
+but it's tappable with a thumb — scaling on hover, opening the lightbox on click, with the whole pin
+set navigable once open.
+
+Brooks Range's last structural gap is closed. The migration now reports **zero** unmigrated fields.

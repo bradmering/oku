@@ -79,10 +79,11 @@ route: [...]                          tilt: 30
                                     route: [...]
 ```
 
-**`imagePins` (brooks-range only) is not in the schema at all.** Whether it becomes
-`stage.imagePins` or each pin becomes a chapter is a *design* decision, not a migration one — and
-per `decisions/0011`, the answer should come from what the product needs, not from what this one
-document happens to have.
+~~**`imagePins` is not in the schema at all.**~~ **Resolved 2026-08-08 — `decisions/0013`.** It
+moves to `stage.pins`, because it is map-specific. The finding that settled it: all 37 pins point
+at images that already appear in chapters, and their coordinates came from EXIF — so a pin is
+**derived data**, a geographic index over media the story already contains. It is stored only
+because `sources.media[]` is empty until ingest exists.
 
 ### 4. Envelope fields the legacy documents have never had
 

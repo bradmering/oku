@@ -44,7 +44,7 @@ const CHAPTER_PASSTHROUGH = new Set([
 ])
 
 const TOP_PASSTHROUGH = new Set(['title', 'subtitle', 'tags'])
-const TOP_CONSUMED = new Set(['mapStyle', 'date', 'initialView', 'route', 'chapters'])
+const TOP_CONSUMED = new Set(['mapStyle', 'date', 'initialView', 'route', 'chapters', 'imagePins'])
 
 type Report = {
   file: string
@@ -99,6 +99,8 @@ function migrate(file: string, author: { id: string; name: string }): Report {
       clock: 'scroll',
       initialView: iv,
       ...(raw.route ? { route: raw.route } : {}),
+      // Pins belong to the map, not the trip — see decisions/0013.
+      ...(raw.imagePins ? { pins: raw.imagePins } : {}),
     }
   }
 

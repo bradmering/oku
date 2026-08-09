@@ -2748,6 +2748,229 @@ stage:
       - 70.108723
     - - -143.744393
       - 70.108545
+  pins:
+    - coordinates:
+        - -144.630936
+        - 69.097817
+      thumbnail: /images/stories/brooks-range/IMG_1738.webp
+      image: /images/stories/brooks-range/IMG_1738.webp
+      caption: Touching down at Grassers Airstrip
+    - coordinates:
+        - -144.629853
+        - 69.097733
+      thumbnail: /images/stories/brooks-range/IMG_1754.webp
+      image: /images/stories/brooks-range/IMG_1754.webp
+      caption: An old caribou antler on the gravel bar
+    - coordinates:
+        - -144.567811
+        - 69.209458
+      thumbnail: /images/stories/brooks-range/IMG_1801.webp
+      image: /images/stories/brooks-range/IMG_1801.webp
+      caption: Ice cliff along the upper Hulahula
+    - coordinates:
+        - -144.564408
+        - 69.341478
+      thumbnail: /images/stories/brooks-range/IMG_1827.webp
+      image: /images/stories/brooks-range/IMG_1827.webp
+      caption: Working down through the splashy class 2
+    - coordinates:
+        - -144.525894
+        - 69.356561
+      thumbnail: /images/stories/brooks-range/IMG_1841.webp
+      image: /images/stories/brooks-range/IMG_1841.webp
+      caption: Tussock and tundra hiking
+    - coordinates:
+        - -144.432542
+        - 69.341072
+      thumbnail: /images/stories/brooks-range/IMG_1846.webp
+      image: /images/stories/brooks-range/IMG_1846.webp
+      caption: Dwarfed by the scree slope, under full packs
+    - coordinates:
+        - -144.411789
+        - 69.343178
+      thumbnail: /images/stories/brooks-range/IMG_1849.webp
+      image: /images/stories/brooks-range/IMG_1849.webp
+      caption: Mid-hike, packraft strapped on top
+    - coordinates:
+        - -144.383453
+        - 69.350517
+      thumbnail: /images/stories/brooks-range/IMG_1853.webp
+      image: /images/stories/brooks-range/IMG_1853.webp
+      caption: Clouds over the divide
+    - coordinates:
+        - -144.35965
+        - 69.347436
+      thumbnail: /images/stories/brooks-range/IMG_1858.webp
+      image: /images/stories/brooks-range/IMG_1858.webp
+      caption: Fording a braided glacial stream
+    - coordinates:
+        - -144.280717
+        - 69.345864
+      thumbnail: /images/stories/brooks-range/IMG_1876.webp
+      image: /images/stories/brooks-range/IMG_1876.webp
+      caption: Approaching the toe of the glacier
+    - coordinates:
+        - -144.280456
+        - 69.345939
+      thumbnail: /images/stories/brooks-range/IMG_1880.webp
+      image: /images/stories/brooks-range/IMG_1880.webp
+      caption: The Romanzof Range, clearing skies
+    - coordinates:
+        - -144.242431
+        - 69.342042
+      thumbnail: /images/stories/brooks-range/IMG_1906.webp
+      image: /images/stories/brooks-range/IMG_1906.webp
+      caption: Crossing the last snowfield
+    - coordinates:
+        - -144.242431
+        - 69.342042
+      thumbnail: /images/stories/brooks-range/IMG_1919.webp
+      image: /images/stories/brooks-range/IMG_1919.webp
+      caption: On the glacier
+    - coordinates:
+        - -144.219589
+        - 69.351081
+      thumbnail: /images/stories/brooks-range/IMG_1947.webp
+      image: /images/stories/brooks-range/IMG_1947.webp
+      caption: Rust-orange creek, iron flowing off the talus
+    - coordinates:
+        - -144.220061
+        - 69.352792
+      thumbnail: /images/stories/brooks-range/IMG_1950.webp
+      image: /images/stories/brooks-range/IMG_1950.webp
+      caption: Down into the Okpilak drainage
+    - coordinates:
+        - -144.071717
+        - 69.354081
+      thumbnail: /images/stories/brooks-range/IMG_6552.webp
+      image: /images/stories/brooks-range/IMG_6552.webp
+      caption: The Okpilak valley, sheet ice underfoot
+    - coordinates:
+        - -144.040222
+        - 69.331192
+      thumbnail: /images/stories/brooks-range/IMG_2028.webp
+      image: /images/stories/brooks-range/IMG_2028.webp
+      caption: The muskox herd
+    - coordinates:
+        - -144.008653
+        - 69.284828
+      thumbnail: /images/stories/brooks-range/IMG_2047.webp
+      image: /images/stories/brooks-range/IMG_2047.webp
+      caption: Racing up the valley, boats on our backs
+    - coordinates:
+        - -144.009706
+        - 69.2601
+      thumbnail: /images/stories/brooks-range/IMG_2057.webp
+      image: /images/stories/brooks-range/IMG_2057.webp
+      caption: Bluebird skies over the headwaters
+    - coordinates:
+        - -144.009706
+        - 69.2601
+      thumbnail: /images/stories/brooks-range/IMG_2061.webp
+      image: /images/stories/brooks-range/IMG_2061.webp
+      caption: Picking a line through the boulder field
+    - coordinates:
+        - -144.009231
+        - 69.284256
+      thumbnail: /images/stories/brooks-range/IMG_6594.webp
+      image: /images/stories/brooks-range/IMG_6594.webp
+      caption: The whole crew, headed upriver
+    - coordinates:
+        - -144.010042
+        - 69.240325
+      thumbnail: /images/stories/brooks-range/IMG_2096.webp
+      image: /images/stories/brooks-range/IMG_2096.webp
+      caption: Tundra and talus, blue sky above
+    - coordinates:
+        - -144.039108
+        - 69.329803
+      thumbnail: /images/stories/brooks-range/IMG_2116.webp
+      image: /images/stories/brooks-range/IMG_2116.webp
+      caption: The muskox herd, right at camp
+    - coordinates:
+        - -144.039475
+        - 69.330428
+      thumbnail: /images/stories/brooks-range/IMG_2184.webp
+      image: /images/stories/brooks-range/IMG_2184.webp
+      caption: Soaking in the hotsprings
+    - coordinates:
+        - -144.039108
+        - 69.329803
+      thumbnail: /images/stories/brooks-range/IMG_2161.webp
+      image: /images/stories/brooks-range/IMG_2161.webp
+      caption: An arctic ground squirrel keeping watch
+    - coordinates:
+        - -144.077531
+        - 69.394486
+      thumbnail: /images/stories/brooks-range/IMG_2201.webp
+      image: /images/stories/brooks-range/IMG_2201.webp
+      caption: Continuous class 3, dropping toward the plain
+    - coordinates:
+        - -144.072175
+        - 69.411208
+      thumbnail: /images/stories/brooks-range/IMG_2222.webp
+      image: /images/stories/brooks-range/IMG_2222.webp
+      caption: In the boat, mid-rapid
+    - coordinates:
+        - -143.833542
+        - 69.70935
+      thumbnail: /images/stories/brooks-range/IMG_2290.webp
+      image: /images/stories/brooks-range/IMG_2290.webp
+      caption: Camp on the coastal plain, wildflowers in the wind
+    - coordinates:
+        - -143.808747
+        - 69.770417
+      thumbnail: /images/stories/brooks-range/IMG_2303.webp
+      image: /images/stories/brooks-range/IMG_2303.webp
+      caption: A snowbank holding on along the riverbank
+    - coordinates:
+        - -143.753692
+        - 69.8386
+      thumbnail: /images/stories/brooks-range/IMG_2322.webp
+      image: /images/stories/brooks-range/IMG_2322.webp
+      caption: Massive ice wall, the river squeezed alongside
+    - coordinates:
+        - -143.977281
+        - 70.046989
+      thumbnail: /images/stories/brooks-range/IMG_2330.webp
+      image: /images/stories/brooks-range/IMG_2330.webp
+      caption: Dragging boats across the palsa ground
+    - coordinates:
+        - -143.962203
+        - 70.057442
+      thumbnail: /images/stories/brooks-range/IMG_2335.webp
+      image: /images/stories/brooks-range/IMG_2335.webp
+      caption: The edge of the earth -- sea and ice to the north
+    - coordinates:
+        - -143.9189
+        - 70.079208
+      thumbnail: /images/stories/brooks-range/IMG_2360.webp
+      image: /images/stories/brooks-range/IMG_2360.webp
+      caption: Lining boats across the mud flat
+    - coordinates:
+        - -143.819581
+        - 70.106719
+      thumbnail: /images/stories/brooks-range/IMG_2374.webp
+      image: /images/stories/brooks-range/IMG_2374.webp
+      caption: Sea ice off the barrier island
+    - coordinates:
+        - -143.783889
+        - 70.106536
+      thumbnail: /images/stories/brooks-range/IMG_2392.webp
+      image: /images/stories/brooks-range/IMG_2392.webp
+      caption: Open water crossing, mountains behind
+    - coordinates:
+        - -143.656753
+        - 70.110481
+      thumbnail: /images/stories/brooks-range/IMG_2416.webp
+      image: /images/stories/brooks-range/IMG_2416.webp
+      caption: Walking the road into Kaktovik
+    - coordinates:
+        - -143.609375
+        - 70.115806
+      thumbnail: /images/stories/brooks-range/IMG_2423.webp
+      image: /images/stories/brooks-range/IMG_2423.webp
+      caption: Back to human habitation, an Inupiaq street sign
 chapters:
   - id: title
     type: title
@@ -3634,226 +3857,3 @@ chapters:
           - Synthetic insulating pants and jacket
           - Sun hat + strong sunscreen + lip balm
           - Three pairs of socks
-imagePins:
-  - coordinates:
-      - -144.630936
-      - 69.097817
-    thumbnail: /images/stories/brooks-range/IMG_1738.webp
-    image: /images/stories/brooks-range/IMG_1738.webp
-    caption: Touching down at Grassers Airstrip
-  - coordinates:
-      - -144.629853
-      - 69.097733
-    thumbnail: /images/stories/brooks-range/IMG_1754.webp
-    image: /images/stories/brooks-range/IMG_1754.webp
-    caption: An old caribou antler on the gravel bar
-  - coordinates:
-      - -144.567811
-      - 69.209458
-    thumbnail: /images/stories/brooks-range/IMG_1801.webp
-    image: /images/stories/brooks-range/IMG_1801.webp
-    caption: Ice cliff along the upper Hulahula
-  - coordinates:
-      - -144.564408
-      - 69.341478
-    thumbnail: /images/stories/brooks-range/IMG_1827.webp
-    image: /images/stories/brooks-range/IMG_1827.webp
-    caption: Working down through the splashy class 2
-  - coordinates:
-      - -144.525894
-      - 69.356561
-    thumbnail: /images/stories/brooks-range/IMG_1841.webp
-    image: /images/stories/brooks-range/IMG_1841.webp
-    caption: Tussock and tundra hiking
-  - coordinates:
-      - -144.432542
-      - 69.341072
-    thumbnail: /images/stories/brooks-range/IMG_1846.webp
-    image: /images/stories/brooks-range/IMG_1846.webp
-    caption: Dwarfed by the scree slope, under full packs
-  - coordinates:
-      - -144.411789
-      - 69.343178
-    thumbnail: /images/stories/brooks-range/IMG_1849.webp
-    image: /images/stories/brooks-range/IMG_1849.webp
-    caption: Mid-hike, packraft strapped on top
-  - coordinates:
-      - -144.383453
-      - 69.350517
-    thumbnail: /images/stories/brooks-range/IMG_1853.webp
-    image: /images/stories/brooks-range/IMG_1853.webp
-    caption: Clouds over the divide
-  - coordinates:
-      - -144.35965
-      - 69.347436
-    thumbnail: /images/stories/brooks-range/IMG_1858.webp
-    image: /images/stories/brooks-range/IMG_1858.webp
-    caption: Fording a braided glacial stream
-  - coordinates:
-      - -144.280717
-      - 69.345864
-    thumbnail: /images/stories/brooks-range/IMG_1876.webp
-    image: /images/stories/brooks-range/IMG_1876.webp
-    caption: Approaching the toe of the glacier
-  - coordinates:
-      - -144.280456
-      - 69.345939
-    thumbnail: /images/stories/brooks-range/IMG_1880.webp
-    image: /images/stories/brooks-range/IMG_1880.webp
-    caption: The Romanzof Range, clearing skies
-  - coordinates:
-      - -144.242431
-      - 69.342042
-    thumbnail: /images/stories/brooks-range/IMG_1906.webp
-    image: /images/stories/brooks-range/IMG_1906.webp
-    caption: Crossing the last snowfield
-  - coordinates:
-      - -144.242431
-      - 69.342042
-    thumbnail: /images/stories/brooks-range/IMG_1919.webp
-    image: /images/stories/brooks-range/IMG_1919.webp
-    caption: On the glacier
-  - coordinates:
-      - -144.219589
-      - 69.351081
-    thumbnail: /images/stories/brooks-range/IMG_1947.webp
-    image: /images/stories/brooks-range/IMG_1947.webp
-    caption: Rust-orange creek, iron flowing off the talus
-  - coordinates:
-      - -144.220061
-      - 69.352792
-    thumbnail: /images/stories/brooks-range/IMG_1950.webp
-    image: /images/stories/brooks-range/IMG_1950.webp
-    caption: Down into the Okpilak drainage
-  - coordinates:
-      - -144.071717
-      - 69.354081
-    thumbnail: /images/stories/brooks-range/IMG_6552.webp
-    image: /images/stories/brooks-range/IMG_6552.webp
-    caption: The Okpilak valley, sheet ice underfoot
-  - coordinates:
-      - -144.040222
-      - 69.331192
-    thumbnail: /images/stories/brooks-range/IMG_2028.webp
-    image: /images/stories/brooks-range/IMG_2028.webp
-    caption: The muskox herd
-  - coordinates:
-      - -144.008653
-      - 69.284828
-    thumbnail: /images/stories/brooks-range/IMG_2047.webp
-    image: /images/stories/brooks-range/IMG_2047.webp
-    caption: Racing up the valley, boats on our backs
-  - coordinates:
-      - -144.009706
-      - 69.2601
-    thumbnail: /images/stories/brooks-range/IMG_2057.webp
-    image: /images/stories/brooks-range/IMG_2057.webp
-    caption: Bluebird skies over the headwaters
-  - coordinates:
-      - -144.009706
-      - 69.2601
-    thumbnail: /images/stories/brooks-range/IMG_2061.webp
-    image: /images/stories/brooks-range/IMG_2061.webp
-    caption: Picking a line through the boulder field
-  - coordinates:
-      - -144.009231
-      - 69.284256
-    thumbnail: /images/stories/brooks-range/IMG_6594.webp
-    image: /images/stories/brooks-range/IMG_6594.webp
-    caption: The whole crew, headed upriver
-  - coordinates:
-      - -144.010042
-      - 69.240325
-    thumbnail: /images/stories/brooks-range/IMG_2096.webp
-    image: /images/stories/brooks-range/IMG_2096.webp
-    caption: Tundra and talus, blue sky above
-  - coordinates:
-      - -144.039108
-      - 69.329803
-    thumbnail: /images/stories/brooks-range/IMG_2116.webp
-    image: /images/stories/brooks-range/IMG_2116.webp
-    caption: The muskox herd, right at camp
-  - coordinates:
-      - -144.039475
-      - 69.330428
-    thumbnail: /images/stories/brooks-range/IMG_2184.webp
-    image: /images/stories/brooks-range/IMG_2184.webp
-    caption: Soaking in the hotsprings
-  - coordinates:
-      - -144.039108
-      - 69.329803
-    thumbnail: /images/stories/brooks-range/IMG_2161.webp
-    image: /images/stories/brooks-range/IMG_2161.webp
-    caption: An arctic ground squirrel keeping watch
-  - coordinates:
-      - -144.077531
-      - 69.394486
-    thumbnail: /images/stories/brooks-range/IMG_2201.webp
-    image: /images/stories/brooks-range/IMG_2201.webp
-    caption: Continuous class 3, dropping toward the plain
-  - coordinates:
-      - -144.072175
-      - 69.411208
-    thumbnail: /images/stories/brooks-range/IMG_2222.webp
-    image: /images/stories/brooks-range/IMG_2222.webp
-    caption: In the boat, mid-rapid
-  - coordinates:
-      - -143.833542
-      - 69.70935
-    thumbnail: /images/stories/brooks-range/IMG_2290.webp
-    image: /images/stories/brooks-range/IMG_2290.webp
-    caption: Camp on the coastal plain, wildflowers in the wind
-  - coordinates:
-      - -143.808747
-      - 69.770417
-    thumbnail: /images/stories/brooks-range/IMG_2303.webp
-    image: /images/stories/brooks-range/IMG_2303.webp
-    caption: A snowbank holding on along the riverbank
-  - coordinates:
-      - -143.753692
-      - 69.8386
-    thumbnail: /images/stories/brooks-range/IMG_2322.webp
-    image: /images/stories/brooks-range/IMG_2322.webp
-    caption: Massive ice wall, the river squeezed alongside
-  - coordinates:
-      - -143.977281
-      - 70.046989
-    thumbnail: /images/stories/brooks-range/IMG_2330.webp
-    image: /images/stories/brooks-range/IMG_2330.webp
-    caption: Dragging boats across the palsa ground
-  - coordinates:
-      - -143.962203
-      - 70.057442
-    thumbnail: /images/stories/brooks-range/IMG_2335.webp
-    image: /images/stories/brooks-range/IMG_2335.webp
-    caption: The edge of the earth -- sea and ice to the north
-  - coordinates:
-      - -143.9189
-      - 70.079208
-    thumbnail: /images/stories/brooks-range/IMG_2360.webp
-    image: /images/stories/brooks-range/IMG_2360.webp
-    caption: Lining boats across the mud flat
-  - coordinates:
-      - -143.819581
-      - 70.106719
-    thumbnail: /images/stories/brooks-range/IMG_2374.webp
-    image: /images/stories/brooks-range/IMG_2374.webp
-    caption: Sea ice off the barrier island
-  - coordinates:
-      - -143.783889
-      - 70.106536
-    thumbnail: /images/stories/brooks-range/IMG_2392.webp
-    image: /images/stories/brooks-range/IMG_2392.webp
-    caption: Open water crossing, mountains behind
-  - coordinates:
-      - -143.656753
-      - 70.110481
-    thumbnail: /images/stories/brooks-range/IMG_2416.webp
-    image: /images/stories/brooks-range/IMG_2416.webp
-    caption: Walking the road into Kaktovik
-  - coordinates:
-      - -143.609375
-      - 70.115806
-    thumbnail: /images/stories/brooks-range/IMG_2423.webp
-    image: /images/stories/brooks-range/IMG_2423.webp
-    caption: Back to human habitation, an Inupiaq street sign

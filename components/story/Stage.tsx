@@ -1,9 +1,12 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import type { Camera } from '@/lib/interpolate'
 import { routeHead } from '@/lib/interpolate'
+import Lightbox from './Lightbox'
+
+type Pin = { coordinates: [number, number]; thumbnail: string; image: string; caption?: string }
 
 /**
  * The persistent map stage.
@@ -27,15 +30,18 @@ export default function Stage({
   route,
   camera,
   terrain,
+  pins,
 }: {
   styleUrl?: string
   route?: [number, number][]
   camera: Camera
   terrain?: boolean
+  pins?: Pin[]
 }) {
   const el = useRef<HTMLDivElement>(null)
   const map = useRef<mapboxgl.Map | null>(null)
   const ready = useRef(false)
+  const [openPin, setOpenPin] = useState<number | null>(null)
 
   useEffect(() => {
     if (!el.current || map.current || !TOKEN) return
@@ -84,6 +90,33 @@ export default function Stage({
           paint: { 'line-color': '#f0623c', 'line-width': 3 },
         })
       }
+      // Photograph pins. A 44px hit area around a 34px thumbnail — the visual
+      // size stays put but it's actually tappable with a thumb.
+      pins?.forEach((pin, i) => {
+        const hit = document.createElement('div')
+        hit.style.cssText = 'width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;'
+        const dot = document.createElement('div')
+        dot.style.cssText = `
+          width:34px; height:34px; border-radius:50%;
+          background-image:url('${pin.thumbnail}');
+          background-size:cover; background-position:center;
+          border:2px solid white; box-shadow:0 1px 5px rgba(0,0,0,.55);
+          transition:transform .2s ease, box-shadow .2s ease;`
+        hit.appendChild(dot)
+        hit.addEventListener('mouseenter', () => {
+          dot.style.transform = 'scale(1.25)'
+          dot.style.boxShadow = '0 2px 10px rgba(0,0,0,.6)'
+          hit.style.zIndex = '10'
+        })
+        hit.addEventListener('mouseleave', () => {
+          dot.style.transform = 'scale(1)'
+          dot.style.boxShadow = '0 1px 5px rgba(0,0,0,.55)'
+          hit.style.zIndex = ''
+        })
+        hit.addEventListener('click', () => setOpenPin(i))
+        new mapboxgl.Marker({ element: hit }).setLngLat(pin.coordinates).addTo(m)
+      })
+
       ready.current = true
     })
 
@@ -114,6 +147,14 @@ export default function Stage({
   return (
     <div className="fixed inset-0 z-0">
       <div ref={el} className="absolute inset-0 w-full h-full" />
+      {openPin !== null && pins && (
+        <Lightbox
+          images={pins.map((p) => ({ src: p.image, caption: p.caption }))}
+          index={openPin}
+          onClose={() => setOpenPin(null)}
+          onNav={setOpenPin}
+        />
+      )}
       {!TOKEN && (
         <p className="absolute left-4 bottom-4 z-20 m-0 max-w-sm px-3 py-2.5 rounded bg-black/80 text-stone-400 font-mono text-[11px] leading-relaxed">
           No <code>NEXT_PUBLIC_MAPBOX_TOKEN</code> at build time — the map can&apos;t render.

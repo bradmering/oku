@@ -109,7 +109,7 @@ export default function Story({ trip }: { trip: Trip }) {
   return (
     <div className="relative" ref={wrap}>
       {isMap && (
-        <Stage styleUrl={stage.style} route={route} camera={camera} terrain={stage.terrain} />
+        <Stage styleUrl={stage.style} route={route} camera={camera} terrain={stage.terrain} pins={stage.pins} />
       )}
 
       {debug && (

@@ -44,8 +44,22 @@ export const Clock = z.enum(['scroll', 'time'])
 // ── Stage ────────────────────────────────────────────────────────────────────
 // Zero or one per trip. Omitting it entirely is valid — see decisions/0003.
 
+/** A photograph placed on the map.
+ *
+ *  ⚠ This is DERIVED data that we currently store — see decisions/0013. Pins
+ *  are a geographic index over media the story already contains, and their
+ *  coordinates come from EXIF. Once `sources.media[]` is populated by ingest,
+ *  pins should be computed from media-with-coordinates and this field retired. */
+export const Pin = z.object({
+  coordinates: LngLat,
+  thumbnail: z.string(),
+  image: z.string(),
+  caption: z.string().optional(),
+})
+
 export const MapStage = z.object({
   type: z.literal('map'),
+  pins: z.array(Pin).optional(),
   style: z.string().optional(),
   initialView: Keyframe,
   route: z.array(LngLat).optional(),
