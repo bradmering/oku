@@ -3240,7 +3240,7 @@ sources:
   legs:
     - id: leg_arrival
       label: Getting there
-      startedAt: '2024-04-26T18:20:51Z'
+      startedAt: '2024-04-26T18:20:52Z'
       endedAt: '2024-04-27T15:48:41Z'
       mode: rest
     - id: leg_white-rim-mineral-bottom-to-airport
@@ -3308,20 +3308,13 @@ sources:
       mode: rest
   media:
     - id: med_img-2424
-      src: /videos/white-rim/IMG_2424.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_2424.jpg
-      capturedAt: '2024-04-26T18:20:51Z'
-      legId: leg_arrival
-      renditions:
-        original: raw/IMG_2424.MP4
-    - id: med_img-2424-image
       src: /images/white-rim/IMG_2424.webp
       kind: image
       capturedAt: '2024-04-26T18:20:52Z'
       legId: leg_arrival
       renditions:
         original: raw/IMG_2424.HEIC
+        live: raw/IMG_2424.MP4
     - id: med_pxl-20240426-183845250
       src: /images/white-rim/PXL_20240426_183845250.webp
       kind: image
@@ -3339,17 +3332,7 @@ sources:
       legId: leg_arrival
       renditions:
         original: raw/IMG_6441.HEIC
-    - id: med_img-6441-video
-      src: /videos/white-rim/IMG_6441.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6441.jpg
-      capturedAt: '2024-04-26T20:42:24Z'
-      coordinates:
-        - -106.2161
-        - 39.53
-      legId: leg_arrival
-      renditions:
-        original: raw/IMG_6441.MP4
+        live: raw/IMG_6441.MP4
     - id: med_img-8383
       src: /images/white-rim/IMG_8383.webp
       kind: image
@@ -3364,14 +3347,7 @@ sources:
       legId: leg_arrival
       renditions:
         original: raw/IMG_2467.HEIC
-    - id: med_img-2467-video
-      src: /videos/white-rim/IMG_2467.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_2467.jpg
-      capturedAt: '2024-04-26T22:16:40Z'
-      legId: leg_arrival
-      renditions:
-        original: raw/IMG_2467.MP4
+        live: raw/IMG_2467.MP4
     - id: med_img-2594
       src: /images/white-rim/IMG_2594.webp
       kind: image
@@ -3389,17 +3365,7 @@ sources:
       legId: leg_arrival
       renditions:
         original: raw/IMG_6449.HEIC
-    - id: med_img-6449-video
-      src: /videos/white-rim/IMG_6449.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6449.jpg
-      capturedAt: '2024-04-27T15:29:06Z'
-      coordinates:
-        - -109.9906
-        - 38.5093
-      legId: leg_arrival
-      renditions:
-        original: raw/IMG_6449.MP4
+        live: raw/IMG_6449.MP4
     - id: med_img-8389
       src: /images/white-rim/IMG_8389.webp
       kind: image
@@ -3417,17 +3383,7 @@ sources:
       legId: leg_white-rim-mineral-bottom-to-airport
       renditions:
         original: raw/IMG_6452.HEIC
-    - id: med_img-6452-video
-      src: /videos/white-rim/IMG_6452.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6452.jpg
-      capturedAt: '2024-04-27T17:51:10Z'
-      coordinates:
-        - -109.7959
-        - 38.5362
-      legId: leg_white-rim-mineral-bottom-to-airport
-      renditions:
-        original: raw/IMG_6452.MP4
+        live: raw/IMG_6452.MP4
     - id: med_img-2595
       src: /images/white-rim/IMG_2595.webp
       kind: image
@@ -3484,17 +3440,7 @@ sources:
       legId: leg_white-rim-mineral-bottom-to-airport
       renditions:
         original: raw/IMG_6458.HEIC
-    - id: med_img-6458-video
-      src: /videos/white-rim/IMG_6458.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6458.jpg
-      capturedAt: '2024-04-27T20:04:38Z'
-      coordinates:
-        - -109.7638
-        - 38.4382
-      legId: leg_white-rim-mineral-bottom-to-airport
-      renditions:
-        original: raw/IMG_6458.MP4
+        live: raw/IMG_6458.MP4
     - id: med_img-6460
       src: /images/white-rim/IMG_6460.webp
       kind: image
@@ -3505,17 +3451,7 @@ sources:
       legId: leg_white-rim-mineral-bottom-to-airport
       renditions:
         original: raw/IMG_6460.HEIC
-    - id: med_img-6460-video
-      src: /videos/white-rim/IMG_6460.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6460.jpg
-      capturedAt: '2024-04-27T20:04:42Z'
-      coordinates:
-        - -109.7638
-        - 38.4382
-      legId: leg_white-rim-mineral-bottom-to-airport
-      renditions:
-        original: raw/IMG_6460.MP4
+        live: raw/IMG_6460.MP4
     - id: med_img-6461
       src: /images/white-rim/IMG_6461.webp
       kind: image
@@ -3526,17 +3462,7 @@ sources:
       legId: leg_white-rim-mineral-bottom-to-airport
       renditions:
         original: raw/IMG_6461.HEIC
-    - id: med_img-6461-video
-      src: /videos/white-rim/IMG_6461.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6461.jpg
-      capturedAt: '2024-04-27T20:04:44Z'
-      coordinates:
-        - -109.7638
-        - 38.4382
-      legId: leg_white-rim-mineral-bottom-to-airport
-      renditions:
-        original: raw/IMG_6461.MP4
+        live: raw/IMG_6461.MP4
     - id: med_img-6466
       src: /images/white-rim/IMG_6466.webp
       kind: image
@@ -3590,20 +3516,13 @@ sources:
       renditions:
         original: raw/IMG_4777.JPG
     - id: med_img-9259
-      src: /videos/white-rim/IMG_9259.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_9259.jpg
-      capturedAt: '2024-04-28T00:41:47Z'
-      legId: leg_camp_1
-      renditions:
-        original: raw/IMG_9259.MP4
-    - id: med_img-9259-image
       src: /images/white-rim/IMG_9259.webp
       kind: image
       capturedAt: '2024-04-28T00:41:48Z'
       legId: leg_camp_1
       renditions:
         original: raw/IMG_9259.HEIC
+        live: raw/IMG_9259.MP4
     - id: med_img-6467
       src: /images/white-rim/IMG_6467.webp
       kind: image
@@ -3611,14 +3530,7 @@ sources:
       legId: leg_camp_1
       renditions:
         original: raw/IMG_6467.HEIC
-    - id: med_img-6467-video
-      src: /videos/white-rim/IMG_6467.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6467.jpg
-      capturedAt: '2024-04-28T01:58:51Z'
-      legId: leg_camp_1
-      renditions:
-        original: raw/IMG_6467.MP4
+        live: raw/IMG_6467.MP4
     - id: med_img-6471
       src: /images/white-rim/IMG_6471.webp
       kind: image
@@ -3670,17 +3582,7 @@ sources:
       legId: leg_camp_1
       renditions:
         original: raw/IMG_6485.HEIC
-    - id: med_img-6485-video
-      src: /videos/white-rim/IMG_6485.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6485.jpg
-      capturedAt: '2024-04-28T02:06:08Z'
-      coordinates:
-        - -109.7934
-        - 38.3911
-      legId: leg_camp_1
-      renditions:
-        original: raw/IMG_6485.MP4
+        live: raw/IMG_6485.MP4
     - id: med_img-6491
       src: /images/white-rim/IMG_6491.webp
       kind: image
@@ -3688,29 +3590,15 @@ sources:
       legId: leg_camp_1
       renditions:
         original: raw/IMG_6491.HEIC
-    - id: med_img-6491-video
-      src: /videos/white-rim/IMG_6491.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6491.jpg
-      capturedAt: '2024-04-28T12:49:37Z'
-      legId: leg_camp_1
-      renditions:
-        original: raw/IMG_6491.MP4
+        live: raw/IMG_6491.MP4
     - id: med_img-6494
-      src: /videos/white-rim/IMG_6494.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6494.jpg
-      capturedAt: '2024-04-28T12:49:48Z'
-      legId: leg_camp_1
-      renditions:
-        original: raw/IMG_6494.MP4
-    - id: med_img-6494-image
       src: /images/white-rim/IMG_6494.webp
       kind: image
       capturedAt: '2024-04-28T12:49:49Z'
       legId: leg_camp_1
       renditions:
         original: raw/IMG_6494.HEIC
+        live: raw/IMG_6494.MP4
     - id: med_img-6496
       src: /images/white-rim/IMG_6496.webp
       kind: image
@@ -3721,17 +3609,7 @@ sources:
       legId: leg_camp_1
       renditions:
         original: raw/IMG_6496.HEIC
-    - id: med_img-6496-video
-      src: /videos/white-rim/IMG_6496.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6496.jpg
-      capturedAt: '2024-04-28T12:49:55Z'
-      coordinates:
-        - -109.7945
-        - 38.3914
-      legId: leg_camp_1
-      renditions:
-        original: raw/IMG_6496.MP4
+        live: raw/IMG_6496.MP4
     - id: med_img-6501
       src: /images/white-rim/IMG_6501.webp
       kind: image
@@ -3742,17 +3620,7 @@ sources:
       legId: leg_camp_1
       renditions:
         original: raw/IMG_6501.HEIC
-    - id: med_img-6501-video
-      src: /videos/white-rim/IMG_6501.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6501.jpg
-      capturedAt: '2024-04-28T14:23:10Z'
-      coordinates:
-        - -109.7943
-        - 38.3918
-      legId: leg_camp_1
-      renditions:
-        original: raw/IMG_6501.MP4
+        live: raw/IMG_6501.MP4
     - id: med_img-6508
       src: /images/white-rim/IMG_6508.webp
       kind: image
@@ -3763,17 +3631,7 @@ sources:
       legId: leg_lathrop-canyon-run-with-mark
       renditions:
         original: raw/IMG_6508.HEIC
-    - id: med_img-6508-video
-      src: /videos/white-rim/IMG_6508.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6508.jpg
-      capturedAt: '2024-04-28T15:45:58Z'
-      coordinates:
-        - -109.8055
-        - 38.4032
-      legId: leg_lathrop-canyon-run-with-mark
-      renditions:
-        original: raw/IMG_6508.MP4
+        live: raw/IMG_6508.MP4
     - id: med_img-6510
       src: /images/white-rim/IMG_6510.webp
       kind: image
@@ -3784,32 +3642,15 @@ sources:
       legId: leg_lathrop-canyon-run-with-mark
       renditions:
         original: raw/IMG_6510.HEIC
-    - id: med_img-6510-video
-      src: /videos/white-rim/IMG_6510.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6510.jpg
-      capturedAt: '2024-04-28T15:46:12Z'
-      coordinates:
-        - -109.8056
-        - 38.4032
-      legId: leg_lathrop-canyon-run-with-mark
-      renditions:
-        original: raw/IMG_6510.MP4
+        live: raw/IMG_6510.MP4
     - id: med_img-6512
-      src: /videos/white-rim/IMG_6512.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6512.jpg
-      capturedAt: '2024-04-28T16:00:45Z'
-      legId: leg_lathrop-canyon-run-with-mark
-      renditions:
-        original: raw/IMG_6512.MP4
-    - id: med_img-6512-image
       src: /images/white-rim/IMG_6512.webp
       kind: image
       capturedAt: '2024-04-28T16:00:46Z'
       legId: leg_lathrop-canyon-run-with-mark
       renditions:
         original: raw/IMG_6512.HEIC
+        live: raw/IMG_6512.MP4
     - id: med_img-6514
       src: /images/white-rim/IMG_6514.webp
       kind: image
@@ -3820,17 +3661,7 @@ sources:
       legId: leg_lathrop-canyon-run-with-mark
       renditions:
         original: raw/IMG_6514.HEIC
-    - id: med_img-6514-video
-      src: /videos/white-rim/IMG_6514.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6514.jpg
-      capturedAt: '2024-04-28T16:07:31Z'
-      coordinates:
-        - -109.8176
-        - 38.4077
-      legId: leg_lathrop-canyon-run-with-mark
-      renditions:
-        original: raw/IMG_6514.MP4
+        live: raw/IMG_6514.MP4
     - id: med_img-6516
       src: /images/white-rim/IMG_6516.webp
       kind: image
@@ -3841,17 +3672,7 @@ sources:
       legId: leg_lathrop-canyon-run-with-mark
       renditions:
         original: raw/IMG_6516.HEIC
-    - id: med_img-6516-video
-      src: /videos/white-rim/IMG_6516.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6516.jpg
-      capturedAt: '2024-04-28T16:07:34Z'
-      coordinates:
-        - -109.8176
-        - 38.4077
-      legId: leg_lathrop-canyon-run-with-mark
-      renditions:
-        original: raw/IMG_6516.MP4
+        live: raw/IMG_6516.MP4
     - id: med_img-6517
       src: /images/white-rim/IMG_6517.webp
       kind: image
@@ -3862,17 +3683,7 @@ sources:
       legId: leg_lathrop-canyon-run-with-mark
       renditions:
         original: raw/IMG_6517.HEIC
-    - id: med_img-6517-video
-      src: /videos/white-rim/IMG_6517.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6517.jpg
-      capturedAt: '2024-04-28T16:07:36Z'
-      coordinates:
-        - -109.8175
-        - 38.4077
-      legId: leg_lathrop-canyon-run-with-mark
-      renditions:
-        original: raw/IMG_6517.MP4
+        live: raw/IMG_6517.MP4
     - id: med_img-6518
       src: /videos/white-rim/IMG_6518.mp4
       kind: video
@@ -3898,14 +3709,7 @@ sources:
       legId: leg_lathrop-canyon-run-with-mark
       renditions:
         original: raw/IMG_6520.HEIC
-    - id: med_img-6520-video
-      src: /videos/white-rim/IMG_6520.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6520.jpg
-      capturedAt: '2024-04-28T16:44:08Z'
-      legId: leg_lathrop-canyon-run-with-mark
-      renditions:
-        original: raw/IMG_6520.MP4
+        live: raw/IMG_6520.MP4
     - id: med_img-6521
       src: /images/white-rim/IMG_6521.webp
       kind: image
@@ -3916,32 +3720,15 @@ sources:
       legId: leg_lathrop-canyon-run-with-mark
       renditions:
         original: raw/IMG_6521.HEIC
-    - id: med_img-6521-video
-      src: /videos/white-rim/IMG_6521.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6521.jpg
-      capturedAt: '2024-04-28T16:44:09Z'
-      coordinates:
-        - -109.8131
-        - 38.4141
-      legId: leg_lathrop-canyon-run-with-mark
-      renditions:
-        original: raw/IMG_6521.MP4
+        live: raw/IMG_6521.MP4
     - id: med_img-6522
-      src: /videos/white-rim/IMG_6522.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6522.jpg
-      capturedAt: '2024-04-28T16:48:54Z'
-      legId: leg_lathrop-canyon-run-with-mark
-      renditions:
-        original: raw/IMG_6522.MP4
-    - id: med_img-6522-image
       src: /images/white-rim/IMG_6522.webp
       kind: image
       capturedAt: '2024-04-28T16:48:55Z'
       legId: leg_lathrop-canyon-run-with-mark
       renditions:
         original: raw/IMG_6522.HEIC
+        live: raw/IMG_6522.MP4
     - id: med_img-2616
       src: /images/white-rim/IMG_2616.webp
       kind: image
@@ -3970,14 +3757,7 @@ sources:
       legId: leg_lathrop-canyon-run-with-mark
       renditions:
         original: raw/IMG_6524.HEIC
-    - id: med_img-6524-video
-      src: /videos/white-rim/IMG_6524.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6524.jpg
-      capturedAt: '2024-04-28T17:11:18Z'
-      legId: leg_lathrop-canyon-run-with-mark
-      renditions:
-        original: raw/IMG_6524.MP4
+        live: raw/IMG_6524.MP4
     - id: med_img-6526
       src: /images/white-rim/IMG_6526.webp
       kind: image
@@ -3988,29 +3768,8 @@ sources:
       legId: leg_lathrop-canyon-run-with-mark
       renditions:
         original: raw/IMG_6526.HEIC
-    - id: med_img-6526-video
-      src: /videos/white-rim/IMG_6526.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6526.jpg
-      capturedAt: '2024-04-28T17:11:22Z'
-      coordinates:
-        - -109.8065
-        - 38.41
-      legId: leg_lathrop-canyon-run-with-mark
-      renditions:
-        original: raw/IMG_6526.MP4
+        live: raw/IMG_6526.MP4
     - id: med_img-6529
-      src: /videos/white-rim/IMG_6529.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6529.jpg
-      capturedAt: '2024-04-28T17:11:29Z'
-      coordinates:
-        - -109.8066
-        - 38.41
-      legId: leg_lathrop-canyon-run-with-mark
-      renditions:
-        original: raw/IMG_6529.MP4
-    - id: med_img-6529-image
       src: /images/white-rim/IMG_6529.webp
       kind: image
       capturedAt: '2024-04-28T17:11:30Z'
@@ -4020,6 +3779,7 @@ sources:
       legId: leg_lathrop-canyon-run-with-mark
       renditions:
         original: raw/IMG_6529.HEIC
+        live: raw/IMG_6529.MP4
     - id: med_p4280453
       src: /images/white-rim/P4280453.webp
       kind: image
@@ -4051,29 +3811,8 @@ sources:
       legId: leg_lathrop-canyon-run-with-mark
       renditions:
         original: raw/IMG_6531.HEIC
-    - id: med_img-6531-video
-      src: /videos/white-rim/IMG_6531.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6531.jpg
-      capturedAt: '2024-04-28T17:50:00Z'
-      coordinates:
-        - -109.8103
-        - 38.4067
-      legId: leg_lathrop-canyon-run-with-mark
-      renditions:
-        original: raw/IMG_6531.MP4
+        live: raw/IMG_6531.MP4
     - id: med_img-6533
-      src: /videos/white-rim/IMG_6533.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6533.jpg
-      capturedAt: '2024-04-28T17:50:04Z'
-      coordinates:
-        - -109.8104
-        - 38.4069
-      legId: leg_lathrop-canyon-run-with-mark
-      renditions:
-        original: raw/IMG_6533.MP4
-    - id: med_img-6533-image
       src: /images/white-rim/IMG_6533.webp
       kind: image
       capturedAt: '2024-04-28T17:50:05Z'
@@ -4083,18 +3822,8 @@ sources:
       legId: leg_lathrop-canyon-run-with-mark
       renditions:
         original: raw/IMG_6533.HEIC
+        live: raw/IMG_6533.MP4
     - id: med_img-6534
-      src: /videos/white-rim/IMG_6534.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6534.jpg
-      capturedAt: '2024-04-28T18:04:51Z'
-      coordinates:
-        - -109.7937
-        - 38.4018
-      legId: leg_lathrop-canyon-run-with-mark
-      renditions:
-        original: raw/IMG_6534.MP4
-    - id: med_img-6534-image
       src: /images/white-rim/IMG_6534.webp
       kind: image
       capturedAt: '2024-04-28T18:04:52Z'
@@ -4104,6 +3833,7 @@ sources:
       legId: leg_lathrop-canyon-run-with-mark
       renditions:
         original: raw/IMG_6534.HEIC
+        live: raw/IMG_6534.MP4
     - id: med_img-6535
       src: /images/white-rim/IMG_6535.webp
       kind: image
@@ -4114,17 +3844,7 @@ sources:
       legId: leg_airport-to-murphy
       renditions:
         original: raw/IMG_6535.HEIC
-    - id: med_img-6535-video
-      src: /videos/white-rim/IMG_6535.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6535.jpg
-      capturedAt: '2024-04-28T18:38:05Z'
-      coordinates:
-        - -109.7912
-        - 38.392
-      legId: leg_airport-to-murphy
-      renditions:
-        original: raw/IMG_6535.MP4
+        live: raw/IMG_6535.MP4
     - id: med_p4280613
       src: /images/white-rim/P4280613.webp
       kind: image
@@ -4177,17 +3897,7 @@ sources:
       legId: leg_camp_3
       renditions:
         original: raw/IMG_6540.HEIC
-    - id: med_img-6540-video
-      src: /videos/white-rim/IMG_6540.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6540.jpg
-      capturedAt: '2024-04-28T23:56:14Z'
-      coordinates:
-        - -109.91
-        - 38.324
-      legId: leg_camp_3
-      renditions:
-        original: raw/IMG_6540.MP4
+        live: raw/IMG_6540.MP4
     - id: med_p4280904
       src: /images/white-rim/P4280904.webp
       kind: image
@@ -4205,29 +3915,8 @@ sources:
       legId: leg_camp_3
       renditions:
         original: raw/IMG_6544.HEIC
-    - id: med_img-6544-video
-      src: /videos/white-rim/IMG_6544.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6544.jpg
-      capturedAt: '2024-04-29T01:48:30Z'
-      coordinates:
-        - -109.91
-        - 38.3239
-      legId: leg_camp_3
-      renditions:
-        original: raw/IMG_6544.MP4
+        live: raw/IMG_6544.MP4
     - id: med_img-6549
-      src: /videos/white-rim/IMG_6549.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6549.jpg
-      capturedAt: '2024-04-29T01:49:59Z'
-      coordinates:
-        - -109.91
-        - 38.324
-      legId: leg_camp_3
-      renditions:
-        original: raw/IMG_6549.MP4
-    - id: med_img-6549-image
       src: /images/white-rim/IMG_6549.webp
       kind: image
       capturedAt: '2024-04-29T01:50:00Z'
@@ -4237,6 +3926,7 @@ sources:
       legId: leg_camp_3
       renditions:
         original: raw/IMG_6549.HEIC
+        live: raw/IMG_6549.MP4
     - id: med_img-8409
       src: /images/white-rim/IMG_8409.webp
       kind: image
@@ -4268,29 +3958,8 @@ sources:
       legId: leg_murphy-to-rim
       renditions:
         original: raw/IMG_6557.HEIC
-    - id: med_img-6557-video
-      src: /videos/white-rim/IMG_6557.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6557.jpg
-      capturedAt: '2024-04-29T15:21:37Z'
-      coordinates:
-        - -110.0131
-        - 38.4369
-      legId: leg_murphy-to-rim
-      renditions:
-        original: raw/IMG_6557.MP4
+        live: raw/IMG_6557.MP4
     - id: med_img-6560
-      src: /videos/white-rim/IMG_6560.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_6560.jpg
-      capturedAt: '2024-04-29T15:21:43Z'
-      coordinates:
-        - -110.0131
-        - 38.437
-      legId: leg_murphy-to-rim
-      renditions:
-        original: raw/IMG_6560.MP4
-    - id: med_img-6560-image
       src: /images/white-rim/IMG_6560.webp
       kind: image
       capturedAt: '2024-04-29T15:21:44Z'
@@ -4300,6 +3969,7 @@ sources:
       legId: leg_murphy-to-rim
       renditions:
         original: raw/IMG_6560.HEIC
+        live: raw/IMG_6560.MP4
     - id: med_img-9332
       src: /images/white-rim/IMG_9332.webp
       kind: image
@@ -4307,14 +3977,7 @@ sources:
       legId: leg_murphy-to-rim
       renditions:
         original: raw/IMG_9332.HEIC
-    - id: med_img-9332-video
-      src: /videos/white-rim/IMG_9332.mp4
-      kind: video
-      poster: /videos/white-rim/IMG_9332.jpg
-      capturedAt: '2024-04-29T15:43:06Z'
-      legId: leg_murphy-to-rim
-      renditions:
-        original: raw/IMG_9332.MP4
+        live: raw/IMG_9332.MP4
     - id: med_p4291045
       src: /images/white-rim/P4291045.webp
       kind: image
@@ -5793,13 +5456,22 @@ stage:
 chapters:
   - id: ch_title
     type: title
-    layout: route
+    layout: image
     heading: The White Rim
     subheading: 2024-04-26 — 2024-04-30
-    imageId: med_img-2424-image
+    imageId: med_img-2424
   - id: ch_overview
     type: overview
     heading: The route
+  - id: ch_logistics
+    type: logistics
+    heading: Logistics
+    text: >-
+      165 km of riding over 4 days, 3,069 m of climbing across 4 recorded activities (177 km
+      total). 
+
+
+      TODO: permits, shuttle, water caches, camps.
   - id: ch_move_leg_arrival
     type: move
     to:
@@ -5813,18 +5485,14 @@ chapters:
     type: article
     heading: Getting there
     heroImage:
-      mediaId: med_img-2424-image
+      mediaId: med_img-2424
     media:
-      - mediaId: med_img-2424
       - mediaId: med_pxl-20240426-183845250
       - mediaId: med_img-6441
-      - mediaId: med_img-6441-video
       - mediaId: med_img-8383
       - mediaId: med_img-2467
-      - mediaId: med_img-2467-video
       - mediaId: med_img-2594
       - mediaId: med_img-6449
-      - mediaId: med_img-6449-video
   - id: ch_move_leg_white-rim-mineral-bottom-to-airport
     type: move
     to:
@@ -5843,7 +5511,6 @@ chapters:
       mediaId: med_img-8389
     media:
       - mediaId: med_img-6452
-      - mediaId: med_img-6452-video
       - mediaId: med_img-2595
       - mediaId: med_p4270007
       - mediaId: med_img-4724
@@ -5851,11 +5518,8 @@ chapters:
       - mediaId: med_img-6455
       - mediaId: med_img-2600
       - mediaId: med_img-6458
-      - mediaId: med_img-6458-video
       - mediaId: med_img-6460
-      - mediaId: med_img-6460-video
       - mediaId: med_img-6461
-      - mediaId: med_img-6461-video
       - mediaId: med_img-6466
       - mediaId: med_img-2601
       - mediaId: med_img-9246
@@ -5876,26 +5540,19 @@ chapters:
     type: article
     heading: Camp — after White Rim Mineral Bottom to Airport
     heroImage:
-      mediaId: med_img-9259-image
+      mediaId: med_img-9259
     media:
-      - mediaId: med_img-9259
       - mediaId: med_img-6467
-      - mediaId: med_img-6467-video
       - mediaId: med_img-6471
       - mediaId: med_river-1
       - mediaId: med_img-6475
       - mediaId: med_img-8397
       - mediaId: med_river-1-2
       - mediaId: med_img-6485
-      - mediaId: med_img-6485-video
       - mediaId: med_img-6491
-      - mediaId: med_img-6491-video
       - mediaId: med_img-6494
-      - mediaId: med_img-6494-image
       - mediaId: med_img-6496
-      - mediaId: med_img-6496-video
       - mediaId: med_img-6501
-      - mediaId: med_img-6501-video
   - id: ch_move_leg_lathrop-canyon-run-with-mark
     type: move
     to:
@@ -5913,43 +5570,28 @@ chapters:
     heroImage:
       mediaId: med_img-6508
     media:
-      - mediaId: med_img-6508-video
       - mediaId: med_img-6510
-      - mediaId: med_img-6510-video
       - mediaId: med_img-6512
-      - mediaId: med_img-6512-image
       - mediaId: med_img-6514
-      - mediaId: med_img-6514-video
       - mediaId: med_img-6516
-      - mediaId: med_img-6516-video
       - mediaId: med_img-6517
-      - mediaId: med_img-6517-video
       - mediaId: med_img-6518
       - mediaId: med_pxl-20240428-161736936
       - mediaId: med_img-6520
-      - mediaId: med_img-6520-video
       - mediaId: med_img-6521
-      - mediaId: med_img-6521-video
       - mediaId: med_img-6522
-      - mediaId: med_img-6522-image
       - mediaId: med_img-2616
       - mediaId: med_img-2621
       - mediaId: med_p4280421
       - mediaId: med_img-6524
-      - mediaId: med_img-6524-video
       - mediaId: med_img-6526
-      - mediaId: med_img-6526-video
       - mediaId: med_img-6529
-      - mediaId: med_img-6529-image
       - mediaId: med_p4280453
       - mediaId: med_p4280485
       - mediaId: med_p4280527
       - mediaId: med_img-6531
-      - mediaId: med_img-6531-video
       - mediaId: med_img-6533
-      - mediaId: med_img-6533-image
       - mediaId: med_img-6534
-      - mediaId: med_img-6534-image
   - id: ch_move_leg_airport-to-murphy
     type: move
     to:
@@ -5967,7 +5609,6 @@ chapters:
     heroImage:
       mediaId: med_img-6535
     media:
-      - mediaId: med_img-6535-video
       - mediaId: med_p4280613
       - mediaId: med_p4280624
   - id: ch_move_leg_camp_3
@@ -5989,12 +5630,9 @@ chapters:
       - mediaId: med_p4280673
       - mediaId: med_p4280711
       - mediaId: med_img-6540
-      - mediaId: med_img-6540-video
       - mediaId: med_p4280904
       - mediaId: med_img-6544
-      - mediaId: med_img-6544-video
       - mediaId: med_img-6549
-      - mediaId: med_img-6549-image
       - mediaId: med_img-8409
   - id: ch_move_leg_murphy-to-rim
     type: move
@@ -6015,11 +5653,8 @@ chapters:
     media:
       - mediaId: med_img-4840
       - mediaId: med_img-6557
-      - mediaId: med_img-6557-video
       - mediaId: med_img-6560
-      - mediaId: med_img-6560-image
       - mediaId: med_img-9332
-      - mediaId: med_img-9332-video
       - mediaId: med_p4291045
   - id: ch_move_leg_departure
     type: move
