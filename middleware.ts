@@ -25,5 +25,5 @@ export const config = {
   // Public: the landing page, the unlock flow, story media, and static files.
   // Media stays open — it is already public on the blog, and gating image
   // requests buys nothing while costing a cookie round-trip on every asset.
-  matcher: ['/((?!$|unlock|api/unlock|_next|images|favicon|.*\\.).*)'],
+  matcher: ['/((?!$|unlock|api/unlock|_next|images|videos|favicon|.*\\.).*)'],
 }

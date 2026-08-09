@@ -35,7 +35,9 @@ function fixtureFiles(dir: string): string[] {
 const referenced = new Set<string>()
 for (const f of ['fixtures/migrated', 'fixtures/forward'].flatMap(fixtureFiles)) {
   const text = readFileSync(f, 'utf8')
-  for (const m of text.matchAll(/(\/images\/[^\s"'\]]+)/g)) referenced.add(m[1])
+  // Documents reference several prefixes — /images AND /videos (mp4s plus their
+  // jpg posters). Matching only /images silently skipped 18 files on the first run.
+  for (const m of text.matchAll(/(\/(?:images|videos|audio)\/[^\s"'\]]+)/g)) referenced.add(m[1])
 }
 
 const paths = [...referenced].sort()
@@ -55,7 +57,7 @@ if (!FORCE && !DRY) {
   try {
     const out = execFileSync(
       'npx',
-      ['wrangler', 'r2', 'object', 'list', BUCKET, '--prefix', 'images/'],
+      ['wrangler', 'r2', 'object', 'list', BUCKET],
       { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] },
     )
     for (const m of out.matchAll(/"key"\s*:\s*"([^"]+)"/g)) existing.add(m[1])

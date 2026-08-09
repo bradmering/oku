@@ -323,3 +323,31 @@ Verified all five layouts render in `great-wheel` with correct `/images/...` pat
 **Not verified: the images themselves.** `next dev` has no R2 binding, so media 404s locally —
 added `npm run preview:remote` (`wrangler dev --remote`) as the way to see real media without
 deploying, but that needs auth I don't have here. Brad's upload was still in flight.
+
+---
+
+## 2026-08-08 — Missing media: the upload regex only matched one prefix
+
+Brad reported missing images and video on Brooks Range. Probed rather than guessed: **all sampled
+images returned 200; every `/videos/*` path returned 404.** The images were fine — 9 parallax-video
+chapters rendering as broken boxes is what read as "most of the media is missing."
+
+Cause: `scripts/upload-media.ts` matched `/images/...` only. Brooks Range references **two**
+prefixes — 81 webp under `/images/`, and 9 mp4 plus 9 jpg posters under `/videos/`. Eighteen files
+were silently skipped, and the script reported success because it never knew to look for them.
+
+Fixed the regex to match `/images`, `/videos`, and `/audio`; referenced count went 104 → 122
+(85.6 MB). Added `app/videos/[...path]/route.ts` and factored the R2 handler into `lib/media.ts`.
+
+**Added HTTP range support while I was in there.** Without it, video seeking re-downloads the whole
+file and Safari won't scrub at all — a plain `bucket.get()` is fine for images and quietly wrong
+for video.
+
+Also wired `NEXT_PUBLIC_MAPBOX_TOKEN` into the CI build steps. Worth recording why it isn't a
+wrangler secret: **`NEXT_PUBLIC_*` is inlined at build time**, so a runtime secret would never reach
+the browser. It goes in GitHub Actions secrets and `.env.local`, and — since it ships in the client
+bundle — the Mapbox token should be URL-restricted in their dashboard.
+
+**The lesson worth keeping:** the upload script's "success" was measured against paths it had
+found, not against paths the documents actually reference. A completeness check should compare
+against the document, not against its own search results.

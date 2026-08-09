@@ -90,6 +90,24 @@ Locally, put `SITE_PASSWORD=...` in `.env.local`.
 Public paths: `/`, `/unlock`, `/api/unlock`, `/images/*`, and static files. Media stays open
 because it is already public on the blog, and gating asset requests buys nothing.
 
+## The Mapbox token
+
+`NEXT_PUBLIC_MAPBOX_TOKEN`. Without it the map stage falls back to a route line on flat ground.
+
+**⚠ It is a BUILD-time variable, not a runtime secret.** Anything prefixed `NEXT_PUBLIC_` is
+inlined into the client bundle when Next builds, so `wrangler secret put` would never reach it —
+the browser is what needs the value.
+
+| Where | What |
+|---|---|
+| **GitHub → Settings → Secrets and variables → Actions** | `NEXT_PUBLIC_MAPBOX_TOKEN` — the CI build reads it |
+| **`.env.local`** | `NEXT_PUBLIC_MAPBOX_TOKEN=pk...` for local dev |
+
+Because it ships in the client bundle it is **public by definition** — that's normal for Mapbox
+public (`pk.`) tokens, but it means the token should be **URL-restricted** in the Mapbox dashboard
+(Account → Tokens → the token → URL restrictions) to this origin. An unrestricted public token can
+be lifted from the bundle and spent against your account.
+
 ## Media
 
 Story media lives in R2 (`oku-media`) and is served by `app/images/[...path]/route.ts`. The trip
