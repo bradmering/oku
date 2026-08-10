@@ -40,6 +40,14 @@ Other things that will bite: mixed capture devices (phone + GoPro + drone); Appl
 real capture time in `Keys:CreationDate` rather than `DateTimeOriginal`; segments with no track;
 and exiftool argument limits on a large shoot.
 
+## Re-running is safe
+
+`scripts/ingest-trip.ts` merges with whatever is already in the document: it refreshes `sources` and
+`stage`, and preserves the entire authored thread — prose, captions, culls, hand-tuned cameras. New
+photographs join the article for their leg; deleted chapters stay deleted. See `decisions/0020`.
+
+`--scaffold` regenerates from scratch and discards authored work.
+
 ## The n=2 test — the experiment that hasn't run
 
 Everything about auto-assembly rests on **one trip, hand-nursed.** The test is to point a

@@ -121,7 +121,7 @@ belong in the story, and remember `preload="none"` is already load-bearing.
 ## Working notes
 
 ```bash
-npm run dev             # fast, but NO bindings — story media 404s
+npm run dev             # media now served from .media/ on disk (0021); /edit and /camera live here
 npm run preview:remote  # workerd + the real R2 bucket. Use this for media
 npm test                # interpolation unit tests + fixture conformance
 npm run migrate         # legacy → fixtures/migrated (idempotent)

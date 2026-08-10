@@ -5,6 +5,49 @@ you, what you'd do differently. This is how the next cold session learns what ha
 
 ---
 
+## 2026-08-09 — The editor, and making re-ingest safe first
+
+Brad asked to start the editor. Two things had to be settled before writing any UI, and counting the
+scaffold settled the first one: **41 chapters, 0 of 12 articles with prose, 0 captions on 75 media
+refs, 0 of 3 panoramas annotated, and 0 of 86 photographs culled.** Ingest gets the structure right;
+every remaining gap is *content*. So v1 curates and writes rather than building — a chapter-type
+palette would have been the one tool the story didn't need (`0021`).
+
+**The second had to come first: re-ingest used to destroy authored work.** The scaffold header
+literally said "re-running overwrites this file", which is fine while a document is disposable and
+fatal the moment anyone writes into it. An editor whose output a routine `npm run ingest` can erase
+isn't an editor, it's a trap. So the merge was built and tested before the UI existed (`0020`).
+
+The interesting problem in the merge is telling *new material* from *material the author deleted* —
+both look like "a generated chapter that isn't in the document." **The previous document's `sources`
+is ingest's own record of what it knew last time**, so a leg or media id absent from it is new, and a
+generated chapter whose material was already in `sources` but which is no longer in the thread was
+deleted on purpose. Without that distinction every re-run would undo every cull and the tool would be
+unusable after the first edit. 14 tests, and the ones that matter are all about what is *not*
+destroyed.
+
+Verified the whole loop rather than the pieces: edited in the browser, saved, confirmed the YAML on
+disk, then re-ran ingest and watched prose, caption and cull all survive — with the CLI reporting
+"1 previously culled photo left out, as you left them." Then restored the story, since the prose I
+typed was mine and not Brad's.
+
+**The unblocking fix was elsewhere entirely.** The editor is useless without thumbnails, and
+`npm run dev` has never served media. The cause turned out not to be a missing binding but that
+`getCloudflareContext()` *throws* outside the Cloudflare adapter rather than returning an empty env —
+so the route 500'd before any fallback could run. Wrapped, with a dev-only read from `.media/`.
+That's a note in the handoff finally closed, and it makes plain `next dev` usable for story work.
+
+Found by using it: the flyover label chapters carry the same heading as their leg's article and were
+indistinguishable in the chapter list — I selected the wrong one immediately. Tagged. Small, but the
+kind of thing only using the tool surfaces.
+
+`lib/edit-ops.ts` is pure functions over the document rather than component state, so undo is free
+and the operations survive if this ever stops being a local tool and becomes a hosted one. **Not
+built: live preview beside the editor** — the obvious next thing, left out of v1 rather than done
+badly.
+
+---
+
 ## 2026-08-09 — The annotated panorama
 
 Built the second bucket-list chapter. The `08-chapter-ideas.md` entry had named the risk —
