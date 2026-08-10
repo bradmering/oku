@@ -14,6 +14,7 @@
     "pretest": "npm run bake",
     "test": "npm run typecheck && node --experimental-strip-types scripts/test-interpolate.ts && node --experimental-strip-types scripts/test-resolve-media.ts && node --experimental-strip-types scripts/test-keyframe-yaml.ts && node --experimental-strip-types scripts/test-flyover.ts && node --experimental-strip-types scripts/test-panorama.ts && node --experimental-strip-types scripts/test-merge.ts && node --experimental-strip-types scripts/test-edit-ops.ts && node --experimental-strip-types scripts/test-prose.ts && node --experimental-strip-types scripts/validate-fixtures.ts",
     "validate": "node --experimental-strip-types scripts/validate-fixtures.ts",
+    "ingest": "node --experimental-strip-types scripts/ingest-trip.ts",
     "migrate": "node --experimental-strip-types scripts/migrate-legacy.ts",
     "bake": "node --experimental-strip-types scripts/build-trips.ts",
     "prebuild": "npm run bake",

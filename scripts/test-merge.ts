@@ -147,6 +147,29 @@ t('merging is idempotent — a second run changes nothing', () => {
   assert.deepEqual(twice, once)
 })
 
+t('and idempotent BYTE-FOR-BYTE, key order included', () => {
+  // `deepEqual` above ignores key order, so it passed while a re-run still
+  // produced a 92-line reordering diff in the real document. Serialisation is
+  // what the author actually sees, so that is what has to be stable.
+  const once = mergeTrip(base(), authored()).trip
+  const twice = mergeTrip(base(), once).trip
+  assert.equal(JSON.stringify(twice), JSON.stringify(once))
+})
+
+t('the merged key order matches the generated document', () => {
+  const gen = base()
+  const { trip } = mergeTrip(gen, authored())
+  assert.deepEqual(Object.keys(trip), Object.keys(gen))
+})
+
+t('an absent optional is deleted, not set to undefined', () => {
+  // `subtitle: undefined` would create the key and shift everything after it.
+  const { trip } = mergeTrip(base(), authored())
+  assert.ok(!('subtitle' in trip), 'subtitle should be absent, not undefined')
+  const withSubtitle = authored({ subtitle: 'Slowly, southbound' })
+  assert.equal(mergeTrip(base(), withSubtitle).trip.subtitle, 'Slowly, southbound')
+})
+
 t('the previous document is not mutated', () => {
   const prev = authored()
   const gen = base()

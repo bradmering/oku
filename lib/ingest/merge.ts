@@ -127,18 +127,26 @@ export function mergeTrip(
     (m) => prevMedia.has(m.id) && !referenced.has(m.id),
   ).length
 
-  return {
-    trip: {
-      ...generated,
-      // Authored envelope beats the CLI: renaming a story in the editor must not
-      // be undone by whatever --title the last ingest command happened to use.
-      title: previous.title,
-      subtitle: previous.subtitle,
-      tags: previous.tags,
-      authors: previous.authors,
-      visibility: previous.visibility,
-      chapters,
-    },
-    report,
+  // Built by ASSIGNMENT rather than spread-with-overrides, so the key order is
+  // exactly the generated document's.
+  //
+  // Spreading and then re-listing keys appends them instead of replacing in
+  // place, which reordered `visibility` and produced a 92-line diff on a re-run
+  // that changed nothing. "Safe to re-run" has to mean an EMPTY diff, or nobody
+  // believes it the first time they look.
+  const merged = { ...generated } as Record<string, unknown>
+
+  // Authored envelope beats the CLI: renaming a story in the editor must not be
+  // undone by whatever --title the last ingest command happened to carry.
+  merged.title = previous.title
+  merged.authors = previous.authors
+  merged.visibility = previous.visibility
+  merged.chapters = chapters
+  for (const key of ['subtitle', 'tags'] as const) {
+    // Assigning `undefined` would create the key and change the ordering.
+    if (previous[key] === undefined) delete merged[key]
+    else merged[key] = previous[key]
   }
+
+  return { trip: merged as unknown as Trip, report }
 }
