@@ -1,5 +1,6 @@
 import type { ResolvedTrip as Trip, ResolvedChapter as Chapter } from '@/schema/trip'
 import Gallery from './Gallery'
+import Panorama from './Panorama'
 import Article from './Article'
 import ParallaxVideo from './ParallaxVideo'
 import Title from './Title'
@@ -73,6 +74,17 @@ export default function ChapterView({ chapter: ch, trip }: { chapter: Chapter; t
 
     case 'gallery':
       return <Gallery layout={ch.layout} images={ch.images} />
+
+    case 'panorama':
+      return (
+        <Panorama
+          src={ch.src!}
+          caption={ch.caption}
+          heading={ch.heading}
+          annotations={ch.annotations}
+          rate={ch.rate}
+        />
+      )
 
     case 'parallax-video':
       return (

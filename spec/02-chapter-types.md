@@ -18,6 +18,7 @@ Carried over from `components/GeoStory/` plus TopoStory's one addition.
 | `gallery` | flow | `layout`: single \| duo \| trio \| quad \| grid |
 | `video` | flow | |
 | `parallax-video` | flow | `layout`: full \| split (split = portrait/phone video) |
+| `panorama` | flow | **NEW (0019).** Wide image that pans sideways as you scroll past. `annotations[]` are image-space points (`x`/`y` 0..1, top-left origin, as topo `bounds`); `rate` sets how much scroll the pan costs. Sticky, never `preventDefault` — the reader is never captured. Degrades to a scrollable wide image under reduced motion |
 | `overview` | flow | |
 | `logistics` | flow | links, topo quads, packing groups |
 | `topo` | flow | TopoStory; a `move` carries the image-space `bounds` |

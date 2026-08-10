@@ -5,6 +5,52 @@ you, what you'd do differently. This is how the next cold session learns what ha
 
 ---
 
+## 2026-08-09 — The annotated panorama
+
+Built the second bucket-list chapter. The `08-chapter-ideas.md` entry had named the risk —
+scroll-jacking is hostile when it goes wrong and "needs an escape hatch and a hard rule that the
+reader can always continue down."
+
+**The answer was to not capture the reader at all.** `position: sticky`, no `preventDefault`: the
+chapter reserves a tall block of ordinary scroll and pins the image inside it. Scrolling down always
+scrolls down, momentum works, touch works, keyboard works. There is no escape hatch because there is
+nothing to escape from. The escape-hatch requirement turned out to be a consequence of choosing the
+wrong implementation, which is the same shape as the flyover's rewind problem yesterday — the
+constraint dissolved rather than being satisfied.
+
+Release is a unit-tested property, not a hope: `panProgress` clamps at both ends and the suite sweeps
+a full scroll range asserting `0 ≤ p ≤ 1` and monotonicity. That felt like over-testing until I
+remembered the failure mode is "reader is stuck on a page and can't leave".
+
+Annotations reuse the topo stage's image-space idea (`x`/`y` in 0..1, top-left origin) rather than
+inventing a fourth coordinate system.
+
+**The unforeseen problem wasn't the interaction, it was the converter.** `convert-media.sh` capped
+every image's *long edge* at 2400px, which had been turning a 14404×3864 panorama into 2400×644 —
+too small to fill a screen at full height, let alone pan across one. The chapter would have shipped
+looking broken for reasons that had nothing to do with the chapter. Panoramas now cap *height*
+instead. **"Max edge" is the wrong knob for anything whose shape is the point.**
+
+Detection is by aspect ratio and the data made it easy: White Rim's three panoramas are 3.47:1 and
+wider, and the next widest image in the set is 1.87:1. Ingest promotes them out of the media strip
+into their own chapters — a 14,000px panorama rendered as a 200px sliver is the worst possible use of
+the best image in the set. It emits **no** annotations: it knows where a photograph was taken, not
+that the pointed thing on the left is Junction Butte.
+
+Which is the third time the same lesson has come up: `?debug` on a panorama reads out the cursor's
+`x`, exactly as the camera picker reads out a keyframe. **Never ship a field whose value has to be
+guessed** — if a number describes something visual, something should show you the number while you
+look at the thing.
+
+**Verified:** 11 unit tests on the maths; with a forced viewport, the image renders 2982×800, the
+section is exactly `scrollHeight()` = 2502px, `rate: 0.5` halves it to 1548, and the four annotations
+sit at exactly `x × imageWidth` with the two beyond the viewport correctly not rendered. **Not
+verified: the pan in motion.** The automation pane reports a 0×0 viewport so `vh` collapses, and
+`requestAnimationFrame` never fires there. Third feature running into this — worth accepting that
+motion is a thing only Brad can sign off on here.
+
+---
+
 ## 2026-08-09 — The route flyover, which draws nothing
 
 Brad's call, and it turned out to be cheaper than the write-up predicted. The expected problem was

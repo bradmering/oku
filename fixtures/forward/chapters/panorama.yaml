@@ -1,0 +1,83 @@
+# Exercises the panorama chapter (decisions/0019):
+#   · a wide image that pans horizontally as you scroll past it
+#   · annotations in IMAGE SPACE — x/y in 0..1, top-left origin, as topo does
+#   · `rate` — how much scrolling the pan costs
+#   · an annotation with a note as well as a label
+#   · both reference forms: `mediaId` here, a literal `src` below
+#   · a stageless document — a panorama needs no map
+#
+# What to look at: scroll into it. The image should pin, pan left-to-right, and
+# then RELEASE — you must always be able to keep scrolling. Labels fade in as
+# their landmark crosses the screen. Add ?debug for a cursor-x readout, which is
+# how you find the numbers for `annotations`.
+#
+# Then set the OS "reduce motion" preference and reload: it must become a plainly
+# scrollable wide image with the labels listed in the caption, not a trap.
+
+specVersion: 1
+id: 01J9PAN00000000000000000
+slug: panorama
+title: "The panorama"
+subtitle: "Scroll sideways"
+dates:
+  start: "2026-06-05"
+visibility: unlisted
+
+authors:
+  - id: auth_brad
+    name: Brad Mering
+
+sources:
+  tracks: []
+  legs: []
+  media:
+    - id: med_pano
+      src: /images/white-rim/IMG_6471.webp
+      kind: image
+      capturedAt: "2026-06-05T18:20:00Z"
+      coordinates: [-109.86, 38.41]
+
+chapters:
+  - id: ch_title
+    type: title
+    layout: plate
+    heading: "The panorama"
+    subheading: "A skyline, named"
+
+  - id: ch_intro
+    type: article
+    text: |
+      Ordinary scrolling. The panorama below takes over for a while and then
+      gives the page back.
+
+  # Annotated, by mediaId.
+  - id: ch_pano
+    type: panorama
+    mediaId: med_pano
+    heading: "The rim, west to east"
+    caption: "Looking north from the White Rim road."
+    annotations:
+      - x: 0.08
+        label: "Junction Butte"
+      - x: 0.31
+        y: 0.36
+        label: "Candlestick Tower"
+        note: "Tomorrow's route passes below it."
+      - x: 0.62
+        label: "Soda Springs Basin"
+      - x: 0.88
+        y: 0.5
+        label: "Green River"
+        note: "1,200 ft below the rim."
+
+  - id: ch_after
+    type: article
+    text: |
+      And the page is yours again.
+
+  # Unannotated, by literal path, panning at double speed.
+  - id: ch_pano_fast
+    type: panorama
+    src: /images/white-rim/IMG_9246.webp
+    caption: "A second panorama, `rate: 0.5`, so it pans twice as fast as you scroll."
+    rate: 0.5

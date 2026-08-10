@@ -10,7 +10,8 @@
 #                    the keys the documents use, so `MEDIA_SOURCE=<out> npm run
 #                    upload-media` needs no path rewriting.
 #   --slug SLUG      Story slug — required; it is the key prefix.
-#   --max PX         Max image edge (default 2400)
+#   --max PX         Max image edge (default 2400). Panoramas (aspect >= 2.5:1)
+#                    ignore this and are capped to 1200px HIGH instead.
 #   --quality N      WebP quality (default 85)
 #   --images-only    Skip video
 #   --video-only     Skip images
@@ -34,6 +35,11 @@ INPUT_DIR=""
 OUT_ROOT=".media"
 SLUG=""
 MAX_PX=2400
+# Aspect ratio (x10) at which an image counts as a panorama, and the height cap
+# applied when it does. White Rim's panoramas are 3.47:1 and wider; the next
+# widest image in the set is 1.87:1, so 2.5 separates them with room to spare.
+PANO_RATIO_X10=25
+PANO_MAX_H=1200
 QUALITY=85
 DO_IMAGES=true
 DO_VIDEO=true
@@ -82,8 +88,20 @@ if $DO_IMAGES; then
     base=$(basename "$src"); name="${base%.*}"
     dest="$IMG_OUT/${name}.webp"
     if ! $FORCE && [ -f "$dest" ]; then IMG_SKIP=$((IMG_SKIP+1)); continue; fi
-    if $DRY_RUN; then printf "  would  %s → %s.webp\n" "$base" "$name"; IMG_OK=$((IMG_OK+1)); continue; fi
-    if magick "$src" -auto-orient -resize "${MAX_PX}x${MAX_PX}>" -quality "$QUALITY" "$dest" 2>/dev/null; then
+    # A panorama is not a big photo — capping its long edge at MAX_PX crushes a
+    # 14404x3864 original to 2400x644, which cannot fill a screen at full height,
+    # let alone pan across one. Cap the HEIGHT instead so the width goes wherever
+    # the aspect ratio takes it. See decisions/0019.
+    dims=$(magick identify -format "%w %h" "$src" 2>/dev/null || echo "0 0")
+    w=${dims% *}; h=${dims#* }
+    if [ "$h" -gt 0 ] && [ $((w * 10 / h)) -ge $((PANO_RATIO_X10)) ]; then
+      geom="x${PANO_MAX_H}>"
+      printf "\n  panorama %s (%sx%s) → height %s\n" "$base" "$w" "$h" "$PANO_MAX_H"
+    else
+      geom="${MAX_PX}x${MAX_PX}>"
+    fi
+    if $DRY_RUN; then printf "  would  %s → %s.webp  (%s)\n" "$base" "$name" "$geom"; IMG_OK=$((IMG_OK+1)); continue; fi
+    if magick "$src" -auto-orient -resize "$geom" -quality "$QUALITY" "$dest" 2>/dev/null; then
       IMG_OK=$((IMG_OK+1)); printf "\r  images: %d converted   " "$IMG_OK"
     else
       IMG_FAIL=$((IMG_FAIL+1)); printf "\n  ✗ %s\n" "$base"

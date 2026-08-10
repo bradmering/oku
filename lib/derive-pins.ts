@@ -50,6 +50,7 @@ function collectUsages(chapters: Trip['chapters']): Usage[] {
         break
       case 'video':
       case 'parallax-video':
+      case 'panorama':
         push(ch.mediaId ?? ch.src, ch.caption)
         break
     }
