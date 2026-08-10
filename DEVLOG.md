@@ -42,9 +42,30 @@ indistinguishable in the chapter list — I selected the wrong one immediately. 
 kind of thing only using the tool surfaces.
 
 `lib/edit-ops.ts` is pure functions over the document rather than component state, so undo is free
-and the operations survive if this ever stops being a local tool and becomes a hosted one. **Not
-built: live preview beside the editor** — the obvious next thing, left out of v1 rather than done
-badly.
+and the operations survive if this ever stops being a local tool and becomes a hosted one.
+
+**Live preview, added straight after.** It is an iframe, and that was forced rather than chosen:
+`Story` is built on `position: fixed`, `window.scrollY` and `document.documentElement.scrollHeight`,
+so a side pane breaks every one of those. The alternative — teaching the renderer to accept a scroll
+container — would mean the preview exercises a code path readers never take, which is not a preview.
+Framing it means the preview runs the shipping renderer *unmodified*.
+
+The document goes over postMessage rather than reloading the frame, so the Mapbox instance survives
+every keystroke; debounced at 300ms, because a keystroke re-renders 41 chapters and a map. The frame
+posts `ready` on mount, since a document sent before it loads is otherwise lost to a race.
+
+The satisfying part: `resolveMedia` and `derivePins` run **in the browser at runtime, exactly as the
+bake runs them.** `0016` claimed a future live editor could call the resolver unchanged, and that
+turned out to be literally true — no new code, and unresolved references now surface in the preview
+the moment you create one. It also exposed that `resolveMedia` was *typed* as returning `Trip` when
+it returns a `ResolvedTrip`, so every caller had been casting; fixed at the signature, which is where
+it should have been said.
+
+Verified live: typing prose appeared in the frame, and cutting a photograph took the preview's strip
+from 7 images to 6. Scroll-to-selected-chapter is correct but unverifiable here — smooth scrolling is
+rAF-driven and rAF never fires in this pane, though an instant scroll to the same element lands
+exactly on it. Incidental: the preview finally showed the **derived map pins rendering as photo
+thumbnails**, which is the thing I could not confirm when I built them.
 
 ---
 

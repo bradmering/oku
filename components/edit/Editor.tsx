@@ -1,7 +1,8 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Trip } from '@/schema/trip'
+import { EDITOR_MESSAGE } from './LivePreview'
 import {
   addAnnotation, moveChapter, moveMedia, promoteToHero, removeAnnotation,
   removeChapter, removeMedia, setField, setMediaCaption, setTripField,
@@ -35,6 +36,9 @@ export default function Editor({ initial, slug }: { initial: Trip; slug: string 
   )
   const [status, setStatus] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
+  const [showPreview, setShowPreview] = useState(true)
+  const frame = useRef<HTMLIFrameElement>(null)
+  const frameReady = useRef(false)
 
   const dirty = past.length > 0
 
@@ -51,6 +55,40 @@ export default function Editor({ initial, slug }: { initial: Trip; slug: string 
       return p.slice(0, -1)
     })
   }
+
+  const post = useCallback((msg: Record<string, unknown>) => {
+    frame.current?.contentWindow?.postMessage(
+      { source: EDITOR_MESSAGE, ...msg }, window.location.origin,
+    )
+  }, [])
+
+  // The frame announces itself, because a document sent before it loads is lost.
+  useEffect(() => {
+    const onReady = (e: MessageEvent) => {
+      if (e.origin !== window.location.origin) return
+      if ((e.data as { source?: string; kind?: string })?.source !== EDITOR_MESSAGE) return
+      if ((e.data as { kind?: string }).kind !== 'ready') return
+      frameReady.current = true
+      post({ kind: 'doc', trip: doc })
+    }
+    window.addEventListener('message', onReady)
+    return () => window.removeEventListener('message', onReady)
+  }, [doc, post])
+
+  // Debounced: a keystroke re-renders 41 chapters and a map behind them, and
+  // typing a sentence should not do that forty times.
+  useEffect(() => {
+    if (!showPreview || !frameReady.current) return
+    const id = setTimeout(() => post({ kind: 'doc', trip: doc }), 300)
+    return () => clearTimeout(id)
+  }, [doc, showPreview, post])
+
+  // Selecting a chapter scrolls the preview to it, so the two panes agree about
+  // where you are.
+  useEffect(() => {
+    if (!selected || !showPreview || !frameReady.current) return
+    post({ kind: 'scrollTo', chapterId: selected })
+  }, [selected, showPreview, post])
 
   const mediaById = useMemo(
     () => new Map((doc.sources?.media ?? []).map((m) => [m.id, m])),
@@ -102,6 +140,8 @@ export default function Editor({ initial, slug }: { initial: Trip; slug: string 
               {dirty ? 'Save' : 'Saved'}
             </button>
             <button onClick={undo} disabled={!dirty} className={btn + ' disabled:opacity-30'}>Undo</button>
+            <button onClick={() => setShowPreview((v) => !v)} className={btn}
+              title="Toggle the live preview">{showPreview ? 'Hide' : 'Show'}</button>
           </div>
           {status && <p className="m-0 mt-2 text-[11px] text-stone-400 break-words">{status}</p>}
           {orphans.length > 0 && (
@@ -215,6 +255,23 @@ export default function Editor({ initial, slug }: { initial: Trip; slug: string 
           </div>
         )}
       </main>
+
+      {/* The preview is an iframe on purpose: the renderer is built on
+          `position: fixed` and `window.scrollY`, so it needs its own viewport.
+          Framing it means the preview runs the SHIPPING code path, unmodified. */}
+      {showPreview && (
+        <section className="w-[46%] shrink-0 h-full border-l border-white/10 bg-black relative">
+          <iframe
+            ref={frame}
+            src={`/preview/${slug}`}
+            title="Live preview"
+            className="w-full h-full border-0"
+          />
+          <span className="absolute top-2 right-3 px-2 py-0.5 rounded bg-black/70 text-[10px] uppercase tracking-wider text-stone-500 pointer-events-none">
+            live preview
+          </span>
+        </section>
+      )}
     </div>
   )
 }
