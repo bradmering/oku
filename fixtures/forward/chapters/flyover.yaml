@@ -1,0 +1,96 @@
+# Exercises the route flyover (decisions/0018):
+#   · an orientation pass of `move` keyframes BEFORE the story starts
+#   · flyover moves omit `routeProgress` entirely — the line must stay undrawn
+#   · `move.space` — a fractional multiple of the default scroll distance
+#   · a heading-only chapter between legs, where the camera holds while you read
+#   · the story that follows still draws the line from 0
+#
+# What to look at: open it and scroll. The map should fly the route with NO
+# orange line, then the line should start drawing from the beginning once the
+# story proper begins. A line that is already drawn when you reach "Day 1" means
+# a flyover move has picked up a routeProgress.
+
+specVersion: 1
+id: 01J9FLY00000000000000000
+slug: flyover
+title: "The flyover"
+subtitle: "Orientation first, then the story"
+dates:
+  start: "2026-06-01"
+  end: "2026-06-02"
+visibility: unlisted
+
+authors:
+  - id: auth_brad
+    name: Brad Mering
+
+stage:
+  type: map
+  clock: scroll
+  terrain: true
+  initialView:
+    coordinates: [-110.0, 38.3]
+    zoom: 9
+    tilt: 45
+    bearing: 0
+  route:
+    - [-110.00, 38.30]
+    - [-109.95, 38.34]
+    - [-109.90, 38.40]
+    - [-109.84, 38.44]
+    - [-109.80, 38.50]
+
+chapters:
+  - id: ch_title
+    type: title
+    layout: text
+    heading: "The flyover"
+
+  # ── the flyover ──────────────────────────────────────────────────────────
+  # A label first: the camera HOLDS while this is on screen, which is the beat
+  # where the reader gets their bearings (decisions/0014).
+  - id: ch_fly_label
+    type: article
+    heading: "Northeast, across the bench"
+
+  # Every one of these omits routeProgress. `resolve()` inherits it from the
+  # previous camera, so it stays at the initial 0 and nothing is drawn.
+  - id: ch_fly_01
+    type: move
+    space: 0.4
+    to: { coordinates: [-110.00, 38.30], zoom: 12.5, tilt: 62, bearing: 40 }
+  - id: ch_fly_02
+    type: move
+    space: 0.4
+    to: { coordinates: [-109.95, 38.34], zoom: 12.5, tilt: 62, bearing: 45 }
+  - id: ch_fly_03
+    type: move
+    space: 0.4
+    to: { coordinates: [-109.90, 38.40], zoom: 12.5, tilt: 62, bearing: 38 }
+  - id: ch_fly_04
+    type: move
+    space: 0.4
+    to: { coordinates: [-109.80, 38.50], zoom: 12.5, tilt: 62, bearing: 42 }
+
+  # ── the story, which DOES draw ───────────────────────────────────────────
+  # Back out wide and start the line from the beginning.
+  - id: ch_move_day1
+    type: move
+    to: { coordinates: [-110.0, 38.3], zoom: 10, tilt: 45, bearing: 0, routeProgress: 0 }
+  - id: ch_day1
+    type: article
+    heading: "Day 1"
+    text: |
+      The line starts here, not during the flyover.
+
+  - id: ch_move_day2
+    type: move
+    # A long jump earns more room than the default, which is the other half of
+    # what `space` is for.
+    space: 1.6
+    to: { coordinates: [-109.80, 38.50], zoom: 11, tilt: 50, bearing: 20, routeProgress: 1 }
+  - id: ch_day2
+    type: article
+    heading: "Day 2"
+    text: |
+      And by here it is fully drawn.

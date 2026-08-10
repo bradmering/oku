@@ -5,6 +5,44 @@ you, what you'd do differently. This is how the next cold session learns what ha
 
 ---
 
+## 2026-08-09 — The route flyover, which draws nothing
+
+Brad's call, and it turned out to be cheaper than the write-up predicted. The expected problem was
+that a flyover previews the whole route, ends at `routeProgress: 1`, and then the story has to
+rewind to 0 — against a monotonic invariant with a unit test defending it. Every design I'd sketched
+was machinery for that rewind.
+
+**None of it was needed.** `resolve()` already does `routeProgress: kf.routeProgress ?? prev.routeProgress`,
+so a move that never mentions progress inherits it. The flyover runs before anything has drawn,
+inherits 0, and holds there. **Nothing rewinds because nothing advanced** — the invariant is
+untouched and the test is unchanged. Worth noticing that the expensive designs were all answers to a
+problem created by drawing the line in the first place.
+
+So there was no new chapter type and no new interpolation. A flyover *is* a run of `move` keyframes
+with text between them. Two things were genuinely missing: something to **generate** the keyframes
+(`lib/ingest/flyover.ts` samples each leg and points the camera along the direction of travel, with
+a lookahead so bearing follows the leg rather than GPS jitter), and **scroll distance** — sixteen
+moves at the default 78vh is 1,248vh of empty scrolling.
+
+That gave `move.space`, which `0014` argued for and deferred until the timing could be felt. It cuts
+both ways: a flyover frame wants 0.4, a long jump wants more than 1. Implemented as a CSS custom
+property so the default stays one number in one place. Scroll distance *is* the camera's travel
+time, so `space` is timing, not styling, and belongs in the document.
+
+**The fragile part is a negative** — "never emits `routeProgress`" is invisible in review and would
+rot the first time someone added it for a plausible reason. `scripts/test-flyover.ts` asserts it
+directly rather than trusting the comment.
+
+Verified by simulating the scroll→camera pipeline in Node rather than by looking: across White Rim's
+25 keyframes, progress is pinned at 0 through all 16 flyover frames while the camera moves through
+16 distinct centres and 15 bearings, then the story draws 0 → 0.38 → 0.65 → 1.00. In the browser the
+debug panel reads `routeProgress 0.000` at rest with 25 keyframes, and `--space: 0.4` is set on
+flyover anchors only. **Not verified: how it feels to scroll** — the automation pane reports
+`innerHeight: 0` and never fires `requestAnimationFrame`, so vh-based anchors collapse and the
+camera never updates there. Incidental find: the derived pins *do* render as markers.
+
+---
+
 ## 2026-08-09 — Camera picker
 
 A `move` is four numbers you cannot picture, and authoring them meant editing YAML and reloading to

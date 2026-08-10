@@ -32,6 +32,7 @@ import { existsSync, readdirSync, readFileSync, writeFileSync, mkdirSync } from 
 import path from 'node:path'
 import { dump as yamlDump } from 'js-yaml'
 import { decodeFit, toActivityMode, decimate, type FitPoint } from '../lib/ingest/fit.ts'
+import { buildFlyover, type FlyoverLeg } from '../lib/ingest/flyover.ts'
 
 // ── args ─────────────────────────────────────────────────────────────────────
 const argv = process.argv.slice(2)
@@ -337,7 +338,26 @@ chapters.push({
   ...(opener ? { imageId: opener.id } : {}),
 })
 
-chapters.push({ id: 'ch_overview', type: 'overview', heading: 'The route' })
+/**
+ * The flyover replaces the static explore map. `--flyover 0` puts the `overview`
+ * chapter back — they occupy the same slot, and having both means orienting the
+ * reader twice.
+ */
+const FLYOVER_FRAMES = Number(opt('flyover', '16'))
+if (FLYOVER_FRAMES > 0) {
+  const flyLegs: FlyoverLeg[] = legs
+    .filter((l) => l.track && l.track.points.length >= 2)
+    .map((l) => ({
+      id: l.id.replace(/^leg_/, ''),
+      label: l.label,
+      points: decimate(l.track!.points, 400).map(
+        (p) => [p.lng!, p.lat!] as [number, number],
+      ),
+    }))
+  chapters.push(...buildFlyover(flyLegs, { frames: FLYOVER_FRAMES }))
+} else {
+  chapters.push({ id: 'ch_overview', type: 'overview', heading: 'The route' })
+}
 
 // Logistics, pre-filled with what the TRACKS know and nothing else. Links,
 // quads and packing are the author's — ingest has no source for them and
@@ -480,6 +500,12 @@ console.log(
 )
 if (undated.length) console.log(`${undated.length} file(s) had no usable timestamp: ${undated.join(', ')}`)
 console.log(`Route: ${routePoints.length} points from ${routeTracks.length} ride track(s), decimated to ${route.length}`)
+const flyMoves = chapters.filter((c: any) => c.type === 'move' && c.id.startsWith('ch_fly_')).length
+console.log(
+  FLYOVER_FRAMES > 0
+    ? `Flyover: ${flyMoves} camera frame(s) over ${tracks.length} track(s), drawing no route line`
+    : 'Flyover: disabled — static overview chapter instead',
+)
 
 if (DRY) {
   console.log('\n[dry-run — nothing written]\n')

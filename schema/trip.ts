@@ -161,6 +161,13 @@ export const MoveChapter = chapter({
   /** ms into the driving media. Only meaningful when the stage clock is 'time'. */
   at: z.number().nonnegative().optional(),
   ease: z.enum(['linear', 'ease', 'none']).optional(),
+  /** Scroll distance for this move, as a MULTIPLE of the default (78vh).
+   *
+   *  `decisions/0014` argued for this and said to feel the corrected timing
+   *  first. The flyover is what made it necessary: sixteen moves at the default
+   *  is 1,248vh of empty scrolling. A flyover frame is a beat, not a chapter.
+   *  See decisions/0018. */
+  space: z.number().positive().optional(),
 })
 
 /**
