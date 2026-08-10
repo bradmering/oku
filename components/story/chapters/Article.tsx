@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Lightbox, { type LightboxImage } from '../Lightbox'
+import { toParagraphs } from '@/lib/prose'
 
 type Media = { type: 'image' | 'video'; src: string; caption?: string; poster?: string; loop?: boolean }
 
@@ -69,21 +70,27 @@ export default function Article({
         <div className="flex-1 flex items-center px-6 sm:px-12 py-14 sm:py-20">
           <div className="max-w-xl mx-auto md:mx-0">
             {subheading && (
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-stone-400 mb-3">
+              <p data-field="subheading" className="text-[10px] font-bold uppercase tracking-[0.18em] text-stone-400 mb-3">
                 {subheading}
               </p>
             )}
             {heading && (
-              <h2 className="text-2xl font-bold text-stone-900 mb-4 leading-snug tracking-tight">
+              <h2 data-field="heading" className="text-2xl font-bold text-stone-900 mb-4 leading-snug tracking-tight">
                 {heading}
               </h2>
             )}
             {stats}
-            {text?.split(/\n{2,}/).map((p, i) => (
-              <p key={i} className="mb-4 text-stone-700 leading-8 text-[1.02rem] last:mb-0">
-                {p}
-              </p>
-            ))}
+            {text && (
+              // One region, paragraphs inside: the editor edits this whole block
+              // and reads the paragraphs back out. See lib/prose.ts.
+              <div data-field="text">
+                {toParagraphs(text).map((p, i) => (
+                  <p key={i} className="mb-4 text-stone-700 leading-8 text-[1.02rem] last:mb-0">
+                    {p}
+                  </p>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

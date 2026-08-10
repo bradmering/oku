@@ -5,6 +5,55 @@ you, what you'd do differently. This is how the next cold session learns what ha
 
 ---
 
+## 2026-08-09 — The page becomes the canvas
+
+Brad asked how much I'd kept his two editing inspirations in mind: **Gutenberg** block editing and
+**ArcGIS StoryMaps'** inline editor. Honest answer: neither, and they weren't recoverable — Gutenberg
+appears nowhere in the repo, and all three StoryMaps references are about *rendering*, not editing.
+
+But the miss that's actually mine: **my scoping question asked about scope, never about interaction
+model.** I offered curate / structural / hosted — three points on "how much does it do" — when the
+axis he cared about was "how do you edit." I had a real fork and surfaced the wrong one. Worth
+generalising: when scoping a *tool*, the interaction model is a separate question from the feature
+set, and it is usually the one with the strong opinion behind it.
+
+The Gutenberg fit turned out not to be incidental. **oku's thread already IS a Gutenberg document** —
+flat, ordered, typed, no nesting, because `0012` deleted the grouping object. A chapter is a block.
+
+So: clicking a chapter in the preview selects it, headings and prose are edited in place on the
+rendered page, and a `move` — which renders nothing — gets a visible inline marker in the thread
+(Brad's call over a side rail; right, because a rail puts the block somewhere the block isn't).
+
+**The renderer is decorated, not branched.** It emits provenance — `data-chapter`, `data-field` —
+which is true regardless of whether an editor exists, and `components/edit/canvas.ts` hangs off that.
+No `editing` prop, no conditional rendering in any chapter component. Threading edit concerns through
+the reading path would put them in the one place that is the whole product (`0009`). I did soften my
+earlier "unmodified renderer" claim slightly and said so in `0022` rather than pretending nothing
+moved.
+
+Two things were genuinely subtle. **Echoing the document back to the canvas destroys typing** —
+re-rendering a `contentEditable` under the caret collapses it to position 0 — so an edit originating
+on the canvas is applied but deliberately *not* broadcast back; the canvas already shows it. The same
+flag stops scroll-to-selection yanking the page when you click *on* the page.
+
+And **inline prose editing is only lossless while rendering is a split, not a transform.** The
+renderer doesn't process markdown, so `**bold**` round-trips literally. `lib/prose.ts` owns both
+directions and a test asserts they invert — so the day someone adds a markdown processor, the test
+goes red instead of the formatting quietly disappearing. That felt like over-testing until I noticed
+`01-data-model.md` still has "text flavour — markdown, but which" open.
+
+Verified the hard part directly: typed into prose on the canvas, caret survived at offset 33 rather
+than collapsing, both paragraphs preserved, and it propagated to the form. Clicking a chapter and a
+flyover marker both drove selection back up.
+
+Found while testing: selecting a move showed an **empty inspector** — you click the marker and get
+nothing. Now shows the keyframe with inherited values marked, which is `0018` surfaced where it
+matters. **Still not built: capturing a camera from the preview's own map** (the ESRI move proper),
+and a block inserter — `0021` argued against a palette from White Rim's scaffold, which was true of
+that document and doesn't generalise.
+
+---
+
 ## 2026-08-09 — The editor, and making re-ingest safe first
 
 Brad asked to start the editor. Two things had to be settled before writing any UI, and counting the
@@ -42,9 +91,30 @@ indistinguishable in the chapter list — I selected the wrong one immediately. 
 kind of thing only using the tool surfaces.
 
 `lib/edit-ops.ts` is pure functions over the document rather than component state, so undo is free
-and the operations survive if this ever stops being a local tool and becomes a hosted one. **Not
-built: live preview beside the editor** — the obvious next thing, left out of v1 rather than done
-badly.
+and the operations survive if this ever stops being a local tool and becomes a hosted one.
+
+**Live preview, added straight after.** It is an iframe, and that was forced rather than chosen:
+`Story` is built on `position: fixed`, `window.scrollY` and `document.documentElement.scrollHeight`,
+so a side pane breaks every one of those. The alternative — teaching the renderer to accept a scroll
+container — would mean the preview exercises a code path readers never take, which is not a preview.
+Framing it means the preview runs the shipping renderer *unmodified*.
+
+The document goes over postMessage rather than reloading the frame, so the Mapbox instance survives
+every keystroke; debounced at 300ms, because a keystroke re-renders 41 chapters and a map. The frame
+posts `ready` on mount, since a document sent before it loads is otherwise lost to a race.
+
+The satisfying part: `resolveMedia` and `derivePins` run **in the browser at runtime, exactly as the
+bake runs them.** `0016` claimed a future live editor could call the resolver unchanged, and that
+turned out to be literally true — no new code, and unresolved references now surface in the preview
+the moment you create one. It also exposed that `resolveMedia` was *typed* as returning `Trip` when
+it returns a `ResolvedTrip`, so every caller had been casting; fixed at the signature, which is where
+it should have been said.
+
+Verified live: typing prose appeared in the frame, and cutting a photograph took the preview's strip
+from 7 images to 6. Scroll-to-selected-chapter is correct but unverifiable here — smooth scrolling is
+rAF-driven and rAF never fires in this pane, though an instant scroll to the same element lands
+exactly on it. Incidental: the preview finally showed the **derived map pins rendering as photo
+thumbnails**, which is the thing I could not confirm when I built them.
 
 ---
 

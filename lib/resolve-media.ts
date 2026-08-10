@@ -17,7 +17,7 @@
  * cross-referential so Zod could not express it either way.
  */
 
-import type { Trip } from '../schema/trip.ts'
+import type { ResolvedTrip, Trip } from '../schema/trip.ts'
 
 export type ResolveIssue = { path: string; message: string }
 
@@ -84,8 +84,15 @@ function resolveImage(
   delete ch.imageId
 }
 
-/** Returns a resolved copy; the input is not mutated. */
-export function resolveMedia(trip: Trip): { trip: Trip; issues: ResolveIssue[] } {
+/**
+ * Returns a RESOLVED copy; the input is not mutated.
+ *
+ * The return type is `ResolvedTrip` because that is what this function produces:
+ * every `mediaId`/`imageId` is gone and every reference carries a literal path.
+ * Saying `Trip` made every caller cast, which hid the one thing the signature
+ * should have been telling them.
+ */
+export function resolveMedia(trip: Trip): { trip: ResolvedTrip; issues: ResolveIssue[] } {
   const out = structuredClone(trip)
   const issues: ResolveIssue[] = []
   const media = new Map((out.sources?.media ?? []).map((m) => [m.id, m]))
@@ -119,5 +126,7 @@ export function resolveMedia(trip: Trip): { trip: Trip; issues: ResolveIssue[] }
     }
   })
 
-  return { trip: out, issues }
+  // The cast is the function's whole contract: `out` started as a Trip and the
+  // walk above turned it into a ResolvedTrip.
+  return { trip: out as unknown as ResolvedTrip, issues }
 }

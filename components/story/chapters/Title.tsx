@@ -75,11 +75,11 @@ export default function Title({
       <h1 className={`font-bold tracking-tight leading-[1.04] text-balance ${
         mode === 'text' ? 'text-[clamp(2.75rem,8vw,5.5rem)]' : 'text-5xl sm:text-7xl'
       } ${onDark ? 'text-white drop-shadow-lg' : 'text-stone-900'}`}>
-        {heading}
+        <span data-field="heading">{heading}</span>
       </h1>
       {subheading && (
         <p className={`mt-4 text-lg max-w-2xl text-pretty ${onDark ? 'text-white/80' : 'text-stone-500'}`}>
-          {subheading}
+          <span data-field="subheading">{subheading}</span>
         </p>
       )}
       {text && (
@@ -145,10 +145,10 @@ export default function Title({
         <div className="max-w-2xl">
           <p className="text-ember font-mono text-[10px] uppercase tracking-[0.4em] mb-10">{byline}</p>
           <h1 className="text-2xl sm:text-3xl font-normal tracking-[0.02em] leading-relaxed text-balance text-white">
-            {heading}
+            <span data-field="heading">{heading}</span>
           </h1>
           {subheading && (
-            <p className="mt-8 text-stone-500 text-sm tracking-wide">{subheading}</p>
+            <p className="mt-8 text-stone-500 text-sm tracking-wide"><span data-field="subheading">{subheading}</span></p>
           )}
           <div className="mt-14 mx-auto w-10 h-px bg-white/20" />
         </div>
@@ -187,10 +187,10 @@ export default function Title({
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent" />
         <div className="absolute bottom-12 left-6 right-6 sm:left-10 sm:right-10 max-w-3xl">
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white leading-tight tracking-tight">
-            {heading}
+            <span data-field="heading">{heading}</span>
           </h1>
           {subheading && (
-            <p className="mt-3 text-lg sm:text-xl text-white/65 font-light">{subheading}</p>
+            <p className="mt-3 text-lg sm:text-xl text-white/65 font-light"><span data-field="subheading">{subheading}</span></p>
           )}
           <p className="mt-6 text-[11px] uppercase tracking-[0.18em] text-white/45 font-mono">{byline}</p>
         </div>

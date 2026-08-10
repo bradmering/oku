@@ -1,6 +1,6 @@
 # 0021 — The editor curates and writes; it does not build
 
-**Status:** accepted (2026-08-09) · **Relates to:** 0008, 0009, 0012 · **Depends on:** 0020
+**Status:** accepted (2026-08-09), interaction model amended by `0022` · **Relates to:** 0008, 0009, 0012 · **Depends on:** 0020
 
 ## Decision
 
@@ -57,5 +57,22 @@ than component state. Every one returns a new document, which also makes undo fr
   a mis-click is the kind of small betrayal that stops people trusting a tool.
 - Deleting a chapter is confirmed, and the dialog says re-running ingest will not bring it back —
   which is true, and is `0020`'s deletion rule surfaced at the point it matters.
-- **Not built:** live preview beside the editor. It is the obvious next thing and was deliberately
-  left out of v1 rather than done badly; the story renders at `/stories/<slug>` in another tab.
+## Live preview is an iframe, and had to be
+
+**The preview runs the shipping renderer, unmodified.** That is only possible in an iframe: `Story`
+is built on `position: fixed`, `window.scrollY` and `document.documentElement.scrollHeight` — whole
+*viewport* assumptions, every one of which breaks in a side pane. The alternative was teaching the
+renderer to accept a scroll container, which would mean the preview exercises a code path readers
+never take. A preview through a special rendering mode is not a preview.
+
+The document arrives by **postMessage rather than a reload**, so the Mapbox instance survives every
+keystroke, debounced at 300ms because a keystroke re-renders 41 chapters and a map behind them. The
+frame announces itself when ready, since a document sent before it loads is otherwise lost to a race.
+
+`resolveMedia` and `derivePins` run **in the browser, at runtime, exactly as the bake runs them** —
+the use `0016` anticipated when it made resolution a pure function rather than a build step. That
+also means unresolved references surface in the preview immediately, which is the fastest feedback
+available for a broken `mediaId`.
+
+One thing fell out: `resolveMedia` was typed as returning `Trip` when it returns a `ResolvedTrip`,
+so every caller had been casting. Fixed at the signature.
