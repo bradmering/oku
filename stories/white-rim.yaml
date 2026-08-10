@@ -5458,14 +5458,14 @@ stage:
       - 38.50928
 chapters:
   - id: ch_title
-    type: title
-    layout: image
     heading: The White Rim
     subheading: 2024-04-26 — 2024-04-30
+    type: title
     imageId: med_img-2424
+    layout: image
   - id: ch_fly_white-rim-mineral-bottom-to-airport_label
-    type: article
     heading: White Rim Mineral Bottom to Airport
+    type: article
   - id: ch_fly_white-rim-mineral-bottom-to-airport_01
     type: move
     to:
@@ -5507,8 +5507,8 @@ chapters:
       bearing: 228
     space: 0.4
   - id: ch_fly_lathrop-canyon-run-with-mark_label
-    type: article
     heading: Lathrop canyon run with mark
+    type: article
   - id: ch_fly_lathrop-canyon-run-with-mark_01
     type: move
     to:
@@ -5550,8 +5550,8 @@ chapters:
       bearing: 113
     space: 0.4
   - id: ch_fly_airport-to-murphy_label
-    type: article
     heading: AirPort to Murphy
+    type: article
   - id: ch_fly_airport-to-murphy_01
     type: move
     to:
@@ -5593,8 +5593,8 @@ chapters:
       bearing: 309
     space: 0.4
   - id: ch_fly_murphy-to-rim_label
-    type: article
     heading: Murphy to rim
+    type: article
   - id: ch_fly_murphy-to-rim_01
     type: move
     to:
@@ -5636,7 +5636,6 @@ chapters:
       bearing: 112
     space: 0.4
   - id: ch_logistics
-    type: logistics
     heading: Logistics
     text: >-
       165 km of riding over 4 days, 3,069 m of climbing across 4 recorded activities (177 km
@@ -5644,6 +5643,7 @@ chapters:
 
 
       TODO: permits, shuttle, water caches, camps.
+    type: logistics
   - id: ch_move_leg_arrival
     type: move
     to:
@@ -5654,8 +5654,8 @@ chapters:
       tilt: 50
       routeProgress: 0
   - id: ch_leg_arrival
-    type: article
     heading: Getting there
+    type: article
     heroImage:
       mediaId: med_img-2424
     media:
@@ -5675,8 +5675,8 @@ chapters:
       tilt: 50
       routeProgress: 0.3767
   - id: ch_leg_white-rim-mineral-bottom-to-airport
-    type: article
     heading: White Rim Mineral Bottom to Airport
+    type: article
     stats:
       legId: leg_white-rim-mineral-bottom-to-airport
     heroImage:
@@ -5699,8 +5699,8 @@ chapters:
       - mediaId: med_img-4769
       - mediaId: med_img-4777
   - id: ch_pano_img_9246
-    type: panorama
     mediaId: med_img-9246
+    type: panorama
   - id: ch_move_leg_camp_1
     type: move
     to:
@@ -5711,8 +5711,8 @@ chapters:
       tilt: 50
       routeProgress: 0.3767
   - id: ch_leg_camp_1
-    type: article
     heading: Camp — after White Rim Mineral Bottom to Airport
+    type: article
     heroImage:
       mediaId: med_img-9259
     media:
@@ -5726,11 +5726,11 @@ chapters:
       - mediaId: med_img-6496
       - mediaId: med_img-6501
   - id: ch_pano_img_6471
-    type: panorama
     mediaId: med_img-6471
-  - id: ch_pano_img_6475
     type: panorama
+  - id: ch_pano_img_6475
     mediaId: med_img-6475
+    type: panorama
   - id: ch_move_leg_lathrop-canyon-run-with-mark
     type: move
     to:
@@ -5741,8 +5741,8 @@ chapters:
       tilt: 50
       routeProgress: 0.3767
   - id: ch_leg_lathrop-canyon-run-with-mark
-    type: article
     heading: Lathrop canyon run with mark
+    type: article
     stats:
       legId: leg_lathrop-canyon-run-with-mark
     heroImage:
@@ -5780,8 +5780,8 @@ chapters:
       tilt: 50
       routeProgress: 0.6538
   - id: ch_leg_airport-to-murphy
-    type: article
     heading: AirPort to Murphy
+    type: article
     stats:
       legId: leg_airport-to-murphy
     heroImage:
@@ -5799,8 +5799,8 @@ chapters:
       tilt: 50
       routeProgress: 0.6538
   - id: ch_leg_camp_3
-    type: article
     heading: Camp — after AirPort to Murphy
+    type: article
     heroImage:
       mediaId: med_img-8407
     media:
@@ -5822,8 +5822,8 @@ chapters:
       tilt: 50
       routeProgress: 1
   - id: ch_leg_murphy-to-rim
-    type: article
     heading: Murphy to rim
+    type: article
     stats:
       legId: leg_murphy-to-rim
     heroImage:
@@ -5844,8 +5844,8 @@ chapters:
       tilt: 50
       routeProgress: 1
   - id: ch_leg_departure
-    type: article
     heading: Heading home
+    type: article
     heroImage:
       mediaId: med_p4291076
     media:
