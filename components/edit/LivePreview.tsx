@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Trip } from '@/schema/trip'
 import { resolveMedia } from '@/lib/resolve-media'
 import { derivePins } from '@/lib/derive-pins'
 import Story from '@/components/story/Story'
+import { CANVAS_CSS, decorate } from './canvas'
 
 /**
  * The live preview's inside — it runs in an iframe, alone in its own viewport.
@@ -28,9 +29,20 @@ export const EDITOR_MESSAGE = 'oku-editor'
 export type EditorMessage =
   | { source: typeof EDITOR_MESSAGE; kind: 'doc'; trip: Trip }
   | { source: typeof EDITOR_MESSAGE; kind: 'scrollTo'; chapterId: string }
+  | { source: typeof EDITOR_MESSAGE; kind: 'selected'; chapterId: string | null }
+
+/** Sent back UP to the editor — the canvas is an input, not just a mirror. */
+export type PreviewMessage =
+  | { source: typeof EDITOR_MESSAGE; kind: 'ready' }
+  | { source: typeof EDITOR_MESSAGE; kind: 'select'; chapterId: string }
+  | { source: typeof EDITOR_MESSAGE; kind: 'edit'; chapterId: string; field: string; value: string }
 
 export default function LivePreview({ initial }: { initial: Trip }) {
   const [doc, setDoc] = useState<Trip>(initial)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const post = useRef((msg: Record<string, unknown>) => {
+    window.parent?.postMessage({ source: EDITOR_MESSAGE, ...msg }, window.location.origin)
+  }).current
 
   useEffect(() => {
     const onMessage = (e: MessageEvent) => {
@@ -41,6 +53,7 @@ export default function LivePreview({ initial }: { initial: Trip }) {
       if (msg?.source !== EDITOR_MESSAGE) return
 
       if (msg.kind === 'doc') setDoc(msg.trip)
+      if (msg.kind === 'selected') setSelectedId(msg.chapterId)
       if (msg.kind === 'scrollTo') {
         document.getElementById(msg.chapterId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }
@@ -52,6 +65,8 @@ export default function LivePreview({ initial }: { initial: Trip }) {
     return () => window.removeEventListener('message', onMessage)
   }, [])
 
+  const teardown = useRef<(() => void) | null>(null)
+
   const { trip, issues } = useMemo(() => {
     const pins = derivePins(doc)
     const resolved = resolveMedia(doc)
@@ -61,8 +76,24 @@ export default function LivePreview({ initial }: { initial: Trip }) {
     return { trip: resolved.trip, issues: resolved.issues }
   }, [doc])
 
+  // Decorate after every render of the story, and tear down completely first —
+  // the DOM it hangs off is replaced whenever the document changes.
+  useEffect(() => {
+    const id = setTimeout(() => {
+      teardown.current?.()
+      teardown.current = decorate(document, selectedId, {
+        onSelect: (chapterId) => { setSelectedId(chapterId); post({ kind: 'select', chapterId }) },
+        onEdit: (chapterId, field, value) => post({ kind: 'edit', chapterId, field, value }),
+      })
+    }, 0)
+    return () => clearTimeout(id)
+  }, [trip, selectedId, post])
+
+  useEffect(() => () => teardown.current?.(), [])
+
   return (
     <>
+      <style>{CANVAS_CSS}</style>
       {/* A broken reference would otherwise show as a missing image with no
           explanation. Surfacing it here is the fastest feedback available. */}
       {issues.length > 0 && (

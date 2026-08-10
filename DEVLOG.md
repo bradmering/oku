@@ -5,6 +5,55 @@ you, what you'd do differently. This is how the next cold session learns what ha
 
 ---
 
+## 2026-08-09 — The page becomes the canvas
+
+Brad asked how much I'd kept his two editing inspirations in mind: **Gutenberg** block editing and
+**ArcGIS StoryMaps'** inline editor. Honest answer: neither, and they weren't recoverable — Gutenberg
+appears nowhere in the repo, and all three StoryMaps references are about *rendering*, not editing.
+
+But the miss that's actually mine: **my scoping question asked about scope, never about interaction
+model.** I offered curate / structural / hosted — three points on "how much does it do" — when the
+axis he cared about was "how do you edit." I had a real fork and surfaced the wrong one. Worth
+generalising: when scoping a *tool*, the interaction model is a separate question from the feature
+set, and it is usually the one with the strong opinion behind it.
+
+The Gutenberg fit turned out not to be incidental. **oku's thread already IS a Gutenberg document** —
+flat, ordered, typed, no nesting, because `0012` deleted the grouping object. A chapter is a block.
+
+So: clicking a chapter in the preview selects it, headings and prose are edited in place on the
+rendered page, and a `move` — which renders nothing — gets a visible inline marker in the thread
+(Brad's call over a side rail; right, because a rail puts the block somewhere the block isn't).
+
+**The renderer is decorated, not branched.** It emits provenance — `data-chapter`, `data-field` —
+which is true regardless of whether an editor exists, and `components/edit/canvas.ts` hangs off that.
+No `editing` prop, no conditional rendering in any chapter component. Threading edit concerns through
+the reading path would put them in the one place that is the whole product (`0009`). I did soften my
+earlier "unmodified renderer" claim slightly and said so in `0022` rather than pretending nothing
+moved.
+
+Two things were genuinely subtle. **Echoing the document back to the canvas destroys typing** —
+re-rendering a `contentEditable` under the caret collapses it to position 0 — so an edit originating
+on the canvas is applied but deliberately *not* broadcast back; the canvas already shows it. The same
+flag stops scroll-to-selection yanking the page when you click *on* the page.
+
+And **inline prose editing is only lossless while rendering is a split, not a transform.** The
+renderer doesn't process markdown, so `**bold**` round-trips literally. `lib/prose.ts` owns both
+directions and a test asserts they invert — so the day someone adds a markdown processor, the test
+goes red instead of the formatting quietly disappearing. That felt like over-testing until I noticed
+`01-data-model.md` still has "text flavour — markdown, but which" open.
+
+Verified the hard part directly: typed into prose on the canvas, caret survived at offset 33 rather
+than collapsing, both paragraphs preserved, and it propagated to the form. Clicking a chapter and a
+flyover marker both drove selection back up.
+
+Found while testing: selecting a move showed an **empty inspector** — you click the marker and get
+nothing. Now shows the keyframe with inherited values marked, which is `0018` surfaced where it
+matters. **Still not built: capturing a camera from the preview's own map** (the ESRI move proper),
+and a block inserter — `0021` argued against a palette from White Rim's scaffold, which was true of
+that document and doesn't generalise.
+
+---
+
 ## 2026-08-09 — The editor, and making re-ingest safe first
 
 Brad asked to start the editor. Two things had to be settled before writing any UI, and counting the

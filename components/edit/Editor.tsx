@@ -39,6 +39,8 @@ export default function Editor({ initial, slug }: { initial: Trip; slug: string 
   const [showPreview, setShowPreview] = useState(true)
   const frame = useRef<HTMLIFrameElement>(null)
   const frameReady = useRef(false)
+  /** Set when the last change came FROM the canvas, so it isn't echoed back. */
+  const fromCanvas = useRef(false)
 
   const dirty = past.length > 0
 
@@ -62,23 +64,41 @@ export default function Editor({ initial, slug }: { initial: Trip; slug: string 
     )
   }, [])
 
-  // The frame announces itself, because a document sent before it loads is lost.
+  // The canvas talks back: it announces itself, reports selections, and sends
+  // edits made directly on the page.
   useEffect(() => {
-    const onReady = (e: MessageEvent) => {
+    const onMessage = (e: MessageEvent) => {
       if (e.origin !== window.location.origin) return
-      if ((e.data as { source?: string; kind?: string })?.source !== EDITOR_MESSAGE) return
-      if ((e.data as { kind?: string }).kind !== 'ready') return
-      frameReady.current = true
-      post({ kind: 'doc', trip: doc })
+      const msg = e.data as { source?: string; kind?: string; chapterId?: string; field?: string; value?: string }
+      if (msg?.source !== EDITOR_MESSAGE) return
+
+      if (msg.kind === 'ready') {
+        frameReady.current = true
+        post({ kind: 'doc', trip: doc })
+        return
+      }
+      if (msg.kind === 'select' && msg.chapterId) {
+        fromCanvas.current = true      // don't scroll the canvas to what it just clicked
+        setSelected(msg.chapterId)
+        return
+      }
+      if (msg.kind === 'edit' && msg.chapterId && msg.field) {
+        // The canvas already shows this text — the user typed it there. Echoing
+        // the document back would re-render the field under their caret and
+        // collapse it to position 0, so this edit is applied WITHOUT broadcasting.
+        fromCanvas.current = true
+        apply((d) => setField(d, msg.chapterId!, msg.field!, msg.value ?? ''))
+      }
     }
-    window.addEventListener('message', onReady)
-    return () => window.removeEventListener('message', onReady)
-  }, [doc, post])
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+  }, [doc, post, apply])
 
   // Debounced: a keystroke re-renders 41 chapters and a map behind them, and
   // typing a sentence should not do that forty times.
   useEffect(() => {
     if (!showPreview || !frameReady.current) return
+    if (fromCanvas.current) { fromCanvas.current = false; return }
     const id = setTimeout(() => post({ kind: 'doc', trip: doc }), 300)
     return () => clearTimeout(id)
   }, [doc, showPreview, post])
@@ -86,8 +106,12 @@ export default function Editor({ initial, slug }: { initial: Trip; slug: string 
   // Selecting a chapter scrolls the preview to it, so the two panes agree about
   // where you are.
   useEffect(() => {
-    if (!selected || !showPreview || !frameReady.current) return
-    post({ kind: 'scrollTo', chapterId: selected })
+    if (!showPreview || !frameReady.current) return
+    post({ kind: 'selected', chapterId: selected })
+    // Scrolling the canvas to the thing the user just clicked ON the canvas
+    // would yank the page out from under them.
+    if (selected && !fromCanvas.current) post({ kind: 'scrollTo', chapterId: selected })
+    fromCanvas.current = false
   }, [selected, showPreview, post])
 
   const mediaById = useMemo(
@@ -240,6 +264,41 @@ export default function Editor({ initial, slug }: { initial: Trip; slug: string 
                 onHero={(i) => apply((d) => promoteToHero(d, chapter.id, i))}
                 onMove={(i, to) => apply((d) => moveMedia(d, chapter.id, i, to))}
               />
+            )}
+
+            {chapter.type === 'move' && (
+              <section>
+                <label className={label}>Keyframe</label>
+                <div className="grid gap-1.5 mb-4">
+                  {(['coordinates', 'zoom', 'tilt', 'bearing', 'routeProgress'] as const).map((k) => (
+                    <div key={k} className="flex justify-between gap-4 tabular-nums text-xs">
+                      <span className="text-stone-500">{k}</span>
+                      <span className={chapter.to?.[k] === undefined ? 'text-stone-600' : ''}>
+                        {chapter.to?.[k] === undefined
+                          ? 'inherited'
+                          : Array.isArray(chapter.to[k]) ? (chapter.to[k] as number[]).join(', ') : String(chapter.to[k])}
+                      </span>
+                    </div>
+                  ))}
+                  <div className="flex justify-between gap-4 tabular-nums text-xs">
+                    <span className="text-stone-500">space</span>
+                    <span className={chapter.space === undefined ? 'text-stone-600' : ''}>
+                      {chapter.space ?? 'default (1)'}
+                    </span>
+                  </div>
+                </div>
+                <p className="m-0 text-stone-500 text-xs leading-relaxed">
+                  A move is four numbers you cannot picture. Frame it on the map and paste the
+                  result back — <a href={`/camera/${slug}`} target="_blank" rel="noreferrer"
+                    className="text-[#f0623c] underline">open the camera picker</a>.
+                  {chapter.to?.routeProgress === undefined && (
+                    <span className="block mt-1 text-stone-600">
+                      No <code>routeProgress</code>: this move inherits it, so the route line holds
+                      where it was. That is deliberate for flyover frames (0018).
+                    </span>
+                  )}
+                </p>
+              </section>
             )}
 
             {chapter.type === 'panorama' && (

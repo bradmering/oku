@@ -1,6 +1,6 @@
 # 0021 — The editor curates and writes; it does not build
 
-**Status:** accepted (2026-08-09) · **Relates to:** 0008, 0009, 0012 · **Depends on:** 0020
+**Status:** accepted (2026-08-09), interaction model amended by `0022` · **Relates to:** 0008, 0009, 0012 · **Depends on:** 0020
 
 ## Decision
 

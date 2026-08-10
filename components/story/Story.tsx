@@ -159,6 +159,11 @@ export default function Story({ trip }: { trip: Trip }) {
             <div
               key={ch.id}
               id={ch.id}
+              // Provenance, not edit logic: says which document node this DOM
+              // subtree came from. The renderer knows nothing about an editor;
+              // the editor's decorator needs a stable hook. See decisions/0022.
+              data-chapter={ch.id}
+              data-chapter-type={ch.type}
               ref={(el) => {
                 if (!el) return
                 chapterEls.current.set(ch.id, el)
