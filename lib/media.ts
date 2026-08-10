@@ -15,14 +15,69 @@ const TYPES: Record<string, string> = {
   mp3: 'audio/mpeg', m4a: 'audio/mp4',
 }
 
+/**
+ * Dev-only: read a media key off the local disk.
+ *
+ * Searches the same roots as `scripts/upload-media.ts`, so whatever
+ * `MEDIA_SOURCE` resolves for upload also resolves here and the two can't
+ * disagree about where the bytes are.
+ *
+ * The imports are dynamic because `node:fs` must not end up in the Worker
+ * bundle — this file is imported by a route that also runs in production.
+ */
+async function serveFromDisk(key: string, type: string): Promise<Response | null> {
+  try {
+    const { existsSync, readFileSync } = await import('node:fs')
+    const { default: path } = await import('node:path')
+    const roots = (process.env.MEDIA_SOURCE ?? '.media').split(':').filter(Boolean)
+    for (const root of roots) {
+      const file = path.join(root, key)
+      if (!existsSync(file)) continue
+      const bytes = readFileSync(file)
+      return new Response(new Uint8Array(bytes), {
+        headers: {
+          'content-type': type,
+          'content-length': String(bytes.length),
+          // Deliberately NOT immutable: in dev you re-convert and expect to see it.
+          'cache-control': 'no-store',
+          'x-media-source': 'local-disk',
+        },
+      })
+    }
+  } catch {
+    // Any filesystem trouble just falls through to the normal error path.
+  }
+  return null
+}
+
 export async function serveMedia(req: Request, prefix: string, path: string[]) {
   const key = `${prefix}/${path.join('/')}`
-  const { env } = getCloudflareContext()
-  const bucket = (env as { MEDIA?: R2Bucket }).MEDIA
-  if (!bucket) return new Response('Media bucket not bound', { status: 500 })
+
+  // In `next dev` this THROWS rather than returning an empty env — the adapter
+  // wants `initOpenNextCloudflareForDev()` in the Next config. That throw is why
+  // media has always failed in dev: the 500 came from here, before any fallback
+  // could run. Treat "no context" the same as "no binding".
+  let bucket: R2Bucket | undefined
+  try {
+    bucket = (getCloudflareContext().env as { MEDIA?: R2Bucket }).MEDIA
+  } catch {
+    bucket = undefined
+  }
 
   const ext = key.split('.').pop()?.toLowerCase() ?? ''
   const type = TYPES[ext] ?? 'application/octet-stream'
+
+  if (!bucket) {
+    // `next dev` has no bindings, so every photo 404'd and the dev server was
+    // useless for story work — which is fatal for an editor whose whole job is
+    // showing you your photographs. Fall back to the local conversion output.
+    // Dev only: a production build has the binding, and this branch is dead.
+    if (process.env.NODE_ENV !== 'production') {
+      const local = await serveFromDisk(key, type)
+      if (local) return local
+    }
+    return new Response('Media bucket not bound', { status: 500 })
+  }
 
   // Range support matters for video: without it, seeking re-downloads the file
   // and Safari won't scrub at all.
