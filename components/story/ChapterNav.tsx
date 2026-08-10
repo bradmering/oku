@@ -24,6 +24,7 @@ function label(c: Chapter): string {
     case 'splash': return c.heading ?? 'Intro'
     case 'video': return c.caption ?? 'Video'
     case 'gallery': return 'Gallery'
+    case 'panorama': return c.heading ?? c.caption ?? 'Panorama'
     case 'image': return c.caption ?? 'Image'
     default: return 'Chapter'
   }

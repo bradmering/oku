@@ -230,6 +230,32 @@ export const ParallaxVideoChapter = chapter({
   type: z.literal('parallax-video'),
   layout: z.enum(['full', 'split']).optional(),
 })
+/**
+ * A wide panorama that pans horizontally as the reader scrolls past it.
+ *
+ * Annotations are points in IMAGE SPACE with a top-left origin — the same
+ * coordinate idea as `Keyframe.bounds` on the topo stage, deliberately, so this
+ * doesn't become a fourth coordinate system. See decisions/0019.
+ */
+export const PanoramaAnnotation = z.object({
+  /** 0..1 across the image, left to right. */
+  x: z.number().min(0).max(1),
+  /** 0..1 down the image. Defaults to just above the middle. */
+  y: z.number().min(0).max(1).optional(),
+  label: z.string(),
+  note: z.string().optional(),
+})
+
+export const PanoramaChapter = chapter({
+  ...chapterBase, ...prose, ...mediaPointer,
+  type: z.literal('panorama'),
+  caption: z.string().optional(),
+  annotations: z.array(PanoramaAnnotation).optional(),
+  /** Scroll distance per pixel panned. 1 means one screen of scrolling moves the
+   *  image one screen sideways. Below 1 pans faster than you scroll. */
+  rate: z.number().positive().optional(),
+})
+
 export const OverviewChapter = chapter({ ...chapterBase, ...prose, type: z.literal('overview') })
 export const LogisticsChapter = chapter({
   ...chapterBase, ...prose,
@@ -251,7 +277,7 @@ export const TopoChapter = chapter({
 export const Chapter = z.discriminatedUnion('type', [
   MoveChapter,
   TitleChapter, SplashChapter, MapChapter, ArticleChapter, ImageChapter,
-  GalleryChapter, VideoChapter, ParallaxVideoChapter, OverviewChapter,
+  GalleryChapter, VideoChapter, ParallaxVideoChapter, PanoramaChapter, OverviewChapter,
   LogisticsChapter, TopoChapter,
 ])
 

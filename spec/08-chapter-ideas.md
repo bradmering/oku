@@ -7,7 +7,7 @@
 
 ---
 
-## 1. Route flyover — an orientation pass over the whole track
+## 1. Route flyover — ✅ BUILT 2026-08-09 (`decisions/0018`)
 
 **The idea (Brad, 2026-08-09).** Instead of opening on a mostly static "explore map", fly the
 camera along the entire GPX while the reader scrolls, with short text attached at points along the
@@ -39,11 +39,14 @@ job in the format — see "the camera problem" below. Ingest already has the tra
 flyover of N evenly-spaced moves with bearing following the direction of travel and tilt held. That
 is a small function and it makes the feature real.
 
-**Cost:** small-to-medium, and mostly (a). This is the next chapter to build.
+**Outcome.** (a) evaporated: `resolve()` already inherits an omitted `routeProgress`, so a flyover
+that never sets it holds the line at 0 and nothing rewinds. The monotonic test is unchanged. (b) is
+`lib/ingest/flyover.ts`. The third option above — draw nothing — was both the cheapest and the
+right one.
 
 ---
 
-## 2. Panorama — horizontal scroll with annotations
+## 2. Panorama — ✅ BUILT 2026-08-09 (`decisions/0019`)
 
 **The idea (Brad, 2026-08-09).** A wide panorama that, when it reaches the viewport, stops the
 vertical scroll and pans horizontally across the image instead, then releases. Annotatable, so you
@@ -68,13 +71,15 @@ coordinate system.
 - Panoramas are big; this wants a real rendition ladder more than any other chapter
   (`MediaItem.renditions`, `decisions/0016`).
 
-**Cost:** medium. The interaction is the whole job; the data model is nearly free.
-
-**Source material:** White Rim has several panoramas, so this can be dogfooded immediately.
+**Outcome.** Built with `position: sticky` and no `preventDefault`, which answers the scroll-jacking
+risk by never capturing the reader in the first place — there is nothing to escape from. Release is
+unit-tested rather than eyeballed. Annotations reuse image space as hoped. The unforeseen problem
+was the converter: a 2400px long-edge cap had been crushing 14404×3864 panoramas to 2400×644, so the
+chapter would have shipped looking broken for reasons unrelated to the chapter.
 
 ---
 
-## The camera problem (blocks #1, and already hurts)
+## The camera problem — ✅ ADDRESSED 2026-08-09
 
 Both ideas run into the same thing, and it is worth stating separately because it is not a chapter
 type: **a `move` is four numbers you cannot picture.** Choosing `coordinates`, `zoom`, `bearing` and
@@ -83,3 +88,8 @@ type: **a `move` is four numbers you cannot picture.** Choosing `coordinates`, `
 The fix is not "an editor" in the large. It is a **camera picker**: open the story, drag the map to
 the framing you want, and have it hand back the keyframe. Small, dogfoodable, and a prerequisite for
 the flyover rather than a competitor to it.
+
+**Built:** `/camera/<slug>`, dev-only. The panorama has the same problem in one dimension and got
+the same treatment rather than its own tool — `?debug` on a panorama reads out the cursor's `x`.
+**The generalisation worth keeping: never ship a field whose value has to be guessed.** If a number
+describes something visual, something should show you the number while you look at the thing.

@@ -113,6 +113,7 @@ export function resolveMedia(trip: Trip): { trip: Trip; issues: ResolveIssue[] }
         break
       case 'video':
       case 'parallax-video':
+      case 'panorama':
         resolvePointer(ch, media, at, issues)
         break
     }

@@ -48,6 +48,7 @@ const FIT_DIR = opt('fit')
 const MEDIA_DIR = opt('media')
 const TZ = opt('tz', '-06:00')!
 const GAP_MIN = Number(opt('gap', '90'))
+const PANO_RATIO = Number(opt('pano-ratio', '2.5'))
 const DRY = argv.includes('--dry-run')
 
 if (!SLUG || !FIT_DIR || !MEDIA_DIR) {
@@ -127,6 +128,8 @@ type Exif = {
   CreationDate?: string
   GPSLatitude?: number
   GPSLongitude?: number
+  ImageWidth?: number
+  ImageHeight?: number
 }
 
 const exif: Exif[] = []
@@ -134,7 +137,7 @@ const CHUNK = 200
 for (let i = 0; i < mediaFiles.length; i += CHUNK) {
   const out = execFileSync('exiftool', [
     '-json', '-FileName', '-DateTimeOriginal', '-CreateDate', '-OffsetTimeOriginal',
-    '-Keys:CreationDate', '-GPSLatitude#', '-GPSLongitude#',
+    '-Keys:CreationDate', '-GPSLatitude#', '-GPSLongitude#', '-ImageWidth', '-ImageHeight',
     ...mediaFiles.slice(i, i + CHUNK).map((f) => path.join(MEDIA_DIR, f)),
   ], { maxBuffer: 128 * 1024 * 1024 }).toString()
   exif.push(...JSON.parse(out))
@@ -168,7 +171,7 @@ function capturedAt(e: Exif): number | null {
 
 type Item = {
   id: string; src: string; original: string; kind: 'image' | 'video'
-  stem: string; live?: string
+  stem: string; live?: string; pano?: boolean
   t: number; lat: number | null; lng: number | null; legId?: string
 }
 
@@ -190,6 +193,10 @@ for (const e of exif) {
     t,
     lat: e.GPSLatitude ?? null,
     lng: e.GPSLongitude ?? null,
+    // A panorama is a different KIND of photograph, not a wide one. White Rim's
+    // three are 3.47:1 and wider; the next widest image in the set is 1.87:1,
+    // so the gap is unambiguous. See decisions/0019.
+    pano: !isVideo && !!e.ImageWidth && !!e.ImageHeight && e.ImageWidth / e.ImageHeight >= PANO_RATIO,
   })
 }
 items.sort((a, b) => a.t - b.t)
@@ -379,8 +386,11 @@ chapters.push({
 
 for (const leg of legs) {
   const legMedia = mediaFor(leg.id)
-  const hero = firstImage(leg.id)
-  const strip = legMedia.filter((m) => m.id !== hero?.id)
+  const panos = legMedia.filter((m) => m.pano)
+  const hero = legMedia.find((m) => m.kind === 'image' && !m.pano)
+  // A panorama gets its own full-bleed chapter; leaving it in the strip as a
+  // 200px-wide sliver wastes the only image in the set worth panning across.
+  const strip = legMedia.filter((m) => m.id !== hero?.id && !m.pano)
 
   chapters.push({
     id: `ch_move_${leg.id}`,
@@ -405,6 +415,16 @@ for (const leg of legs) {
     ...(hero ? { heroImage: { mediaId: hero.id } } : {}),
     ...(strip.length ? { media: strip.map((m) => ({ mediaId: m.id })) } : {}),
   })
+
+  for (const p of panos) {
+    chapters.push({
+      id: `ch_pano_${p.stem.toLowerCase()}`,
+      type: 'panorama',
+      mediaId: p.id,
+      // No annotations: ingest knows where the photograph was taken, not what is
+      // in it. Naming peaks is the author's job — open ?debug and read cursor x.
+    })
+  }
 }
 
 const doc = {
