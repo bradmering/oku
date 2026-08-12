@@ -84,7 +84,7 @@ export default function Landscape({
       } ${className}`}
       style={{ opacity, transform: `translateY(-50%) translateX(${drift}px)` }}
     >
-      {variant === 'mountains' ? <Mountains /> : <Coast />}
+      {variant === 'mountains' ? <InkMountains /> : <InkCoast />}
     </div>
   )
 }
@@ -104,7 +104,7 @@ const ink = {
  * and darker — distance carried by opacity and by how sharp the hand is, which
  * is the trick ink drawings use instead of perspective.
  */
-function Mountains() {
+export function InkMountains() {
   return (
     <svg viewBox="0 0 300 200" className="w-full h-auto" role="img">
       {/* Furthest — soft, low, and BROKEN on the left: the gap is the mist. Ink
@@ -136,7 +136,7 @@ function Mountains() {
  * shoreline that runs out of the frame. The islands are the whole reason the
  * coast is the second drawing — Bashō went there to see them.
  */
-function Coast() {
+export function InkCoast() {
   return (
     <svg viewBox="0 0 300 200" className="w-full h-auto" role="img">
       {/* Horizon, broken where the islands stand so they read in front of it. */}
