@@ -4,7 +4,7 @@
  * that make that true are worth asserting.
  */
 import assert from 'node:assert/strict'
-import { contour, lineLength, sampleField, smoothNoise, toPath } from '../lib/contour.ts'
+import { chaikin, contour, lineLength, sampleField, simplify, smoothNoise, toPath, type Pt } from '../lib/contour.ts'
 
 let n = 0
 const t = (name: string, fn: () => void) => { fn(); n++; console.log(`  ✓ ${name}`) }
@@ -87,6 +87,77 @@ t('toPath emits a valid path starting with a move', () => {
   const d = toPath(contour(grid, 0.5)[0], 3, 2)
   assert.match(d, /^M [\d.-]+ [\d.-]+/)
   assert.ok(!/NaN|Infinity/.test(d), 'no NaN in the path data')
+})
+
+t('chaikin keeps a closed ring closed', () => {
+  const [ring] = contour(grid, 0.5)
+  const smooth = chaikin(ring, 3)
+  const first = smooth[0]
+  const last = smooth[smooth.length - 1]
+  assert.ok(Math.hypot(last[0] - first[0], last[1] - first[1]) < 1e-9, 'ring should stay closed')
+})
+
+t('chaikin pins the endpoints of an OPEN line', () => {
+  // Open contours sit on the frame edge; pulling their ends inward would leave
+  // a visible gap at the border.
+  const open: Pt[] = [[0, 0], [2, 0], [2, 2], [4, 2], [4, 4]]
+  const smooth = chaikin(open, 3)
+  assert.deepEqual(smooth[0], [0, 0])
+  assert.deepEqual(smooth[smooth.length - 1], [4, 4])
+})
+
+t('chaikin ROUNDS CORNERS — the whole point', () => {
+  // Measured as the SHARPEST turn at any one vertex, not total turning: total
+  // turning is conserved by corner-cutting, which just spreads it over more
+  // vertices. "No sharp corner survives" is the property that matters, and it
+  // is the one you can see.
+  const sharpest = (line: Pt[]) => {
+    let worst = 0
+    for (let i = 1; i < line.length - 1; i++) {
+      const a = Math.atan2(line[i][1] - line[i - 1][1], line[i][0] - line[i - 1][0])
+      const b = Math.atan2(line[i + 1][1] - line[i][1], line[i + 1][0] - line[i][0])
+      worst = Math.max(worst, Math.abs(((b - a + Math.PI * 3) % (Math.PI * 2)) - Math.PI))
+    }
+    return worst
+  }
+  const stair: Pt[] = []
+  for (let i = 0; i < 10; i++) { stair.push([i, i % 2], [i + 1, i % 2]) }
+
+  const before = sharpest(stair)
+  assert.ok(before > Math.PI / 2 - 1e-9, 'the staircase should start with right angles')
+
+  const after = sharpest(chaikin(stair, 3))
+  assert.ok(after < before / 3, `expected corners cut: ${before.toFixed(2)} → ${after.toFixed(2)} rad`)
+})
+
+t('chaikin stays inside the convex hull — it cuts corners, never overshoots', () => {
+  const box: Pt[] = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]]
+  for (const [x, y] of chaikin(box, 3)) {
+    assert.ok(x >= -1e-9 && x <= 10 + 1e-9 && y >= -1e-9 && y <= 10 + 1e-9, `escaped: ${x},${y}`)
+  }
+})
+
+t('simplify keeps the endpoints and honours the tolerance', () => {
+  const line: Pt[] = [[0, 0], [1, 0.01], [2, -0.01], [3, 0], [4, 5], [5, 0]]
+  const out = simplify(line, 0.5)
+  assert.deepEqual(out[0], [0, 0])
+  assert.deepEqual(out[out.length - 1], [5, 0])
+  assert.ok(out.length < line.length, 'near-collinear points should go')
+  assert.ok(out.some((p) => p[1] === 5), 'the spike is well beyond tolerance and must stay')
+})
+
+t('simplify with zero tolerance changes nothing', () => {
+  const [ring] = contour(grid, 0.5)
+  assert.equal(simplify(ring, 0).length, ring.length)
+})
+
+t('smoothing then simplifying is smaller than the raw contour, and still smooth', () => {
+  const [ring] = contour(grid, 0.5)
+  const out = simplify(chaikin(ring, 3), 0.06)
+  assert.ok(out.length < chaikin(ring, 3).length, 'simplify should drop redundant points')
+  const first = out[0]
+  const last = out[out.length - 1]
+  assert.ok(Math.hypot(last[0] - first[0], last[1] - first[1]) < 1e-6, 'still closed')
 })
 
 t('a saddle between two hills separates into two rings higher up', () => {

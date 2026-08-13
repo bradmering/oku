@@ -2,7 +2,7 @@
  * Precompute the landing page's contour drawings.
  *
  * The figures are iso-lines through a synthetic height field. Extracting them is
- * marching squares over an 84×56 lattice — cheap, but there is no reason to ship
+ * marching squares over a 132×88 lattice — cheap, but there is no reason to ship
  * that engine to a browser so it can redraw two figures that never change. This
  * runs at build time and emits the finished path strings.
  *
@@ -15,12 +15,19 @@
  */
 
 import { writeFileSync } from 'node:fs'
-import { contour, sampleField, smoothNoise, toPath } from '../lib/contour.ts'
+import { chaikin, contour, sampleField, simplify, smoothNoise, toPath } from '../lib/contour.ts'
 
-const GRID = { cols: 84, rows: 56 }
+// Finer than the eye needs on its own — the point is that Chaikin has a better
+// polyline to round off, so the smoothing follows the real iso-line instead of
+// rounding the grid's staircase into a different shape.
+const GRID = { cols: 132, rows: 88 }
 const VIEW = { w: 300, h: 200 }
 /** Minimum contour length, in grid units. Below this it is a speck, not a line. */
-const MIN_LENGTH = 2.2
+const MIN_LENGTH = 3.5
+/** Corner-cutting passes. Two is enough to lose the facets; more only costs points. */
+const SMOOTHING = 3
+/** Douglas–Peucker tolerance, in GRID units, applied after smoothing. */
+const SIMPLIFY = 0.06
 
 const OUT = 'lib/landscapes.generated.json'
 
@@ -35,10 +42,13 @@ function mountainHeight(x: number, y: number): number {
     gauss(x, y, 0.63, 0.62, 0.21, 0.27, 0.74) +
     gauss(x, y, 0.87, 0.46, 0.17, 0.23, 0.46) +
     gauss(x, y, 0.12, 0.78, 0.14, 0.16, 0.30) +
-    0.12 * smoothNoise(x, y, 4, 3) +
-    // Higher-frequency noise than this lands below one grid cell and only
-    // fringes the contours.
-    0.035 * smoothNoise(x, y, 9, 7)
+    // Three octaves. The middle one is what stops the contours being smooth
+    // ovals — it gives them somewhere to wander, which is most of what reads as
+    // "terrain" rather than "blob". The finest octave was fringing the lines on
+    // the old coarse grid; at 132×88 it resolves properly.
+    0.13 * smoothNoise(x, y, 4, 3) +
+    0.055 * smoothNoise(x, y, 8, 7) +
+    0.02 * smoothNoise(x, y, 15, 13)
   )
 }
 
@@ -53,8 +63,9 @@ function coastHeight(x: number, y: number): number {
     shore +
     gauss(x, y, 0.36, 0.17, 0.10, 0.075, 0.62) +
     gauss(x, y, 0.66, 0.25, 0.065, 0.055, 0.42) +
-    0.08 * smoothNoise(x, y, 5, 11) +
-    0.02 * smoothNoise(x, y, 10, 5)
+    0.085 * smoothNoise(x, y, 5, 11) +
+    0.03 * smoothNoise(x, y, 9, 5) +
+    0.012 * smoothNoise(x, y, 17, 2)
   )
 }
 
@@ -94,7 +105,9 @@ function build(f: (x: number, y: number) => number, levels: Level[]): Line[] {
   const out: Line[] = []
   for (const { level, opacity, dash } of levels) {
     for (const line of contour(grid, level, MIN_LENGTH)) {
-      out.push({ d: toPath(line, sx, sy), opacity, ...(dash ? { dash } : {}) })
+      // Round the corners, then drop the points that rounding made redundant.
+      const smooth = simplify(chaikin(line, SMOOTHING), SIMPLIFY)
+      out.push({ d: toPath(smooth, sx, sy, 2), opacity, ...(dash ? { dash } : {}) })
     }
   }
   return out

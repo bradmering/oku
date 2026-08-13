@@ -152,6 +152,86 @@ export function contour(grid: Grid, level: number, minLength = 2): Pt[][] {
   return stitch(segments(grid, level)).filter((l) => lineLength(l) >= minLength)
 }
 
+const isClosed = (line: Pt[]) =>
+  line.length > 2 && key(line[0]) === key(line[line.length - 1])
+
+/**
+ * Chaikin corner-cutting — the thing that makes a contour look drawn rather
+ * than computed.
+ *
+ * Marching squares walks cell boundaries, so wherever the field is gently
+ * sloped the contour comes out as long straight runs meeting at hard corners.
+ * Smoothing the *rendering* (quadratics through midpoints) does not fix that,
+ * because the corner is in the geometry. Chaikin replaces every corner with two
+ * points a quarter and three quarters along, which rounds it; repeat and the
+ * polyline converges on a quadratic B-spline.
+ *
+ * Closed rings are cut cyclically so the join is not a permanent flat spot.
+ * Open lines keep their endpoints, because those sit on the frame edge and
+ * pulling them inward would leave a visible gap at the border.
+ */
+export function chaikin(line: Pt[], iterations = 2): Pt[] {
+  const closed = isClosed(line)
+  let pts = closed ? line.slice(0, -1) : line.slice()
+  if (pts.length < 3) return line.slice()
+
+  for (let i = 0; i < iterations; i++) {
+    const next: Pt[] = []
+    if (!closed) next.push(pts[0])
+    const n = pts.length
+    const spans = closed ? n : n - 1
+    for (let j = 0; j < spans; j++) {
+      const a = pts[j]
+      const b = pts[(j + 1) % n]
+      next.push([a[0] * 0.75 + b[0] * 0.25, a[1] * 0.75 + b[1] * 0.25])
+      next.push([a[0] * 0.25 + b[0] * 0.75, a[1] * 0.25 + b[1] * 0.75])
+    }
+    if (!closed) next.push(pts[n - 1])
+    pts = next
+  }
+  return closed ? [...pts, pts[0]] : pts
+}
+
+/** Perpendicular distance from `p` to the segment `a`–`b`. */
+function pointToSegment(p: Pt, a: Pt, b: Pt): number {
+  const dx = b[0] - a[0]
+  const dy = b[1] - a[1]
+  const len2 = dx * dx + dy * dy
+  if (len2 === 0) return Math.hypot(p[0] - a[0], p[1] - a[1])
+  let t = ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / len2
+  t = Math.max(0, Math.min(1, t))
+  return Math.hypot(p[0] - (a[0] + t * dx), p[1] - (a[1] + t * dy))
+}
+
+/**
+ * Douglas–Peucker. Chaikin quadruples the point count per iteration, and most of
+ * those points sit on a curve the eye cannot distinguish from fewer — this puts
+ * the payload back without putting the corners back.
+ */
+export function simplify(line: Pt[], tolerance: number): Pt[] {
+  if (line.length < 3 || tolerance <= 0) return line.slice()
+
+  const keep = new Uint8Array(line.length)
+  keep[0] = 1
+  keep[line.length - 1] = 1
+
+  const stack: [number, number][] = [[0, line.length - 1]]
+  while (stack.length) {
+    const [first, last] = stack.pop()!
+    let worst = 0
+    let index = -1
+    for (let i = first + 1; i < last; i++) {
+      const d = pointToSegment(line[i], line[first], line[last])
+      if (d > worst) { worst = d; index = i }
+    }
+    if (index !== -1 && worst > tolerance) {
+      keep[index] = 1
+      stack.push([first, index], [index, last])
+    }
+  }
+  return line.filter((_, i) => keep[i] === 1)
+}
+
 /** Sample a height function onto a `cols × rows` lattice spanning 0..1 in both axes. */
 export function sampleField(
   cols: number,
