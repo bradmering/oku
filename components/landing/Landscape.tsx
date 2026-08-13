@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { driftX, proximityOpacity } from '@/lib/landscape'
+import { TopoCoast, TopoMountains } from './topo'
 
 /**
  * Two ink drawings that surface in the whitespace beside the passages and go
@@ -33,6 +34,16 @@ export default function Landscape({
   const el = useRef<HTMLDivElement>(null)
   const [opacity, setOpacity] = useState(0)
   const [reduced, setReduced] = useState(false)
+  /**
+   * `?topo` swaps the idiom in place — same slot, same fade, same opacity,
+   * same text beside it. Comparing them in separate harnesses tells you which
+   * drawing is nicer in isolation, which is not the question: the question is
+   * which one behaves as a background at 40% behind a paragraph.
+   *
+   * TEMPORARY, for the choice. One of the two idioms gets deleted after.
+   */
+  const [topo, setTopo] = useState(false)
+  useEffect(() => { setTopo(new URLSearchParams(location.search).has('topo')) }, [])
 
   useEffect(() => {
     const q = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -84,7 +95,9 @@ export default function Landscape({
       } ${className}`}
       style={{ opacity, transform: `translateY(-50%) translateX(${drift}px)` }}
     >
-      {variant === 'mountains' ? <InkMountains /> : <InkCoast />}
+      {variant === 'mountains'
+        ? (topo ? <TopoMountains /> : <InkMountains />)
+        : (topo ? <TopoCoast /> : <InkCoast />)}
     </div>
   )
 }
