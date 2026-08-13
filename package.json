@@ -16,7 +16,7 @@
     "validate": "node --experimental-strip-types scripts/validate-fixtures.ts",
     "ingest": "node --experimental-strip-types scripts/ingest-trip.ts",
     "migrate": "node --experimental-strip-types scripts/migrate-legacy.ts",
-    "bake": "node --experimental-strip-types scripts/build-trips.ts",
+    "bake": "node --experimental-strip-types scripts/build-trips.ts && node --experimental-strip-types scripts/build-landscapes.ts",
     "prebuild": "npm run bake",
     "predev": "npm run bake",
     "upload-media": "node --experimental-strip-types scripts/upload-media.ts",

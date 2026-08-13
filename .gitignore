@@ -10,5 +10,6 @@ dist/
 .wrangler/
 tsconfig.tsbuildinfo
 lib/trips.generated.json
+lib/landscapes.generated.json
 .media-manifest.json
 .media/
