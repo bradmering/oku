@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import DrawnLine from '@/components/landing/DrawnLine'
+import Landscape from '@/components/landing/Landscape'
 
 export const metadata = {
   title: 'oku',
@@ -11,21 +12,23 @@ export default function Landing() {
     <main className="relative max-w-4xl mx-auto px-6">
       <DrawnLine />
 
-      <section className="relative z-10 min-h-screen flex flex-col justify-center">
-        <p className="text-5xl mb-10 leading-none text-ember font-normal" lang="ja">奥</p>
-        <blockquote className="m-0 text-[clamp(1.6rem,4.2vw,2.9rem)] leading-[1.32] tracking-tight text-balance max-w-[20ch]">
+      <section className="relative min-h-screen flex flex-col justify-center">
+        <Landscape variant="mountains" side="right" />
+        <p className="relative z-10 text-5xl mb-10 leading-none text-ember font-normal" lang="ja">奥</p>
+        <blockquote className="relative z-10 m-0 text-[clamp(1.6rem,4.2vw,2.9rem)] leading-[1.32] tracking-tight text-balance max-w-[20ch]">
           The months and days are the travellers of eternity.
           <br />
           The years that come and go are also voyagers.
         </blockquote>
       </section>
 
-      <section className="relative z-10 min-h-[90vh] flex flex-col justify-center items-start md:items-end md:text-right">
-        <blockquote className="m-0 text-[clamp(1.6rem,4.2vw,2.9rem)] leading-[1.32] tracking-tight text-balance max-w-[26ch]">
+      <section className="relative min-h-[90vh] flex flex-col justify-center items-start md:items-end md:text-right">
+        <Landscape variant="coast" side="left" />
+        <blockquote className="relative z-10 m-0 text-[clamp(1.6rem,4.2vw,2.9rem)] leading-[1.32] tracking-tight text-balance max-w-[26ch]">
           There came a day when the clouds drifting along with the wind aroused a wanderlust in me,
           and I set off on a journey to roam along the seashores.
         </blockquote>
-        <p className="mt-7 text-stone-500 font-mono text-[0.74rem] tracking-wide leading-[1.8]">
+        <p className="relative z-10 mt-7 text-stone-500 font-mono text-[0.74rem] tracking-wide leading-[1.8]">
           Matsuo Bashō, <cite>Oku no Hosomichi</cite>, 1689
           <span className="block opacity-70">translated by Donald Keene</span>
         </p>
